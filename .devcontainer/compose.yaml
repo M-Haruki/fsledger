@@ -1,0 +1,29 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace:cached
+      - f-node_modules:/workspace/frontend/node_modules
+      - b-go_mod:/root/go/pkg/mod
+    command: sleep infinity
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgres://postgres:pass@postgres:5432/fsledger?sslmode=disable
+    stdin_open: true
+    tty: true
+
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=fsledger
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      
+volumes:
+  f-node_modules:
+  b-go_mod:
+  pgdata:

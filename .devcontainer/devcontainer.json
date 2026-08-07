@@ -1,0 +1,29 @@
+{
+  "name": "study-notes",
+  "dockerComposeFile": "compose.yaml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+
+  "forwardPorts": [5173, 1323],
+  "portsAttributes": {
+    "5173": {
+      "label": "node vite",
+      "onAutoForward": "openBrowser"
+    },
+    "1323": {
+      "label": "go echo",
+      "onAutoForward": "openBrowser"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "golang.go",
+        "42Crunch.vscode-openapi"
+      ]
+    }
+  }
+}
