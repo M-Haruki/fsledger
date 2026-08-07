@@ -20,10 +20,10 @@
     "vscode": {
       "extensions": [
         "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint",
         "golang.go",
         "42Crunch.vscode-openapi",
-        "oderwat.indent-rainbow"
+        "oderwat.indent-rainbow",
+        "oxc.oxc-vscode"
       ]
     }
   }

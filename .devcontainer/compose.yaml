@@ -6,8 +6,10 @@ services:
     working_dir: /workspace
     volumes:
       - ..:/workspace:cached
-      - f-node_modules:/workspace/frontend/node_modules
-      - b-go_mod:/root/go/pkg/mod
+      - node_modules:/workspace/web/node_modules
+      - pnpm-store:/root/.local/share/pnpm/store
+      - go-mod:/root/go/pkg/mod
+      - go-build-cache:/root/.cache/go-build
     command: sleep infinity
     environment:
       - NODE_ENV=development
@@ -24,6 +26,8 @@ services:
       - pgdata:/var/lib/postgresql/data
       
 volumes:
-  f-node_modules:
-  b-go_mod:
+  node_modules:
+  pnpm-store:
+  go-mod:
+  go-build-cache:
   pgdata:
