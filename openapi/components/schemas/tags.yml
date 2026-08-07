@@ -1,0 +1,38 @@
+components:
+  schemas:
+    Tags:
+      type: array
+      items:
+        type: object
+        allOf:
+          - $ref: "#/components/schemas/TagUUID"
+          - $ref: "#/components/schemas/TagData"
+        required:
+          - uuid
+          - name
+      example:
+        - uuid: 45021b9e-330c-4a1f-891c-4067fab27cb0
+          name: banks
+        - uuid: 3c01d765-c6ad-4423-a893-f59e265c30d3
+          name: daily use
+        - uuid: 87b0cad1-6101-4863-96e9-51c2bf93973c
+          name: savings
+    TagUUID:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+      required:
+        - uuid
+      example:
+        uuid: 45021b9e-330c-4a1f-891c-4067fab27cb0
+    TagData:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+      example:
+        name: banks

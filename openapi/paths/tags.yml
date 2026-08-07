@@ -1,0 +1,86 @@
+Tags:
+  get:
+    operationId: listTags
+    summary: List
+    description: Get all tags.
+    tags:
+      - tag
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/tags.yml#/components/schemas/Tags"
+  post:
+    operationId: createTags
+    summary: Create
+    description: Create a new tag.
+    tags:
+      - tag
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/tags.yml#/components/schemas/TagData"
+    responses:
+      "201":
+        description: Created.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/tags.yml#/components/schemas/TagUUID"
+TagsUUID:
+  get:
+    operationId: getTag
+    summary: Get
+    description: Get a tag.
+    tags:
+      - tag
+    parameters:
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagUUID"
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/tags.yml#/components/schemas/TagData"
+      "404":
+        description: The tag not found.
+  put:
+    operationId: updateTag
+    summary: Update
+    description: Change a tag.
+    tags:
+      - tag
+    parameters:
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagUUID"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/tags.yml#/components/schemas/TagData"
+    responses:
+      "204":
+        description: "Changed."
+      "404":
+        description: The tag not found.
+  delete:
+    operationId: deleteTag
+    summary: Delete
+    description: Delete a tag.
+    tags:
+      - tag
+    parameters:
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagUUID"
+    responses:
+      "204":
+        description: "Deleted."
+      "404":
+        description: The tag not found.

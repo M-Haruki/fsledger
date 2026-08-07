@@ -1,0 +1,21 @@
+components:
+  parameters:
+    TagType:
+      name: type
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+          - stocks
+          - transactions
+          - flows
+      example: stocks
+    TagUUID:
+      name: uuid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 45021b9e-330c-4a1f-891c-4067fab27cb0

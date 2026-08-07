@@ -27,20 +27,7 @@ paths:
     $ref: "paths/transactions.yml#/Transactions"
   /transactions/{uuid}:
     $ref: "paths/transactions.yml#/TransactionsUUID"
-  # /{type}/tags:
-  #   get:
-  #     tags:
-  #       - tag
-  #   post:
-  #     tags:
-  #       - tag
-  # /{type}/tags/{uuid}:
-  #   get:
-  #     tags:
-  #       - tag
-  #   put:
-  #     tags:
-  #       - tag
-  #   delete:
-  #     tags:
-  #       - tag
+  /{type}/tags:
+    $ref: "paths/tags.yml#/Tags"
+  /{type}/tags/{uuid}:
+    $ref: "paths/tags.yml#/TagsUUID"
