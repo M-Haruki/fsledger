@@ -4,10 +4,10 @@ info:
   version: 0.0.1
   description: A highly customizable personal ledger based on the Flow & Stock model.
   contact:
-    url: https://github.com/M-Haruki/FSLedger
+    url: https://github.com/M-Haruki/fsledger
   license:
     name: GNU Affero General Public License v3.0
-    url: https://github.com/M-Haruki/FSLedger/blob/main/LICENSE
+    url: https://github.com/M-Haruki/fsledger/blob/main/LICENSE
 servers:
   - url: http://localhost:1323/api
     description: develop environment
