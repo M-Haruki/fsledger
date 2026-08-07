@@ -1,0 +1,10 @@
+Health:
+  get:
+    operationId: healthCheck
+    summary: Health Check
+    description: A health check endpoint for docker.
+    tags:
+      - common
+    responses:
+      "204":
+        description: Healthy.

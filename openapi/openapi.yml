@@ -1,0 +1,46 @@
+openapi: 3.1.0
+info:
+  title: FSLedger
+  version: 0.0.1
+  description: A highly customizable personal ledger based on the Flow & Stock model.
+  contact:
+    url: https://github.com/M-Haruki/FSLedger
+  license:
+    name: GNU Affero General Public License v3.0
+    url: https://github.com/M-Haruki/FSLedger/blob/main/LICENSE
+servers:
+  - url: http://localhost:1323/api
+    description: develop environment
+tags:
+  - name: stock
+  - name: transaction
+  - name: tag
+  - name: common
+paths:
+  /health:
+    $ref: "./paths/common.yml#/Health"
+  /stocks:
+    $ref: "paths/stocks.yml#/Stocks"
+  /stocks/{uuid}:
+    $ref: "paths/stocks.yml#/StocksUUID"
+  /transactions:
+    $ref: "paths/transactions.yml#/Transactions"
+  /transactions/{uuid}:
+    $ref: "paths/transactions.yml#/TransactionsUUID"
+  # /{type}/tags:
+  #   get:
+  #     tags:
+  #       - tag
+  #   post:
+  #     tags:
+  #       - tag
+  # /{type}/tags/{uuid}:
+  #   get:
+  #     tags:
+  #       - tag
+  #   put:
+  #     tags:
+  #       - tag
+  #   delete:
+  #     tags:
+  #       - tag

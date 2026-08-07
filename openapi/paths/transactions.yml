@@ -1,0 +1,70 @@
+Transactions:
+  post:
+    operationId: createTransaction
+    summary: Create
+    description: Create new transaction with flows.
+    tags:
+      - transaction
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionPostData"
+    responses:
+      "201":
+        description: "Created."
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionUUIDs"
+TransactionsUUID:
+  get:
+    operationId: getTransaction
+    summary: Get
+    description: Get a transaction and its flows.
+    tags:
+      - transaction
+    parameters:
+      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionUUID"
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionData"
+      "404":
+        description: The transaction not found.
+  put:
+    operationId: updateTransaction
+    summary: Update
+    description: Change a transaction and its flows.
+    tags:
+      - transaction
+    parameters:
+      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionUUID"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionData"
+    responses:
+      "204":
+        description: "Changed."
+      "404":
+        description: The transaction not found.
+  delete:
+    operationId: deleteTransaction
+    summary: Delete
+    description: Delete a transaction and its flows.
+    tags:
+      - transaction
+    parameters:
+      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionUUID"
+    responses:
+      "204":
+        description: "Deleted."
+      "404":
+        description: The transaction not found.

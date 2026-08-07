@@ -1,0 +1,10 @@
+components:
+  parameters:
+    StockUUID:
+      name: uuid
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 873ccb0f-e7f4-4d22-9422-e8bbb38354a5

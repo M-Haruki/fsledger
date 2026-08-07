@@ -1,0 +1,83 @@
+Stocks:
+  get:
+    operationId: listStocks
+    summary: List
+    description: Get all stocks' uuid and name.
+    tags:
+      - stock
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/stocks.yml#/components/schemas/Stocks"
+  post:
+    operationId: createStock
+    summary: Create
+    description: Create new stock then get created stock uuid.
+    tags:
+      - stock
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/stocks.yml#/components/schemas/StockData"
+    responses:
+      "201":
+        description: Created.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/stocks.yml#/components/schemas/StockUUID"
+StocksUUID:
+  get:
+    operationId: getStock
+    summary: Get
+    description: Get stock details.
+    tags:
+      - stock
+    parameters:
+      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUID"
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/stocks.yml#/components/schemas/StockData"
+      "404":
+        description: The stock not found.
+  put:
+    operationId: updateStock
+    summary: Update
+    description: Change a stock.
+    tags:
+      - stock
+    parameters:
+      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUID"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/stocks.yml#/components/schemas/StockData"
+    responses:
+      "204":
+        description: Changed.
+      "404":
+        description: The stock not found.
+  delete:
+    operationId: deleteStock
+    summary: Delete
+    description: Delete a stock.
+    tags:
+      - stock
+    parameters:
+      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUID"
+    responses:
+      "204":
+        description: Deleted.
+      "404":
+        description: The stock not found.

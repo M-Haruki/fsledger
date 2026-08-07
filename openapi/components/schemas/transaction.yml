@@ -1,0 +1,87 @@
+components:
+  schemas:
+    TransactionUUIDs:
+      type: object
+      properties: 
+        uuid:
+          type: string
+          format: uuid
+        flows:
+          type: array
+          items:
+            $ref: "./flows.yml#/components/schemas/FlowUUID"
+      required:
+        - uuid
+        - flows
+      example:
+        uuid: 6d313569-d48f-45a4-9cfb-978c880ed460
+        flows:
+          - uuid: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
+          - uuid: c7594bc2-1d85-4414-a3f3-ce4ab5d858ab
+    TransactionBase:
+      type: object
+      properties: 
+        desc:
+          type: string
+        occurred_at:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+        - desc
+        - occurred_at
+        - tags
+    TransactionPostData:
+      allOf:
+        - $ref: "#/components/schemas/TransactionBase"
+        - type: object
+          properties: 
+            flows:
+              type: array
+              items:
+                $ref: "./flows.yml#/components/schemas/FlowPostData"
+          required:
+            - flows
+      example:
+        desc: Shopping at a nearby grocery store. Also I earn some points.
+        occurred_at: 2026-08-07T02:10:00+09:00
+        tags:
+          - ce15fc88-deda-4c78-9f4e-a1611152cb13
+          - 8f4b9006-b89a-4533-9521-0854055fb9da
+        flows:
+          - from: 0afeb903-d823-44a7-b4ef-0017e72bad5d
+            to: bde589b4-7550-45c4-a06d-dea931e24031
+            amount: 50
+          - from: bde589b4-7550-45c4-a06d-dea931e24031
+            to: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
+            amount: 0.25
+    TransactionData:
+      allOf:
+        - $ref: "#/components/schemas/TransactionBase"
+        - type: object
+          properties: 
+            flows:
+              type: array
+              items:
+                $ref: "./flows.yml#/components/schemas/FlowData"
+          required:
+            - flows
+      example:
+        desc: Shopping at a nearby grocery store. Also I earn some points.
+        occurred_at: "2026-08-07T02:10:00+09:00"
+        tags:
+          - ce15fc88-deda-4c78-9f4e-a1611152cb13
+          - 8f4b9006-b89a-4533-9521-0854055fb9da
+        flows:
+          - uuid: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
+            from: 0afeb903-d823-44a7-b4ef-0017e72bad5d
+            to: bde589b4-7550-45c4-a06d-dea931e24031
+            amount: 50
+          - uuid: c7594bc2-1d85-4414-a3f3-ce4ab5d858ab
+            from: bde589b4-7550-45c4-a06d-dea931e24031
+            to: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
+            amount: 0.25

@@ -1,0 +1,59 @@
+components:
+  schemas:
+    Stocks:
+      type: array
+      items:
+        type: object
+        properties:
+          uuid:
+            type: string
+            format: uuid
+          name:
+            type: string
+        required:
+          - uuid
+          - name
+      example:
+        - uuid: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
+          name: bank A
+        - uuid: 0afeb903-d823-44a7-b4ef-0017e72bad5d
+          name: my wallet
+        - uuid: bde589b4-7550-45c4-a06d-dea931e24031
+          name: out
+    StockUUID:
+      type: object
+      properties:
+        uuid:
+          type: string
+          format: uuid
+      required:
+        - uuid
+      example:
+        uuid: 873ccb0f-e7f4-4d22-9422-e8bbb38354a5
+    StockData:
+      type: object
+      properties:
+        name:
+          type: string
+        has_amount:
+          type: boolean
+        currency:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+            format: uuid
+      required:
+        - name
+        - has_amount
+        - currency
+        - tags
+      example:
+        name: bank B
+        has_amount: true
+        currency: $
+        tags:
+          - 45021b9e-330c-4a1f-891c-4067fab27cb0
+          - 3c01d765-c6ad-4423-a893-f59e265c30d3
+          - 87b0cad1-6101-4863-96e9-51c2bf93973c
