@@ -42,7 +42,7 @@ StocksUUID:
       - stock
     security: []
     parameters:
-      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUID"
+      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUIDParam"
     responses:
       "200":
         description: ""
@@ -60,7 +60,7 @@ StocksUUID:
       - stock
     security: []
     parameters:
-      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUID"
+      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUIDParam"
     requestBody:
       required: true
       content:
@@ -80,7 +80,7 @@ StocksUUID:
       - stock
     security: []
     parameters:
-      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUID"
+      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUIDParam"
     responses:
       "204":
         description: Deleted.

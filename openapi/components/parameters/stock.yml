@@ -1,6 +1,6 @@
 components:
   parameters:
-    StockUUID:
+    StockUUIDParam:
       name: uuid
       in: path
       required: true
