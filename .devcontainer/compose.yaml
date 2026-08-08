@@ -23,7 +23,7 @@ services:
       - POSTGRES_PASSWORD=pass
       - POSTGRES_DB=fsledger
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql
       
 volumes:
   node_modules:
