@@ -1,6 +1,6 @@
 FROM debian:13-slim
 
-RUN apt-get update && apt-get install -y git curl ca-certificates tar xz-utils libatomic1
+RUN apt-get update && apt-get install -y git curl ca-certificates tar xz-utils make libatomic1
 # libatomic1 for pnpm
 
 # Go
