@@ -5,6 +5,7 @@ Transactions:
     description: Create new transaction with flows.
     tags:
       - transaction
+    security: []
     requestBody:
       required: true
       content:
@@ -25,6 +26,7 @@ TransactionsUUID:
     description: Get a transaction and its flows.
     tags:
       - transaction
+    security: []
     parameters:
       - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionUUID"
     responses:
@@ -42,6 +44,7 @@ TransactionsUUID:
     description: Change a transaction and its flows.
     tags:
       - transaction
+    security: []
     parameters:
       - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionUUID"
     requestBody:
@@ -61,6 +64,7 @@ TransactionsUUID:
     description: Delete a transaction and its flows.
     tags:
       - transaction
+    security: []
     parameters:
       - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionUUID"
     responses:

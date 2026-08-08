@@ -5,6 +5,7 @@ Stocks:
     description: Get all stocks' uuid and name.
     tags:
       - stock
+    security: []
     responses:
       "200":
         description: ""
@@ -18,6 +19,7 @@ Stocks:
     description: Create new stock then get created stock uuid.
     tags:
       - stock
+    security: []
     requestBody:
       required: true
       content:
@@ -38,6 +40,7 @@ StocksUUID:
     description: Get stock details.
     tags:
       - stock
+    security: []
     parameters:
       - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUID"
     responses:
@@ -55,6 +58,7 @@ StocksUUID:
     description: Change a stock.
     tags:
       - stock
+    security: []
     parameters:
       - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUID"
     requestBody:
@@ -74,6 +78,7 @@ StocksUUID:
     description: Delete a stock.
     tags:
       - stock
+    security: []
     parameters:
       - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUID"
     responses:

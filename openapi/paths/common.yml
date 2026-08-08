@@ -5,6 +5,7 @@ Health:
     description: A health check endpoint for docker.
     tags:
       - common
+    security: []
     responses:
       "204":
         description: Healthy.

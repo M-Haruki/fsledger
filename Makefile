@@ -1,4 +1,4 @@
-.PHONY: api-dev web-dev
+.PHONY: api-dev web-dev openapi-check
 
 api-dev:
 	cd ./api &&\
@@ -7,3 +7,6 @@ api-dev:
 web-dev:
 	cd ./web &&\
 	pnpm dev
+
+openapi-check:
+	pnpm --package=@redocly/cli dlx redocly lint ./openapi/openapi.yml

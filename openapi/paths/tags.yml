@@ -1,10 +1,13 @@
-Tags:
+Tags_:
   get:
     operationId: listTags
     summary: List
     description: Get all tags.
     tags:
       - tag
+    security: []
+    parameters:
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
     responses:
       "200":
         description: ""
@@ -18,6 +21,9 @@ Tags:
     description: Create a new tag.
     tags:
       - tag
+    security: []
+    parameters:
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
     requestBody:
       required: true
       content:
@@ -38,6 +44,7 @@ TagsUUID:
     description: Get a tag.
     tags:
       - tag
+    security: []
     parameters:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagUUID"
@@ -56,6 +63,7 @@ TagsUUID:
     description: Change a tag.
     tags:
       - tag
+    security: []
     parameters:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagUUID"
@@ -76,6 +84,7 @@ TagsUUID:
     description: Delete a tag.
     tags:
       - tag
+    security: []
     parameters:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagUUID"

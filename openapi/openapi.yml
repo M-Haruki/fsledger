@@ -13,9 +13,13 @@ servers:
     description: develop environment
 tags:
   - name: stock
+    description: stock
   - name: transaction
+    description: transaction
   - name: tag
+    description: tag
   - name: common
+    description: common
 paths:
   /health:
     $ref: "./paths/common.yml#/Health"
@@ -28,6 +32,6 @@ paths:
   /transactions/{uuid}:
     $ref: "paths/transactions.yml#/TransactionsUUID"
   /{type}/tags:
-    $ref: "paths/tags.yml#/Tags"
+    $ref: "paths/tags.yml#/Tags_"
   /{type}/tags/{uuid}:
     $ref: "paths/tags.yml#/TagsUUID"
