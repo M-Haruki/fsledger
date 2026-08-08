@@ -1,5 +1,6 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "always"
-  }
+  },
+  "oxc.path.node": "/usr/local/node/bin/node"
 }
