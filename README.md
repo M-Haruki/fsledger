@@ -17,8 +17,8 @@ erDiagram
     stocks{
         uuid uuid PK "DEFAULT gen_random_uuid()"
         text name
-        boolean has_amount "合計金額に意味があるか"
-        text currency "単位"
+        boolean has_amount "Whether the total amount is meaningful"
+        text currency
         text desc
     }
 
