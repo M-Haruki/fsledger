@@ -15,55 +15,55 @@ title: "FSLedger ER Diagram"
 
 erDiagram
     stocks{
-        uuid uuid PK "DEFAULT gen_random_uuid()"
+        uuid id PK "DEFAULT gen_random_uuid()"
         text name
         boolean has_amount "Whether the total amount is meaningful"
         text currency
-        text desc
+        text description
     }
 
     stock_tag{
-        uuid uuid PK "DEFAULT gen_random_uuid()"
+        uuid id PK "DEFAULT gen_random_uuid()"
         text name
     }
 
     stock_tag_relation{
-        uuid stock_uuid PK "FK stocks.uuid"
-        uuid tag_uuid PK "FK stock_tag.uuid"
+        uuid stock_id PK "FK stocks.id"
+        uuid tag_id PK "FK stock_tag.id"
     }
     
     transactions{
-        uuid uuid PK "DEFAULT gen_random_uuid()"
-        text desc
+        uuid id PK "DEFAULT gen_random_uuid()"
+        text description
         timestamptz occurred_at "DEFAULT now()"
     }
 
     transaction_tag{
-        uuid uuid PK "DEFAULT gen_random_uuid()"
+        uuid id PK "DEFAULT gen_random_uuid()"
         text name
     }
 
     transaction_tag_relation{
-        uuid transaction_uuid PK "FK transactions.uuid"
-        uuid tag_uuid PK "FK transaction_tag.uuid"
+        uuid transaction_id PK "FK transactions.id"
+        uuid tag_id PK "FK transaction_tag.id"
     }
 
     flows{
-        uuid uuid PK "DEFAULT gen_random_uuid()"
-        uuid transaction_uuid "FK transactions.uuid"
-        uuid from_stock_uuid "FK stocks.uuid"
-        uuid to_stock_uuid "FK stocks.uuid"
+        uuid id PK "DEFAULT gen_random_uuid()"
+        uuid transaction_id "FK transactions.id"
+        uuid from_stock_id "FK stocks.id"
+        uuid to_stock_id "FK stocks.id"
         numeric amount
     }
 
     flow_tag{
-        uuid uuid PK "DEFAULT gen_random_uuid()"
+        uuid id PK "DEFAULT gen_random_uuid()"
         text name
     }
 
     flow_tag_relation{
-        uuid flow_uuid PK "FK flows.uuid"
-        uuid tag_uuid PK "FK flow_tag.uuid"
+        uuid flow_id PK "FK flows.id"
+        uuid tag_id PK "FK flow_tag.id"
     }
 
     stocks ||--o{ stock_tag_relation : has
