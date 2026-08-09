@@ -4,9 +4,14 @@
 
 A highly customizable personal ledger based on the Flow &amp; Stock model.
 
+## ToDo
+- DB indexing
+- Multi User & Login System
+
 ## Database
 
 All columns are `NOT NULL`, and empty strings (`""`) are used in some text columns.
+If a user wants to delete a stock record, they must select a fallback stock for any flows that currently use it.
 
 ```mermaid
 ---
@@ -16,20 +21,20 @@ title: "FSLedger ER Diagram"
 erDiagram
     stocks{
         uuid id PK "DEFAULT gen_random_uuid()"
-        text name
+        text name "UNIQUE"
         boolean has_amount "Whether the total amount is meaningful"
         text currency
         text description
     }
 
-    stock_tag{
+    stock_tags{
         uuid id PK "DEFAULT gen_random_uuid()"
-        text name
+        text name "UNIQUE"
     }
 
-    stock_tag_relation{
-        uuid stock_id PK "FK stocks.id"
-        uuid tag_id PK "FK stock_tag.id"
+    stock_tag_relations{
+        uuid stock_id PK "FK stocks.id (ON DELETE CASCADE)"
+        uuid tag_id PK "FK stock_tags.id (ON DELETE CASCADE)"
     }
     
     transactions{
@@ -38,42 +43,42 @@ erDiagram
         timestamptz occurred_at "DEFAULT now()"
     }
 
-    transaction_tag{
+    transaction_tags{
         uuid id PK "DEFAULT gen_random_uuid()"
-        text name
+        text name "UNIQUE"
     }
 
-    transaction_tag_relation{
-        uuid transaction_id PK "FK transactions.id"
-        uuid tag_id PK "FK transaction_tag.id"
+    transaction_tag_relations{
+        uuid transaction_id PK "FK transactions.id (ON DELETE CASCADE)"
+        uuid tag_id PK "FK transaction_tags.id (ON DELETE CASCADE)"
     }
 
     flows{
         uuid id PK "DEFAULT gen_random_uuid()"
-        uuid transaction_id "FK transactions.id"
-        uuid from_stock_id "FK stocks.id"
-        uuid to_stock_id "FK stocks.id"
+        uuid transaction_id "FK transactions.id (ON DELETE CASCADE)"
+        uuid from_stock_id "FK stocks.id (ON DELETE NO ACTION)"
+        uuid to_stock_id "FK stocks.id (ON DELETE NO ACTION)"
         numeric amount
     }
 
-    flow_tag{
+    flow_tags{
         uuid id PK "DEFAULT gen_random_uuid()"
-        text name
+        text name "UNIQUE"
     }
 
-    flow_tag_relation{
-        uuid flow_id PK "FK flows.id"
-        uuid tag_id PK "FK flow_tag.id"
+    flow_tag_relations{
+        uuid flow_id PK "FK flows.id (ON DELETE CASCADE)"
+        uuid tag_id PK "FK flow_tags.id (ON DELETE CASCADE)"
     }
 
-    stocks ||--o{ stock_tag_relation : has
-    stock_tag ||--o{ stock_tag_relation : has
+    stocks ||--o{ stock_tag_relations : has
+    stock_tags ||--o{ stock_tag_relations : has
 
-    transactions ||--o{ transaction_tag_relation : has
-    transaction_tag ||--o{ transaction_tag_relation : has
+    transactions ||--o{ transaction_tag_relations : has
+    transaction_tags ||--o{ transaction_tag_relations : has
 
-    flows ||--o{ flow_tag_relation : has
-    flow_tag ||--o{ flow_tag_relation : has
+    flows ||--o{ flow_tag_relations : has
+    flow_tags ||--o{ flow_tag_relations : has
 
     transactions ||--o{ flows : contains
     stocks ||--o{ flows : "to"
