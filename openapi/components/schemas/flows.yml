@@ -1,13 +1,13 @@
 components:
   schemas:
-    FlowUUID:
+    FlowID:
       type: object
       properties: 
-        uuid:
+        id:
           type: string
           format: uuid
       required:
-        - uuid
+        - id
     FlowPostData:
       type: object
       properties: 
@@ -29,10 +29,10 @@ components:
         amount: 50
     FlowData:
       allOf:
-        - $ref: "./flows.yml#/components/schemas/FlowUUID"
+        - $ref: "./flows.yml#/components/schemas/FlowID"
         - $ref: "./flows.yml#/components/schemas/FlowPostData"
       example:
-        uuid: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
+        id: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
         from: 0afeb903-d823-44a7-b4ef-0017e72bad5d
         to: bde589b4-7550-45c4-a06d-dea931e24031
         amount: 50

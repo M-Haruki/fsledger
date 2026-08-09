@@ -152,8 +152,13 @@ func (e UpdateTagParamsType) Valid() bool {
 type FlowData struct {
 	Amount float32            `json:"amount"`
 	From   openapi_types.UUID `json:"from"`
+	Id     openapi_types.UUID `json:"id"`
 	To     openapi_types.UUID `json:"to"`
-	Uuid   openapi_types.UUID `json:"uuid"`
+}
+
+// FlowID defines model for FlowID.
+type FlowID struct {
+	Id openapi_types.UUID `json:"id"`
 }
 
 // FlowPostData defines model for FlowPostData.
@@ -161,11 +166,6 @@ type FlowPostData struct {
 	Amount float32            `json:"amount"`
 	From   openapi_types.UUID `json:"from"`
 	To     openapi_types.UUID `json:"to"`
-}
-
-// FlowUUID defines model for FlowUUID.
-type FlowUUID struct {
-	Uuid openapi_types.UUID `json:"uuid"`
 }
 
 // StockData defines model for StockData.
@@ -176,15 +176,15 @@ type StockData struct {
 	Tags      []openapi_types.UUID `json:"tags"`
 }
 
-// StockUUID defines model for StockUUID.
-type StockUUID struct {
-	Uuid openapi_types.UUID `json:"uuid"`
+// StockID defines model for StockID.
+type StockID struct {
+	Id openapi_types.UUID `json:"id"`
 }
 
 // Stocks defines model for Stocks.
 type Stocks = []struct {
+	Id   openapi_types.UUID `json:"id"`
 	Name string             `json:"name"`
-	Uuid openapi_types.UUID `json:"uuid"`
 }
 
 // TagData defines model for TagData.
@@ -192,15 +192,15 @@ type TagData struct {
 	Name string `json:"name"`
 }
 
-// TagUUID defines model for TagUUID.
-type TagUUID struct {
-	Uuid openapi_types.UUID `json:"uuid"`
+// TagID defines model for TagID.
+type TagID struct {
+	Id openapi_types.UUID `json:"id"`
 }
 
 // Tags defines model for Tags.
 type Tags = []struct {
+	Id   openapi_types.UUID `json:"id"`
 	Name string             `json:"name"`
-	Uuid openapi_types.UUID `json:"uuid"`
 }
 
 // TransactionBase defines model for TransactionBase.
@@ -218,6 +218,12 @@ type TransactionData struct {
 	Tags       []openapi_types.UUID `json:"tags"`
 }
 
+// TransactionIDs defines model for TransactionIDs.
+type TransactionIDs struct {
+	Flows []FlowID           `json:"flows"`
+	Id    openapi_types.UUID `json:"id"`
+}
+
 // TransactionPostData defines model for TransactionPostData.
 type TransactionPostData struct {
 	Desc       string               `json:"desc"`
@@ -226,23 +232,17 @@ type TransactionPostData struct {
 	Tags       []openapi_types.UUID `json:"tags"`
 }
 
-// TransactionUUIDs defines model for TransactionUUIDs.
-type TransactionUUIDs struct {
-	Flows []FlowUUID         `json:"flows"`
-	Uuid  openapi_types.UUID `json:"uuid"`
-}
+// StockIDParam defines model for StockIDParam.
+type StockIDParam = openapi_types.UUID
 
-// StockUUIDParam defines model for StockUUIDParam.
-type StockUUIDParam = openapi_types.UUID
+// TagIDParam defines model for TagIDParam.
+type TagIDParam = openapi_types.UUID
 
 // TagType defines model for TagType.
 type TagType string
 
-// TagUUIDParam defines model for TagUUIDParam.
-type TagUUIDParam = openapi_types.UUID
-
-// TransactionUUID defines model for TransactionUUID.
-type TransactionUUID = openapi_types.UUID
+// TransactionID defines model for TransactionID.
+type TransactionID = openapi_types.UUID
 
 // ListTagsParamsType defines parameters for ListTags.
 type ListTagsParamsType string
@@ -289,26 +289,26 @@ type ServerInterface interface {
 	// (POST /stocks)
 	CreateStock(ctx *echo.Context) error
 	// DeleteStock Delete
-	// (DELETE /stocks/{uuid})
-	DeleteStock(ctx *echo.Context, uuid StockUUIDParam) error
+	// (DELETE /stocks/{id})
+	DeleteStock(ctx *echo.Context, id StockIDParam) error
 	// GetStock Get
-	// (GET /stocks/{uuid})
-	GetStock(ctx *echo.Context, uuid StockUUIDParam) error
+	// (GET /stocks/{id})
+	GetStock(ctx *echo.Context, id StockIDParam) error
 	// UpdateStock Update
-	// (PUT /stocks/{uuid})
-	UpdateStock(ctx *echo.Context, uuid StockUUIDParam) error
+	// (PUT /stocks/{id})
+	UpdateStock(ctx *echo.Context, id StockIDParam) error
 	// CreateTransaction Create
 	// (POST /transactions)
 	CreateTransaction(ctx *echo.Context) error
 	// DeleteTransaction Delete
-	// (DELETE /transactions/{uuid})
-	DeleteTransaction(ctx *echo.Context, uuid TransactionUUID) error
+	// (DELETE /transactions/{id})
+	DeleteTransaction(ctx *echo.Context, id TransactionID) error
 	// GetTransaction Get
-	// (GET /transactions/{uuid})
-	GetTransaction(ctx *echo.Context, uuid TransactionUUID) error
+	// (GET /transactions/{id})
+	GetTransaction(ctx *echo.Context, id TransactionID) error
 	// UpdateTransaction Update
-	// (PUT /transactions/{uuid})
-	UpdateTransaction(ctx *echo.Context, uuid TransactionUUID) error
+	// (PUT /transactions/{id})
+	UpdateTransaction(ctx *echo.Context, id TransactionID) error
 	// ListTags List
 	// (GET /{type}/tags)
 	ListTags(ctx *echo.Context, pType ListTagsParamsType) error
@@ -316,14 +316,14 @@ type ServerInterface interface {
 	// (POST /{type}/tags)
 	CreateTags(ctx *echo.Context, pType CreateTagsParamsType) error
 	// DeleteTag Delete
-	// (DELETE /{type}/tags/{uuid})
-	DeleteTag(ctx *echo.Context, pType DeleteTagParamsType, uuid TagUUIDParam) error
+	// (DELETE /{type}/tags/{id})
+	DeleteTag(ctx *echo.Context, pType DeleteTagParamsType, id TagIDParam) error
 	// GetTag Get
-	// (GET /{type}/tags/{uuid})
-	GetTag(ctx *echo.Context, pType GetTagParamsType, uuid TagUUIDParam) error
+	// (GET /{type}/tags/{id})
+	GetTag(ctx *echo.Context, pType GetTagParamsType, id TagIDParam) error
 	// UpdateTag Update
-	// (PUT /{type}/tags/{uuid})
-	UpdateTag(ctx *echo.Context, pType UpdateTagParamsType, uuid TagUUIDParam) error
+	// (PUT /{type}/tags/{id})
+	UpdateTag(ctx *echo.Context, pType UpdateTagParamsType, id TagIDParam) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -361,48 +361,48 @@ func (w *ServerInterfaceWrapper) CreateStock(ctx *echo.Context) error {
 // DeleteStock converts echo context to params.
 func (w *ServerInterfaceWrapper) DeleteStock(ctx *echo.Context) error {
 	var err error
-	// ------------- Path parameter "uuid" -------------
-	var uuid StockUUIDParam
+	// ------------- Path parameter "id" -------------
+	var id StockIDParam
 
-	err = runtime.BindStyledParameterWithOptions("simple", "uuid", ctx.Param("uuid"), &uuid, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter uuid: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.DeleteStock(ctx, uuid)
+	err = w.Handler.DeleteStock(ctx, id)
 	return err
 }
 
 // GetStock converts echo context to params.
 func (w *ServerInterfaceWrapper) GetStock(ctx *echo.Context) error {
 	var err error
-	// ------------- Path parameter "uuid" -------------
-	var uuid StockUUIDParam
+	// ------------- Path parameter "id" -------------
+	var id StockIDParam
 
-	err = runtime.BindStyledParameterWithOptions("simple", "uuid", ctx.Param("uuid"), &uuid, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter uuid: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetStock(ctx, uuid)
+	err = w.Handler.GetStock(ctx, id)
 	return err
 }
 
 // UpdateStock converts echo context to params.
 func (w *ServerInterfaceWrapper) UpdateStock(ctx *echo.Context) error {
 	var err error
-	// ------------- Path parameter "uuid" -------------
-	var uuid StockUUIDParam
+	// ------------- Path parameter "id" -------------
+	var id StockIDParam
 
-	err = runtime.BindStyledParameterWithOptions("simple", "uuid", ctx.Param("uuid"), &uuid, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter uuid: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.UpdateStock(ctx, uuid)
+	err = w.Handler.UpdateStock(ctx, id)
 	return err
 }
 
@@ -418,48 +418,48 @@ func (w *ServerInterfaceWrapper) CreateTransaction(ctx *echo.Context) error {
 // DeleteTransaction converts echo context to params.
 func (w *ServerInterfaceWrapper) DeleteTransaction(ctx *echo.Context) error {
 	var err error
-	// ------------- Path parameter "uuid" -------------
-	var uuid TransactionUUID
+	// ------------- Path parameter "id" -------------
+	var id TransactionID
 
-	err = runtime.BindStyledParameterWithOptions("simple", "uuid", ctx.Param("uuid"), &uuid, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter uuid: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.DeleteTransaction(ctx, uuid)
+	err = w.Handler.DeleteTransaction(ctx, id)
 	return err
 }
 
 // GetTransaction converts echo context to params.
 func (w *ServerInterfaceWrapper) GetTransaction(ctx *echo.Context) error {
 	var err error
-	// ------------- Path parameter "uuid" -------------
-	var uuid TransactionUUID
+	// ------------- Path parameter "id" -------------
+	var id TransactionID
 
-	err = runtime.BindStyledParameterWithOptions("simple", "uuid", ctx.Param("uuid"), &uuid, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter uuid: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetTransaction(ctx, uuid)
+	err = w.Handler.GetTransaction(ctx, id)
 	return err
 }
 
 // UpdateTransaction converts echo context to params.
 func (w *ServerInterfaceWrapper) UpdateTransaction(ctx *echo.Context) error {
 	var err error
-	// ------------- Path parameter "uuid" -------------
-	var uuid TransactionUUID
+	// ------------- Path parameter "id" -------------
+	var id TransactionID
 
-	err = runtime.BindStyledParameterWithOptions("simple", "uuid", ctx.Param("uuid"), &uuid, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter uuid: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.UpdateTransaction(ctx, uuid)
+	err = w.Handler.UpdateTransaction(ctx, id)
 	return err
 }
 
@@ -506,16 +506,16 @@ func (w *ServerInterfaceWrapper) DeleteTag(ctx *echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter type: %s", err))
 	}
 
-	// ------------- Path parameter "uuid" -------------
-	var uuid TagUUIDParam
+	// ------------- Path parameter "id" -------------
+	var id TagIDParam
 
-	err = runtime.BindStyledParameterWithOptions("simple", "uuid", ctx.Param("uuid"), &uuid, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter uuid: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.DeleteTag(ctx, pType, uuid)
+	err = w.Handler.DeleteTag(ctx, pType, id)
 	return err
 }
 
@@ -530,16 +530,16 @@ func (w *ServerInterfaceWrapper) GetTag(ctx *echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter type: %s", err))
 	}
 
-	// ------------- Path parameter "uuid" -------------
-	var uuid TagUUIDParam
+	// ------------- Path parameter "id" -------------
+	var id TagIDParam
 
-	err = runtime.BindStyledParameterWithOptions("simple", "uuid", ctx.Param("uuid"), &uuid, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter uuid: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetTag(ctx, pType, uuid)
+	err = w.Handler.GetTag(ctx, pType, id)
 	return err
 }
 
@@ -554,16 +554,16 @@ func (w *ServerInterfaceWrapper) UpdateTag(ctx *echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter type: %s", err))
 	}
 
-	// ------------- Path parameter "uuid" -------------
-	var uuid TagUUIDParam
+	// ------------- Path parameter "id" -------------
+	var id TagIDParam
 
-	err = runtime.BindStyledParameterWithOptions("simple", "uuid", ctx.Param("uuid"), &uuid, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter uuid: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.UpdateTag(ctx, pType, uuid)
+	err = w.Handler.UpdateTag(ctx, pType, id)
 	return err
 }
 
@@ -617,18 +617,18 @@ func RegisterHandlersWithOptions(router EchoRouter, si ServerInterface, options 
 	router.GET(options.BaseURL+"/health", wrapper.HealthCheck, options.OperationMiddlewares["healthCheck"]...)
 	router.GET(options.BaseURL+"/stocks", wrapper.ListStocks, options.OperationMiddlewares["listStocks"]...)
 	router.POST(options.BaseURL+"/stocks", wrapper.CreateStock, options.OperationMiddlewares["createStock"]...)
-	router.DELETE(options.BaseURL+"/stocks/:uuid", wrapper.DeleteStock, options.OperationMiddlewares["deleteStock"]...)
-	router.GET(options.BaseURL+"/stocks/:uuid", wrapper.GetStock, options.OperationMiddlewares["getStock"]...)
-	router.PUT(options.BaseURL+"/stocks/:uuid", wrapper.UpdateStock, options.OperationMiddlewares["updateStock"]...)
+	router.DELETE(options.BaseURL+"/stocks/:id", wrapper.DeleteStock, options.OperationMiddlewares["deleteStock"]...)
+	router.GET(options.BaseURL+"/stocks/:id", wrapper.GetStock, options.OperationMiddlewares["getStock"]...)
+	router.PUT(options.BaseURL+"/stocks/:id", wrapper.UpdateStock, options.OperationMiddlewares["updateStock"]...)
 	router.POST(options.BaseURL+"/transactions", wrapper.CreateTransaction, options.OperationMiddlewares["createTransaction"]...)
-	router.DELETE(options.BaseURL+"/transactions/:uuid", wrapper.DeleteTransaction, options.OperationMiddlewares["deleteTransaction"]...)
-	router.GET(options.BaseURL+"/transactions/:uuid", wrapper.GetTransaction, options.OperationMiddlewares["getTransaction"]...)
-	router.PUT(options.BaseURL+"/transactions/:uuid", wrapper.UpdateTransaction, options.OperationMiddlewares["updateTransaction"]...)
+	router.DELETE(options.BaseURL+"/transactions/:id", wrapper.DeleteTransaction, options.OperationMiddlewares["deleteTransaction"]...)
+	router.GET(options.BaseURL+"/transactions/:id", wrapper.GetTransaction, options.OperationMiddlewares["getTransaction"]...)
+	router.PUT(options.BaseURL+"/transactions/:id", wrapper.UpdateTransaction, options.OperationMiddlewares["updateTransaction"]...)
 	router.GET(options.BaseURL+"/:type/tags", wrapper.ListTags, options.OperationMiddlewares["listTags"]...)
 	router.POST(options.BaseURL+"/:type/tags", wrapper.CreateTags, options.OperationMiddlewares["createTags"]...)
-	router.DELETE(options.BaseURL+"/:type/tags/:uuid", wrapper.DeleteTag, options.OperationMiddlewares["deleteTag"]...)
-	router.GET(options.BaseURL+"/:type/tags/:uuid", wrapper.GetTag, options.OperationMiddlewares["getTag"]...)
-	router.PUT(options.BaseURL+"/:type/tags/:uuid", wrapper.UpdateTag, options.OperationMiddlewares["updateTag"]...)
+	router.DELETE(options.BaseURL+"/:type/tags/:id", wrapper.DeleteTag, options.OperationMiddlewares["deleteTag"]...)
+	router.GET(options.BaseURL+"/:type/tags/:id", wrapper.GetTag, options.OperationMiddlewares["getTag"]...)
+	router.PUT(options.BaseURL+"/:type/tags/:id", wrapper.UpdateTag, options.OperationMiddlewares["updateTag"]...)
 
 }
 
@@ -676,7 +676,7 @@ type CreateStockResponseObject interface {
 	VisitCreateStockResponse(w http.ResponseWriter) error
 }
 
-type CreateStock201JSONResponse StockUUID
+type CreateStock201JSONResponse StockID
 
 func (response CreateStock201JSONResponse) VisitCreateStockResponse(w http.ResponseWriter) error {
 
@@ -691,7 +691,7 @@ func (response CreateStock201JSONResponse) VisitCreateStockResponse(w http.Respo
 }
 
 type DeleteStockRequestObject struct {
-	Uuid StockUUIDParam `json:"uuid"`
+	Id StockIDParam `json:"id"`
 }
 
 type DeleteStockResponseObject interface {
@@ -715,7 +715,7 @@ func (response DeleteStock404Response) VisitDeleteStockResponse(w http.ResponseW
 }
 
 type GetStockRequestObject struct {
-	Uuid StockUUIDParam `json:"uuid"`
+	Id StockIDParam `json:"id"`
 }
 
 type GetStockResponseObject interface {
@@ -745,7 +745,7 @@ func (response GetStock404Response) VisitGetStockResponse(w http.ResponseWriter)
 }
 
 type UpdateStockRequestObject struct {
-	Uuid StockUUIDParam `json:"uuid"`
+	Id   StockIDParam `json:"id"`
 	Body *UpdateStockJSONRequestBody
 }
 
@@ -777,7 +777,7 @@ type CreateTransactionResponseObject interface {
 	VisitCreateTransactionResponse(w http.ResponseWriter) error
 }
 
-type CreateTransaction201JSONResponse TransactionUUIDs
+type CreateTransaction201JSONResponse TransactionIDs
 
 func (response CreateTransaction201JSONResponse) VisitCreateTransactionResponse(w http.ResponseWriter) error {
 
@@ -792,7 +792,7 @@ func (response CreateTransaction201JSONResponse) VisitCreateTransactionResponse(
 }
 
 type DeleteTransactionRequestObject struct {
-	Uuid TransactionUUID `json:"uuid"`
+	Id TransactionID `json:"id"`
 }
 
 type DeleteTransactionResponseObject interface {
@@ -816,7 +816,7 @@ func (response DeleteTransaction404Response) VisitDeleteTransactionResponse(w ht
 }
 
 type GetTransactionRequestObject struct {
-	Uuid TransactionUUID `json:"uuid"`
+	Id TransactionID `json:"id"`
 }
 
 type GetTransactionResponseObject interface {
@@ -846,7 +846,7 @@ func (response GetTransaction404Response) VisitGetTransactionResponse(w http.Res
 }
 
 type UpdateTransactionRequestObject struct {
-	Uuid TransactionUUID `json:"uuid"`
+	Id   TransactionID `json:"id"`
 	Body *UpdateTransactionJSONRequestBody
 }
 
@@ -901,7 +901,7 @@ type CreateTagsResponseObject interface {
 	VisitCreateTagsResponse(w http.ResponseWriter) error
 }
 
-type CreateTags201JSONResponse TagUUID
+type CreateTags201JSONResponse TagID
 
 func (response CreateTags201JSONResponse) VisitCreateTagsResponse(w http.ResponseWriter) error {
 
@@ -917,7 +917,7 @@ func (response CreateTags201JSONResponse) VisitCreateTagsResponse(w http.Respons
 
 type DeleteTagRequestObject struct {
 	Type DeleteTagParamsType `json:"type"`
-	Uuid TagUUIDParam        `json:"uuid"`
+	Id   TagIDParam          `json:"id"`
 }
 
 type DeleteTagResponseObject interface {
@@ -942,7 +942,7 @@ func (response DeleteTag404Response) VisitDeleteTagResponse(w http.ResponseWrite
 
 type GetTagRequestObject struct {
 	Type GetTagParamsType `json:"type"`
-	Uuid TagUUIDParam     `json:"uuid"`
+	Id   TagIDParam       `json:"id"`
 }
 
 type GetTagResponseObject interface {
@@ -973,7 +973,7 @@ func (response GetTag404Response) VisitGetTagResponse(w http.ResponseWriter) err
 
 type UpdateTagRequestObject struct {
 	Type UpdateTagParamsType `json:"type"`
-	Uuid TagUUIDParam        `json:"uuid"`
+	Id   TagIDParam          `json:"id"`
 	Body *UpdateTagJSONRequestBody
 }
 
@@ -1009,25 +1009,25 @@ type StrictServerInterface interface {
 	// (POST /stocks)
 	CreateStock(ctx context.Context, request CreateStockRequestObject) (CreateStockResponseObject, error)
 	// DeleteStock Delete
-	// (DELETE /stocks/{uuid})
+	// (DELETE /stocks/{id})
 	DeleteStock(ctx context.Context, request DeleteStockRequestObject) (DeleteStockResponseObject, error)
 	// GetStock Get
-	// (GET /stocks/{uuid})
+	// (GET /stocks/{id})
 	GetStock(ctx context.Context, request GetStockRequestObject) (GetStockResponseObject, error)
 	// UpdateStock Update
-	// (PUT /stocks/{uuid})
+	// (PUT /stocks/{id})
 	UpdateStock(ctx context.Context, request UpdateStockRequestObject) (UpdateStockResponseObject, error)
 	// CreateTransaction Create
 	// (POST /transactions)
 	CreateTransaction(ctx context.Context, request CreateTransactionRequestObject) (CreateTransactionResponseObject, error)
 	// DeleteTransaction Delete
-	// (DELETE /transactions/{uuid})
+	// (DELETE /transactions/{id})
 	DeleteTransaction(ctx context.Context, request DeleteTransactionRequestObject) (DeleteTransactionResponseObject, error)
 	// GetTransaction Get
-	// (GET /transactions/{uuid})
+	// (GET /transactions/{id})
 	GetTransaction(ctx context.Context, request GetTransactionRequestObject) (GetTransactionResponseObject, error)
 	// UpdateTransaction Update
-	// (PUT /transactions/{uuid})
+	// (PUT /transactions/{id})
 	UpdateTransaction(ctx context.Context, request UpdateTransactionRequestObject) (UpdateTransactionResponseObject, error)
 	// ListTags List
 	// (GET /{type}/tags)
@@ -1036,13 +1036,13 @@ type StrictServerInterface interface {
 	// (POST /{type}/tags)
 	CreateTags(ctx context.Context, request CreateTagsRequestObject) (CreateTagsResponseObject, error)
 	// DeleteTag Delete
-	// (DELETE /{type}/tags/{uuid})
+	// (DELETE /{type}/tags/{id})
 	DeleteTag(ctx context.Context, request DeleteTagRequestObject) (DeleteTagResponseObject, error)
 	// GetTag Get
-	// (GET /{type}/tags/{uuid})
+	// (GET /{type}/tags/{id})
 	GetTag(ctx context.Context, request GetTagRequestObject) (GetTagResponseObject, error)
 	// UpdateTag Update
-	// (PUT /{type}/tags/{uuid})
+	// (PUT /{type}/tags/{id})
 	UpdateTag(ctx context.Context, request UpdateTagRequestObject) (UpdateTagResponseObject, error)
 }
 
@@ -1144,10 +1144,10 @@ func (sh *strictHandler) CreateStock(ctx *echo.Context) error {
 }
 
 // DeleteStock operation middleware
-func (sh *strictHandler) DeleteStock(ctx *echo.Context, uuid StockUUIDParam) error {
+func (sh *strictHandler) DeleteStock(ctx *echo.Context, id StockIDParam) error {
 	var request DeleteStockRequestObject
 
-	request.Uuid = uuid
+	request.Id = id
 
 	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.DeleteStock(ctx.Request().Context(), request.(DeleteStockRequestObject))
@@ -1169,10 +1169,10 @@ func (sh *strictHandler) DeleteStock(ctx *echo.Context, uuid StockUUIDParam) err
 }
 
 // GetStock operation middleware
-func (sh *strictHandler) GetStock(ctx *echo.Context, uuid StockUUIDParam) error {
+func (sh *strictHandler) GetStock(ctx *echo.Context, id StockIDParam) error {
 	var request GetStockRequestObject
 
-	request.Uuid = uuid
+	request.Id = id
 
 	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.GetStock(ctx.Request().Context(), request.(GetStockRequestObject))
@@ -1194,10 +1194,10 @@ func (sh *strictHandler) GetStock(ctx *echo.Context, uuid StockUUIDParam) error 
 }
 
 // UpdateStock operation middleware
-func (sh *strictHandler) UpdateStock(ctx *echo.Context, uuid StockUUIDParam) error {
+func (sh *strictHandler) UpdateStock(ctx *echo.Context, id StockIDParam) error {
 	var request UpdateStockRequestObject
 
-	request.Uuid = uuid
+	request.Id = id
 
 	var body UpdateStockJSONRequestBody
 	var err error
@@ -1274,10 +1274,10 @@ func (sh *strictHandler) CreateTransaction(ctx *echo.Context) error {
 }
 
 // DeleteTransaction operation middleware
-func (sh *strictHandler) DeleteTransaction(ctx *echo.Context, uuid TransactionUUID) error {
+func (sh *strictHandler) DeleteTransaction(ctx *echo.Context, id TransactionID) error {
 	var request DeleteTransactionRequestObject
 
-	request.Uuid = uuid
+	request.Id = id
 
 	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.DeleteTransaction(ctx.Request().Context(), request.(DeleteTransactionRequestObject))
@@ -1299,10 +1299,10 @@ func (sh *strictHandler) DeleteTransaction(ctx *echo.Context, uuid TransactionUU
 }
 
 // GetTransaction operation middleware
-func (sh *strictHandler) GetTransaction(ctx *echo.Context, uuid TransactionUUID) error {
+func (sh *strictHandler) GetTransaction(ctx *echo.Context, id TransactionID) error {
 	var request GetTransactionRequestObject
 
-	request.Uuid = uuid
+	request.Id = id
 
 	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.GetTransaction(ctx.Request().Context(), request.(GetTransactionRequestObject))
@@ -1324,10 +1324,10 @@ func (sh *strictHandler) GetTransaction(ctx *echo.Context, uuid TransactionUUID)
 }
 
 // UpdateTransaction operation middleware
-func (sh *strictHandler) UpdateTransaction(ctx *echo.Context, uuid TransactionUUID) error {
+func (sh *strictHandler) UpdateTransaction(ctx *echo.Context, id TransactionID) error {
 	var request UpdateTransactionRequestObject
 
-	request.Uuid = uuid
+	request.Id = id
 
 	var body UpdateTransactionJSONRequestBody
 	var err error
@@ -1431,11 +1431,11 @@ func (sh *strictHandler) CreateTags(ctx *echo.Context, pType CreateTagsParamsTyp
 }
 
 // DeleteTag operation middleware
-func (sh *strictHandler) DeleteTag(ctx *echo.Context, pType DeleteTagParamsType, uuid TagUUIDParam) error {
+func (sh *strictHandler) DeleteTag(ctx *echo.Context, pType DeleteTagParamsType, id TagIDParam) error {
 	var request DeleteTagRequestObject
 
 	request.Type = pType
-	request.Uuid = uuid
+	request.Id = id
 
 	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.DeleteTag(ctx.Request().Context(), request.(DeleteTagRequestObject))
@@ -1457,11 +1457,11 @@ func (sh *strictHandler) DeleteTag(ctx *echo.Context, pType DeleteTagParamsType,
 }
 
 // GetTag operation middleware
-func (sh *strictHandler) GetTag(ctx *echo.Context, pType GetTagParamsType, uuid TagUUIDParam) error {
+func (sh *strictHandler) GetTag(ctx *echo.Context, pType GetTagParamsType, id TagIDParam) error {
 	var request GetTagRequestObject
 
 	request.Type = pType
-	request.Uuid = uuid
+	request.Id = id
 
 	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.GetTag(ctx.Request().Context(), request.(GetTagRequestObject))
@@ -1483,11 +1483,11 @@ func (sh *strictHandler) GetTag(ctx *echo.Context, pType GetTagParamsType, uuid 
 }
 
 // UpdateTag operation middleware
-func (sh *strictHandler) UpdateTag(ctx *echo.Context, pType UpdateTagParamsType, uuid TagUUIDParam) error {
+func (sh *strictHandler) UpdateTag(ctx *echo.Context, pType UpdateTagParamsType, id TagIDParam) error {
 	var request UpdateTagRequestObject
 
 	request.Type = pType
-	request.Uuid = uuid
+	request.Id = id
 
 	var body UpdateTagJSONRequestBody
 	var err error
@@ -1529,41 +1529,41 @@ func (sh *strictHandler) UpdateTag(ctx *echo.Context, pType UpdateTagParamsType,
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"5Fpfb9s49v0qBH8D/B7WjCmLsiW9ddqZTIHubIG2T91gQJFXtqaSqBXpdL1GvvuClBRLtuzYadwOsG+x",
-	"Teree865f0hli4UqKlVCaTSOt7jiNS/AQO0+fTBKfPn06e2b9/Zr+w38mxdVDjjG4cIXIqEpgUXKCJOz",
-	"GYnYbEYgTJLED/2A8QBPcFbiGFfcrPAEl7ywO9frTOIJruFf66wGiWNTr2GCtVhBwa2RVNUFN7uVZlPZ",
-	"fdrUWbnEDw8T/JEvP7ov+x5p660et+keccomlOsCx593DzE1LzUXJlOl/Zjm6qvGd0ecOYIRC+jMSyIg",
-	"vk8FYdxLSRh5gjA6X6Q8mS1EQq+H0S4A697Qs7n0PT+YR0SyMCUs4IxEIk1ItAhFGFKQbH4tzx66xU5i",
-	"v+bq6xtu3E6e5/9Icfx5i3+qIcUx/r/pTp3TdtPU7nABPUyeXvheaeMe/3A32YW/xbxQ69LgOKATnNaq",
-	"wDGmPIUkoj6R4cwnjPEFSRikhFJvAYtZwmXgwlE4xomEIIwSRhZBQAkLBCOcziWRwCPfgxmjvocnDQIx",
-	"pnMfmCcWJEhlRJiEiHCfBSQRoRSpZMyTiaNs4HGfr+/j8MMEV7WqoDYZ6L7RbUdiuS4SqO3Cxocn2W7M",
-	"nyPXnaA+Nw93WyedD7vMU8mfIAxu4eqkPXS8Af5Ss27RmCFXB0dIEeu6hlJscIx/whO84vqPDrImK9qc",
-	"SXj5Bf1s7fOltpbOLAy+oJ5czAMi5lwSxmY+4WHkkzSIYDYPhE+ljyc4XCRUcOmRuUc9wsK5T6I5RCTw",
-	"xCxJIz9a+ALfHbC78357SFs/lsefE6Vy4KX9vYlsZGMT4hZnBgp9nkKaL3hd880BJ87OwJ3JzvHW2lHK",
-	"Dupep4zzutcBYteQlR44+Hk70MyrXRERIljIuYxIKikjLI08EkGQEAY+8xYhBZYsXEls9xcb9JXnOZhe",
-	"HTqnYPQeoda9zedVkLvJjvghdkcF8w2gtjIcw3YoKtekRxK4h7U+pPuIy2MKHXOhnQvGBXhWBbi2AD+2",
-	"uXpEfnrH/pnuPm6XPMs3aK1h94izilnvEZrfZ+Wy58NZZW6gwPMGio6np+aJTkLWxDdJcTeY/cw1HKaK",
-	"BC1GU0UJV/rkH9wMVCC5AWIyVymvXZCdc0NXTpThXqyXTXn7IFlyhig1E3k/sKeGwYa9J+LbH/S7WIbz",
-	"Y0MR/rBSVZWVS8QN4qgEXicbtKyVgHqDtFE13KBXuVboLQJel0irAlClstLom8dDhYXiLziPTnZe0ZtZ",
-	"8OjXmbacX2c1rV2LWwQRS8SMeDIMCGMeI9xPfSKA8SSQYRDyxBExyAM8o7M5oSGhi490Fns0pvRvNIop",
-	"7Q1cArwgFWFIJEhOmFiEJEoZEO7NPc8LZiLx3CSVsiSidE6SMOKEBb5PomDmERoGjAZBmkSS47u901V/",
-	"Yv9x4t6ddP5nBf79JPvXE6HtYHpv1Nihf2niX5qQ7fqzbhUOhprLtd6264PO+k2j5LG8sMuzMnXHWKFK",
-	"w4Vrvus6xzFeGVPpeDpdZma1Tm6EKqZ/J7/xev0lm6Y6B7lsjss2neqsskzhGL9Cq2y5yjdIrLVRRfYf",
-	"nuSAKqi1KnmOmm0o4RokUiUyK0A2bPTPNaWzOXLnBlQoCblNsjwTUOr+PHv7+yf0Kk2hVugWSqh5jt6v",
-	"kzwT6F2zFt37N1aZ5wcxTXKVTAueldN3b1//8vuHXxwBmXHXSb9+eNeEOsH3UOsmSnpDb9ylgqqg5FVm",
-	"Z8Abz9mtuFk5pqcr4LlZ2T+XYLrCM0DKLUBiBeILglK64oJSVSOpxBeoLQJWTdzueGtV+Jvb8dpucBdV",
-	"ulKlbqQ2o+zQRrN+c+OEoUGs68xscPz5boL1uih4vXlchLqnPqa0KgpVNtk41Y/nudFYbsEgnueoWfb/",
-	"yOoO8VIiy9phGO8ybT50t5F7UdBOjNCcz3lV5Zlwe6d/amtt27uRO5VOrQWn8qG7J+GwzvVgcCE1VwxK",
-	"j4T+ugZuAJXwtYneSrpESzBIuF9k+7WF5BCJZrfztL15BG1+VnLzsig03XNYHUy9hocD+L2XNdyUs0MG",
-	"mrjlaWE2i0a42ClyurW4PjS05GDgkKA37nvEGx4OKWh+7yjovyU4Murslkz33iI0x6enkrIxaGOfYDa2",
-	"4OMKWtGUytaDdfkEUM0TR0V7NF0bAxIMz3J9iMotmGtBQq+l7f0kfyl4b+FIQViP1YMVL5cn5PapkvxF",
-	"5fbDSwY7BsJLSryB7UgtGLzQirdPV+reBvQ1MyvkJqRj5bk3i16pSI8dub5zuT4YuF+savfAHuHrkgre",
-	"p81OF5nRx5hr9gyZuyzZ9l8yvmBx78fx3BI/RPVEob8ItlswV8aMXkOxz+oBz2Bh2An2KTjdDy5goSl2",
-	"L0/EVQvX9RvGMwg7aBuHxWhrD8UP0+4u+eT5xi4aP8649w0Xs9T+r8d108R69o2HIMOXTx+BeNNa+fJo",
-	"H/12jK6g4O7Vx3dut92bmRfrso6iPUFf1FzHiGvbKF8+n7fJOUuvcoYyfPn89toq/lRbHQPMNtAfixa9",
-	"Tmpc0ljPx32voXZl5nQjHcO9bZnfHfofXJCe3UrPp+iwhTaVxm2p7zuUhzYk3EOuKgTlfVarsgD33y27",
-	"O9l4Os2V4PlKaRN7/syf8ipzkLZW9h+o2wNz9wbdfbSUDZeZwczU/Ydk78uRLU4z3VK+HFnSXoU+rmo/",
-	"P9w9/DcAAP//",
+	"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",
+	"qnt+uH34dwAAAP//",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,

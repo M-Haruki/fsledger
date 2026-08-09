@@ -36,8 +36,8 @@ Tags_:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/tags.yml#/components/schemas/TagUUID"
-TagsUUID:
+              $ref: "../components/schemas/tags.yml#/components/schemas/TagID"
+TagsID:
   get:
     operationId: getTag
     summary: Get
@@ -47,7 +47,7 @@ TagsUUID:
     security: []
     parameters:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagUUIDParam"
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
     responses:
       "200":
         description: ""
@@ -66,7 +66,7 @@ TagsUUID:
     security: []
     parameters:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagUUIDParam"
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
     requestBody:
       required: true
       content:
@@ -87,7 +87,7 @@ TagsUUID:
     security: []
     parameters:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagUUIDParam"
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
     responses:
       "204":
         description: "Deleted."

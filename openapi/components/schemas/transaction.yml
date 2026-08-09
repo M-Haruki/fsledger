@@ -1,23 +1,23 @@
 components:
   schemas:
-    TransactionUUIDs:
+    TransactionIDs:
       type: object
       properties: 
-        uuid:
+        id:
           type: string
           format: uuid
         flows:
           type: array
           items:
-            $ref: "./flows.yml#/components/schemas/FlowUUID"
+            $ref: "./flows.yml#/components/schemas/FlowID"
       required:
-        - uuid
+        - id
         - flows
       example:
-        uuid: 6d313569-d48f-45a4-9cfb-978c880ed460
+        id: 6d313569-d48f-45a4-9cfb-978c880ed460
         flows:
-          - uuid: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
-          - uuid: c7594bc2-1d85-4414-a3f3-ce4ab5d858ab
+          - id: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
+          - id: c7594bc2-1d85-4414-a3f3-ce4ab5d858ab
     TransactionBase:
       type: object
       properties: 
@@ -77,11 +77,11 @@ components:
           - ce15fc88-deda-4c78-9f4e-a1611152cb13
           - 8f4b9006-b89a-4533-9521-0854055fb9da
         flows:
-          - uuid: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
+          - id: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
             from: 0afeb903-d823-44a7-b4ef-0017e72bad5d
             to: bde589b4-7550-45c4-a06d-dea931e24031
             amount: 50
-          - uuid: c7594bc2-1d85-4414-a3f3-ce4ab5d858ab
+          - id: c7594bc2-1d85-4414-a3f3-ce4ab5d858ab
             from: bde589b4-7550-45c4-a06d-dea931e24031
             to: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
             amount: 0.25

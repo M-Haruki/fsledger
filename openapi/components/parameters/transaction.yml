@@ -1,7 +1,7 @@
 components:
   parameters:
-    TransactionUUID:
-      name: uuid
+    TransactionID:
+      name: id
       in: path
       required: true
       schema:

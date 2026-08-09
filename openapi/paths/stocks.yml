@@ -2,7 +2,7 @@ Stocks:
   get:
     operationId: listStocks
     summary: List
-    description: Get all stocks' uuid and name.
+    description: Get all stocks' id and name.
     tags:
       - stock
     security: []
@@ -16,7 +16,7 @@ Stocks:
   post:
     operationId: createStock
     summary: Create
-    description: Create new stock then get created stock uuid.
+    description: Create new stock then get created stock id.
     tags:
       - stock
     security: []
@@ -32,8 +32,8 @@ Stocks:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/stocks.yml#/components/schemas/StockUUID"
-StocksUUID:
+              $ref: "../components/schemas/stocks.yml#/components/schemas/StockID"
+StocksID:
   get:
     operationId: getStock
     summary: Get
@@ -42,7 +42,7 @@ StocksUUID:
       - stock
     security: []
     parameters:
-      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUIDParam"
+      - $ref: "../components/parameters/stock.yml#/components/parameters/StockIDParam"
     responses:
       "200":
         description: ""
@@ -60,7 +60,7 @@ StocksUUID:
       - stock
     security: []
     parameters:
-      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUIDParam"
+      - $ref: "../components/parameters/stock.yml#/components/parameters/StockIDParam"
     requestBody:
       required: true
       content:
@@ -80,7 +80,7 @@ StocksUUID:
       - stock
     security: []
     parameters:
-      - $ref: "../components/parameters/stock.yml#/components/parameters/StockUUIDParam"
+      - $ref: "../components/parameters/stock.yml#/components/parameters/StockIDParam"
     responses:
       "204":
         description: Deleted.

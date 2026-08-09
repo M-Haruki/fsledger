@@ -11,8 +11,8 @@ components:
           - transactions
           - flows
       example: stocks
-    TagUUIDParam:
-      name: uuid
+    TagIDParam:
+      name: id
       in: path
       required: true
       schema:

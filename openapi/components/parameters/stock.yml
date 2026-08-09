@@ -1,7 +1,7 @@
 components:
   parameters:
-    StockUUIDParam:
-      name: uuid
+    StockIDParam:
+      name: id
       in: path
       required: true
       schema:

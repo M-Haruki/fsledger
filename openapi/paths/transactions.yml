@@ -18,8 +18,8 @@ Transactions:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionUUIDs"
-TransactionsUUID:
+              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionIDs"
+TransactionsID:
   get:
     operationId: getTransaction
     summary: Get
@@ -28,7 +28,7 @@ TransactionsUUID:
       - transaction
     security: []
     parameters:
-      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionUUID"
+      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionID"
     responses:
       "200":
         description: ""
@@ -46,7 +46,7 @@ TransactionsUUID:
       - transaction
     security: []
     parameters:
-      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionUUID"
+      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionID"
     requestBody:
       required: true
       content:
@@ -66,7 +66,7 @@ TransactionsUUID:
       - transaction
     security: []
     parameters:
-      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionUUID"
+      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionID"
     responses:
       "204":
         description: "Deleted."

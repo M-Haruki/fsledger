@@ -25,13 +25,13 @@ paths:
     $ref: "./paths/common.yml#/Health"
   /stocks:
     $ref: "paths/stocks.yml#/Stocks"
-  /stocks/{uuid}:
-    $ref: "paths/stocks.yml#/StocksUUID"
+  /stocks/{id}:
+    $ref: "paths/stocks.yml#/StocksID"
   /transactions:
     $ref: "paths/transactions.yml#/Transactions"
-  /transactions/{uuid}:
-    $ref: "paths/transactions.yml#/TransactionsUUID"
+  /transactions/{id}:
+    $ref: "paths/transactions.yml#/TransactionsID"
   /{type}/tags:
     $ref: "paths/tags.yml#/Tags_"
-  /{type}/tags/{uuid}:
-    $ref: "paths/tags.yml#/TagsUUID"
+  /{type}/tags/{id}:
+    $ref: "paths/tags.yml#/TagsID"
