@@ -1,4 +1,4 @@
-.PHONY: api-dev web-dev oapi-check oapi-gen oapi-doc db-migrate-status db-migrate-up db-migrate-down
+.PHONY: api-dev web-dev oapi-check oapi-gen oapi-doc db-migrate-status db-migrate-up db-migrate-down db-sqlc-gen
 
 api-dev:
 	go -C ./api run ./cmd/api
@@ -19,3 +19,6 @@ db-migrate-up:
 	go -C ./api run ./cmd/migrate up
 db-migrate-down:
 	go -C ./api run ./cmd/migrate down
+db-sqlc-gen:
+	rm -r ./api/internal/db/sqlc/*
+	go -C ./api tool sqlc generate
