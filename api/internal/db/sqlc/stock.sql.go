@@ -46,7 +46,7 @@ func (q *Queries) CreateStockTag(ctx context.Context, name string) (pgtype.UUID,
 }
 
 const deleteStock = `-- name: DeleteStock :exec
-DELETE FROM stocks WHERE id=$1
+DELETE FROM stocks WHERE id = $1
 `
 
 func (q *Queries) DeleteStock(ctx context.Context, id pgtype.UUID) error {
@@ -55,7 +55,7 @@ func (q *Queries) DeleteStock(ctx context.Context, id pgtype.UUID) error {
 }
 
 const deleteStockTag = `-- name: DeleteStockTag :exec
-DELETE FROM stock_tags WHERE id=$1
+DELETE FROM stock_tags WHERE id = $1
 `
 
 func (q *Queries) DeleteStockTag(ctx context.Context, id pgtype.UUID) error {
@@ -64,7 +64,7 @@ func (q *Queries) DeleteStockTag(ctx context.Context, id pgtype.UUID) error {
 }
 
 const getStock = `-- name: GetStock :one
-SELECT id, name, has_amount, currency, description FROM stocks WHERE id=$1
+SELECT id, name, has_amount, currency, description FROM stocks WHERE id = $1
 `
 
 func (q *Queries) GetStock(ctx context.Context, id pgtype.UUID) (Stock, error) {
@@ -81,7 +81,7 @@ func (q *Queries) GetStock(ctx context.Context, id pgtype.UUID) (Stock, error) {
 }
 
 const getStockTag = `-- name: GetStockTag :one
-SELECT id, name FROM stock_tags WHERE id=$1
+SELECT id, name FROM stock_tags WHERE id = $1
 `
 
 func (q *Queries) GetStockTag(ctx context.Context, id pgtype.UUID) (StockTag, error) {
@@ -145,7 +145,7 @@ func (q *Queries) ListStocks(ctx context.Context) ([]ListStocksRow, error) {
 }
 
 const listTagsByStock = `-- name: ListTagsByStock :many
-SELECT r.tag_id AS id, t.name AS name FROM stock_tag_relations r JOIN stock_tags t ON r.tag_id = t.id WHERE r.stock_id=$1
+SELECT r.tag_id AS id, t.name AS name FROM stock_tag_relations r JOIN stock_tags t ON r.tag_id = t.id WHERE r.stock_id = $1
 `
 
 type ListTagsByStockRow struct {
@@ -153,8 +153,8 @@ type ListTagsByStockRow struct {
 	Name string
 }
 
-func (q *Queries) ListTagsByStock(ctx context.Context, stockID pgtype.UUID) ([]ListTagsByStockRow, error) {
-	rows, err := q.db.Query(ctx, listTagsByStock, stockID)
+func (q *Queries) ListTagsByStock(ctx context.Context, id pgtype.UUID) ([]ListTagsByStockRow, error) {
+	rows, err := q.db.Query(ctx, listTagsByStock, id)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +174,7 @@ func (q *Queries) ListTagsByStock(ctx context.Context, stockID pgtype.UUID) ([]L
 }
 
 const updateStock = `-- name: UpdateStock :exec
-UPDATE stocks SET name = $1, has_amount = $2, currency = $3, description = $4 WHERE id=$5
+UPDATE stocks SET name = $1, has_amount = $2, currency = $3, description = $4 WHERE id = $5
 `
 
 type UpdateStockParams struct {
@@ -197,7 +197,7 @@ func (q *Queries) UpdateStock(ctx context.Context, arg UpdateStockParams) error 
 }
 
 const updateStockTag = `-- name: UpdateStockTag :exec
-UPDATE stock_tags SET name = $1 WHERE id=$2
+UPDATE stock_tags SET name = $1 WHERE id = $2
 `
 
 type UpdateStockTagParams struct {

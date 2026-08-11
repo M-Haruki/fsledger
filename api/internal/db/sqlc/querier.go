@@ -11,17 +11,37 @@ import (
 )
 
 type Querier interface {
+	CreateFlow(ctx context.Context, arg CreateFlowParams) (pgtype.UUID, error)
+	CreateFlowTag(ctx context.Context, name string) (pgtype.UUID, error)
 	CreateStock(ctx context.Context, arg CreateStockParams) (pgtype.UUID, error)
 	CreateStockTag(ctx context.Context, name string) (pgtype.UUID, error)
+	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (pgtype.UUID, error)
+	CreateTransactionTag(ctx context.Context, name string) (pgtype.UUID, error)
+	DeleteFlow(ctx context.Context, id pgtype.UUID) error
+	DeleteFlowTag(ctx context.Context, id pgtype.UUID) error
 	DeleteStock(ctx context.Context, id pgtype.UUID) error
 	DeleteStockTag(ctx context.Context, id pgtype.UUID) error
+	DeleteTransaction(ctx context.Context, id pgtype.UUID) error
+	DeleteTransactionTag(ctx context.Context, id pgtype.UUID) error
+	GetFlowTag(ctx context.Context, id pgtype.UUID) (FlowTag, error)
 	GetStock(ctx context.Context, id pgtype.UUID) (Stock, error)
 	GetStockTag(ctx context.Context, id pgtype.UUID) (StockTag, error)
+	GetTransaction(ctx context.Context, id pgtype.UUID) (GetTransactionRow, error)
+	GetTransactionTag(ctx context.Context, id pgtype.UUID) (TransactionTag, error)
+	ListFlowByTransaction(ctx context.Context, id pgtype.UUID) ([]ListFlowByTransactionRow, error)
+	ListFlowTags(ctx context.Context) ([]FlowTag, error)
 	ListStockTags(ctx context.Context) ([]StockTag, error)
 	ListStocks(ctx context.Context) ([]ListStocksRow, error)
-	ListTagsByStock(ctx context.Context, stockID pgtype.UUID) ([]ListTagsByStockRow, error)
+	ListTagsByFlow(ctx context.Context, id pgtype.UUID) ([]ListTagsByFlowRow, error)
+	ListTagsByStock(ctx context.Context, id pgtype.UUID) ([]ListTagsByStockRow, error)
+	ListTagsByTransaction(ctx context.Context, id pgtype.UUID) ([]ListTagsByTransactionRow, error)
+	ListTransactionTags(ctx context.Context) ([]TransactionTag, error)
+	UpdateFlow(ctx context.Context, arg UpdateFlowParams) error
+	UpdateFlowTag(ctx context.Context, arg UpdateFlowTagParams) error
 	UpdateStock(ctx context.Context, arg UpdateStockParams) error
 	UpdateStockTag(ctx context.Context, arg UpdateStockTagParams) error
+	UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) error
+	UpdateTransactionTag(ctx context.Context, arg UpdateTransactionTagParams) error
 }
 
 var _ Querier = (*Queries)(nil)
