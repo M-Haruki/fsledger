@@ -49,7 +49,7 @@ StocksID:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/stocks.yml#/components/schemas/StockData"
+              $ref: "../components/schemas/stocks.yml#/components/schemas/StockGetData"
       "404":
         description: The stock not found.
   put:

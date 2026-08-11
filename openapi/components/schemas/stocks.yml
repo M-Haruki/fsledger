@@ -30,7 +30,7 @@ components:
         - id
       example:
         id: 873ccb0f-e7f4-4d22-9422-e8bbb38354a5
-    StockData:
+    StockBase:
       type: object
       properties:
         name:
@@ -39,21 +39,45 @@ components:
           type: boolean
         currency:
           type: string
-        tags:
-          type: array
-          items:
-            type: string
-            format: uuid
       required:
         - name
         - has_amount
         - currency
-        - tags
       example:
         name: bank B
         has_amount: true
         currency: $
-        tags:
-          - 45021b9e-330c-4a1f-891c-4067fab27cb0
-          - 3c01d765-c6ad-4423-a893-f59e265c30d3
-          - 87b0cad1-6101-4863-96e9-51c2bf93973c
+    StockData:
+      allOf:
+        - $ref: "#/components/schemas/StockBase"
+        - type: object
+          properties:
+            tags:
+              type: array
+              items:
+                type: string
+                format: uuid
+          required:
+            - tags
+          example:
+            tags:
+              - 45021b9e-330c-4a1f-891c-4067fab27cb0
+              - 3c01d765-c6ad-4423-a893-f59e265c30d3
+              - 87b0cad1-6101-4863-96e9-51c2bf93973c
+    StockGetData:
+      allOf:
+        - $ref: "#/components/schemas/StockBase"
+        - type: object
+          properties:
+            tags:
+              $ref: "./tags.yml#/components/schemas/Tags"
+          required:
+            - tags
+          example:
+            tags:
+              - id: 45021b9e-330c-4a1f-891c-4067fab27cb0
+                name: banks
+              - id: 3c01d765-c6ad-4423-a893-f59e265c30d3
+                name: daily use
+              - id: 87b0cad1-6101-4863-96e9-51c2bf93973c
+                name: savings
