@@ -1,0 +1,10 @@
+components:
+  parameters:
+    FlowIDParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 063e41c7-5fd9-4de9-a345-bc8dcfd441db

@@ -150,10 +150,24 @@ func (e UpdateTagParamsType) Valid() bool {
 
 // FlowData defines model for FlowData.
 type FlowData struct {
-	Amount float32            `json:"amount"`
-	From   openapi_types.UUID `json:"from"`
-	Id     openapi_types.UUID `json:"id"`
-	To     openapi_types.UUID `json:"to"`
+	Amount float32              `json:"amount"`
+	From   openapi_types.UUID   `json:"from"`
+	Tags   []openapi_types.UUID `json:"tags"`
+	To     openapi_types.UUID   `json:"to"`
+}
+
+// FlowGetData defines model for FlowGetData.
+type FlowGetData struct {
+	Amount float32 `json:"amount"`
+	From   struct {
+		Id   openapi_types.UUID `json:"id"`
+		Name string             `json:"name"`
+	} `json:"from"`
+	Tags Tags `json:"tags"`
+	To   struct {
+		Id   openapi_types.UUID `json:"id"`
+		Name string             `json:"name"`
+	} `json:"to"`
 }
 
 // FlowID defines model for FlowID.
@@ -161,11 +175,11 @@ type FlowID struct {
 	Id openapi_types.UUID `json:"id"`
 }
 
-// FlowPostData defines model for FlowPostData.
-type FlowPostData struct {
-	Amount float32            `json:"amount"`
-	From   openapi_types.UUID `json:"from"`
-	To     openapi_types.UUID `json:"to"`
+// StockBase defines model for StockBase.
+type StockBase struct {
+	Currency  string `json:"currency"`
+	HasAmount bool   `json:"has_amount"`
+	Name      string `json:"name"`
 }
 
 // StockData defines model for StockData.
@@ -174,6 +188,14 @@ type StockData struct {
 	HasAmount bool                 `json:"has_amount"`
 	Name      string               `json:"name"`
 	Tags      []openapi_types.UUID `json:"tags"`
+}
+
+// StockGetData defines model for StockGetData.
+type StockGetData struct {
+	Currency  string `json:"currency"`
+	HasAmount bool   `json:"has_amount"`
+	Name      string `json:"name"`
+	Tags      Tags   `json:"tags"`
 }
 
 // StockID defines model for StockID.
@@ -205,17 +227,35 @@ type Tags = []struct {
 
 // TransactionBase defines model for TransactionBase.
 type TransactionBase struct {
-	Desc       string               `json:"desc"`
-	OccurredAt time.Time            `json:"occurred_at"`
-	Tags       []openapi_types.UUID `json:"tags"`
+	Desc       string    `json:"desc"`
+	OccurredAt time.Time `json:"occurred_at"`
 }
 
 // TransactionData defines model for TransactionData.
 type TransactionData struct {
 	Desc       string               `json:"desc"`
-	Flows      []FlowData           `json:"flows"`
 	OccurredAt time.Time            `json:"occurred_at"`
 	Tags       []openapi_types.UUID `json:"tags"`
+}
+
+// TransactionGetData defines model for TransactionGetData.
+type TransactionGetData struct {
+	Desc  string `json:"desc"`
+	Flows []struct {
+		Amount float32 `json:"amount"`
+		From   struct {
+			Id   openapi_types.UUID `json:"id"`
+			Name string             `json:"name"`
+		} `json:"from"`
+		Id   openapi_types.UUID `json:"id"`
+		Tags Tags               `json:"tags"`
+		To   struct {
+			Id   openapi_types.UUID `json:"id"`
+			Name string             `json:"name"`
+		} `json:"to"`
+	} `json:"flows"`
+	OccurredAt time.Time `json:"occurred_at"`
+	Tags       Tags      `json:"tags"`
 }
 
 // TransactionIDs defines model for TransactionIDs.
@@ -227,10 +267,13 @@ type TransactionIDs struct {
 // TransactionPostData defines model for TransactionPostData.
 type TransactionPostData struct {
 	Desc       string               `json:"desc"`
-	Flows      []FlowPostData       `json:"flows"`
+	Flows      *[]FlowData          `json:"flows,omitempty"`
 	OccurredAt time.Time            `json:"occurred_at"`
 	Tags       []openapi_types.UUID `json:"tags"`
 }
+
+// FlowIDParam defines model for FlowIDParam.
+type FlowIDParam = openapi_types.UUID
 
 // StockIDParam defines model for StockIDParam.
 type StockIDParam = openapi_types.UUID
@@ -259,6 +302,9 @@ type GetTagParamsType string
 // UpdateTagParamsType defines parameters for UpdateTag.
 type UpdateTagParamsType string
 
+// UpdateFlowJSONRequestBody defines body for UpdateFlow for application/json ContentType.
+type UpdateFlowJSONRequestBody = FlowData
+
 // CreateStockJSONRequestBody defines body for CreateStock for application/json ContentType.
 type CreateStockJSONRequestBody = StockData
 
@@ -271,6 +317,9 @@ type CreateTransactionJSONRequestBody = TransactionPostData
 // UpdateTransactionJSONRequestBody defines body for UpdateTransaction for application/json ContentType.
 type UpdateTransactionJSONRequestBody = TransactionData
 
+// CreateFlowJSONRequestBody defines body for CreateFlow for application/json ContentType.
+type CreateFlowJSONRequestBody = FlowData
+
 // CreateTagsJSONRequestBody defines body for CreateTags for application/json ContentType.
 type CreateTagsJSONRequestBody = TagData
 
@@ -279,6 +328,12 @@ type UpdateTagJSONRequestBody = TagData
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// DeleteFlow Delete
+	// (DELETE /flows/{id})
+	DeleteFlow(ctx *echo.Context, id FlowIDParam) error
+	// UpdateFlow Update
+	// (PUT /flows/{id})
+	UpdateFlow(ctx *echo.Context, id FlowIDParam) error
 	// HealthCheck Health Check
 	// (GET /health)
 	HealthCheck(ctx *echo.Context) error
@@ -309,6 +364,9 @@ type ServerInterface interface {
 	// UpdateTransaction Update
 	// (PUT /transactions/{id})
 	UpdateTransaction(ctx *echo.Context, id TransactionID) error
+	// CreateFlow Create
+	// (POST /transactions/{id}/flow)
+	CreateFlow(ctx *echo.Context, id TransactionID) error
 	// ListTags List
 	// (GET /{type}/tags)
 	ListTags(ctx *echo.Context, pType ListTagsParamsType) error
@@ -329,6 +387,38 @@ type ServerInterface interface {
 // ServerInterfaceWrapper converts echo contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler ServerInterface
+}
+
+// DeleteFlow converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteFlow(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id FlowIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.DeleteFlow(ctx, id)
+	return err
+}
+
+// UpdateFlow converts echo context to params.
+func (w *ServerInterfaceWrapper) UpdateFlow(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id FlowIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.UpdateFlow(ctx, id)
+	return err
 }
 
 // HealthCheck converts echo context to params.
@@ -460,6 +550,22 @@ func (w *ServerInterfaceWrapper) UpdateTransaction(ctx *echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.UpdateTransaction(ctx, id)
+	return err
+}
+
+// CreateFlow converts echo context to params.
+func (w *ServerInterfaceWrapper) CreateFlow(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id TransactionID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.CreateFlow(ctx, id)
 	return err
 }
 
@@ -624,12 +730,64 @@ func RegisterHandlersWithOptions(router EchoRouter, si ServerInterface, options 
 	router.DELETE(options.BaseURL+"/transactions/:id", wrapper.DeleteTransaction, options.OperationMiddlewares["deleteTransaction"]...)
 	router.GET(options.BaseURL+"/transactions/:id", wrapper.GetTransaction, options.OperationMiddlewares["getTransaction"]...)
 	router.PUT(options.BaseURL+"/transactions/:id", wrapper.UpdateTransaction, options.OperationMiddlewares["updateTransaction"]...)
+	router.POST(options.BaseURL+"/transactions/:id/flow", wrapper.CreateFlow, options.OperationMiddlewares["createFlow"]...)
+	router.DELETE(options.BaseURL+"/flows/:id", wrapper.DeleteFlow, options.OperationMiddlewares["deleteFlow"]...)
+	router.PUT(options.BaseURL+"/flows/:id", wrapper.UpdateFlow, options.OperationMiddlewares["updateFlow"]...)
 	router.GET(options.BaseURL+"/:type/tags", wrapper.ListTags, options.OperationMiddlewares["listTags"]...)
 	router.POST(options.BaseURL+"/:type/tags", wrapper.CreateTags, options.OperationMiddlewares["createTags"]...)
 	router.DELETE(options.BaseURL+"/:type/tags/:id", wrapper.DeleteTag, options.OperationMiddlewares["deleteTag"]...)
 	router.GET(options.BaseURL+"/:type/tags/:id", wrapper.GetTag, options.OperationMiddlewares["getTag"]...)
 	router.PUT(options.BaseURL+"/:type/tags/:id", wrapper.UpdateTag, options.OperationMiddlewares["updateTag"]...)
 
+}
+
+type DeleteFlowRequestObject struct {
+	Id FlowIDParam `json:"id"`
+}
+
+type DeleteFlowResponseObject interface {
+	VisitDeleteFlowResponse(w http.ResponseWriter) error
+}
+
+type DeleteFlow204Response struct {
+}
+
+func (response DeleteFlow204Response) VisitDeleteFlowResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteFlow404Response struct {
+}
+
+func (response DeleteFlow404Response) VisitDeleteFlowResponse(w http.ResponseWriter) error {
+	w.WriteHeader(404)
+	return nil
+}
+
+type UpdateFlowRequestObject struct {
+	Id   FlowIDParam `json:"id"`
+	Body *UpdateFlowJSONRequestBody
+}
+
+type UpdateFlowResponseObject interface {
+	VisitUpdateFlowResponse(w http.ResponseWriter) error
+}
+
+type UpdateFlow204Response struct {
+}
+
+func (response UpdateFlow204Response) VisitUpdateFlowResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type UpdateFlow404Response struct {
+}
+
+func (response UpdateFlow404Response) VisitUpdateFlowResponse(w http.ResponseWriter) error {
+	w.WriteHeader(404)
+	return nil
 }
 
 type HealthCheckRequestObject struct {
@@ -722,7 +880,7 @@ type GetStockResponseObject interface {
 	VisitGetStockResponse(w http.ResponseWriter) error
 }
 
-type GetStock200JSONResponse StockData
+type GetStock200JSONResponse StockGetData
 
 func (response GetStock200JSONResponse) VisitGetStockResponse(w http.ResponseWriter) error {
 
@@ -823,7 +981,7 @@ type GetTransactionResponseObject interface {
 	VisitGetTransactionResponse(w http.ResponseWriter) error
 }
 
-type GetTransaction200JSONResponse TransactionData
+type GetTransaction200JSONResponse TransactionGetData
 
 func (response GetTransaction200JSONResponse) VisitGetTransactionResponse(w http.ResponseWriter) error {
 
@@ -868,6 +1026,29 @@ type UpdateTransaction404Response struct {
 func (response UpdateTransaction404Response) VisitUpdateTransactionResponse(w http.ResponseWriter) error {
 	w.WriteHeader(404)
 	return nil
+}
+
+type CreateFlowRequestObject struct {
+	Id   TransactionID `json:"id"`
+	Body *CreateFlowJSONRequestBody
+}
+
+type CreateFlowResponseObject interface {
+	VisitCreateFlowResponse(w http.ResponseWriter) error
+}
+
+type CreateFlow201JSONResponse FlowID
+
+func (response CreateFlow201JSONResponse) VisitCreateFlowResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
 }
 
 type ListTagsRequestObject struct {
@@ -999,6 +1180,12 @@ func (response UpdateTag404Response) VisitUpdateTagResponse(w http.ResponseWrite
 
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
+	// DeleteFlow Delete
+	// (DELETE /flows/{id})
+	DeleteFlow(ctx context.Context, request DeleteFlowRequestObject) (DeleteFlowResponseObject, error)
+	// UpdateFlow Update
+	// (PUT /flows/{id})
+	UpdateFlow(ctx context.Context, request UpdateFlowRequestObject) (UpdateFlowResponseObject, error)
 	// HealthCheck Health Check
 	// (GET /health)
 	HealthCheck(ctx context.Context, request HealthCheckRequestObject) (HealthCheckResponseObject, error)
@@ -1029,6 +1216,9 @@ type StrictServerInterface interface {
 	// UpdateTransaction Update
 	// (PUT /transactions/{id})
 	UpdateTransaction(ctx context.Context, request UpdateTransactionRequestObject) (UpdateTransactionResponseObject, error)
+	// CreateFlow Create
+	// (POST /transactions/{id}/flow)
+	CreateFlow(ctx context.Context, request CreateFlowRequestObject) (CreateFlowResponseObject, error)
 	// ListTags List
 	// (GET /{type}/tags)
 	ListTags(ctx context.Context, request ListTagsRequestObject) (ListTagsResponseObject, error)
@@ -1056,6 +1246,72 @@ func NewStrictHandler(ssi StrictServerInterface, middlewares []StrictMiddlewareF
 type strictHandler struct {
 	ssi         StrictServerInterface
 	middlewares []StrictMiddlewareFunc
+}
+
+// DeleteFlow operation middleware
+func (sh *strictHandler) DeleteFlow(ctx *echo.Context, id FlowIDParam) error {
+	var request DeleteFlowRequestObject
+
+	request.Id = id
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteFlow(ctx.Request().Context(), request.(DeleteFlowRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteFlow")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(DeleteFlowResponseObject); ok {
+		return validResponse.VisitDeleteFlowResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// UpdateFlow operation middleware
+func (sh *strictHandler) UpdateFlow(ctx *echo.Context, id FlowIDParam) error {
+	var request UpdateFlowRequestObject
+
+	request.Id = id
+
+	var body UpdateFlowJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateFlow(ctx.Request().Context(), request.(UpdateFlowRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateFlow")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(UpdateFlowResponseObject); ok {
+		return validResponse.VisitUpdateFlowResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
 }
 
 // HealthCheck operation middleware
@@ -1364,6 +1620,47 @@ func (sh *strictHandler) UpdateTransaction(ctx *echo.Context, id TransactionID) 
 	return nil
 }
 
+// CreateFlow operation middleware
+func (sh *strictHandler) CreateFlow(ctx *echo.Context, id TransactionID) error {
+	var request CreateFlowRequestObject
+
+	request.Id = id
+
+	var body CreateFlowJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateFlow(ctx.Request().Context(), request.(CreateFlowRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateFlow")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(CreateFlowResponseObject); ok {
+		return validResponse.VisitCreateFlowResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
 // ListTags operation middleware
 func (sh *strictHandler) ListTags(ctx *echo.Context, pType ListTagsParamsType) error {
 	var request ListTagsRequestObject
@@ -1529,41 +1826,46 @@ func (sh *strictHandler) UpdateTag(ctx *echo.Context, pType UpdateTagParamsType,
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"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",
-	"qnt+uH34dwAAAP//",
+	"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",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,

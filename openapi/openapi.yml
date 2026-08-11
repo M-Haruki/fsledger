@@ -16,6 +16,8 @@ tags:
     description: stock
   - name: transaction
     description: transaction
+  - name: flow
+    description: flow
   - name: tag
     description: tag
   - name: common
@@ -31,6 +33,10 @@ paths:
     $ref: "paths/transactions.yml#/Transactions"
   /transactions/{id}:
     $ref: "paths/transactions.yml#/TransactionsID"
+  /transactions/{id}/flow:
+    $ref: "paths/flows.yml#/Flows"
+  /flows/{id}:
+    $ref: "paths/flows.yml#/FlowsID"
   /{type}/tags:
     $ref: "paths/tags.yml#/Tags_"
   /{type}/tags/{id}:
