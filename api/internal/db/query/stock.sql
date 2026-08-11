@@ -5,10 +5,10 @@ SELECT id, name FROM stocks;
 SELECT id, name, has_amount, currency, description FROM stocks WHERE id = sqlc.arg(id);
 
 -- name: CreateStock :one
-INSERT INTO stocks (name, has_amount, currency, description) VALUES (sqlc.arg(name), sqlc.arg(has_amount), sqlc.arg(currency), sqlc.arg(description)) RETURNING id;
+INSERT INTO stocks (name, has_amount, currency, description) VALUES (sqlc.arg(name), sqlc.arg(hasAmount), sqlc.arg(currency), sqlc.arg(description)) RETURNING id;
 
 -- name: UpdateStock :exec
-UPDATE stocks SET name = sqlc.arg(name), has_amount = sqlc.arg(has_amount), currency = sqlc.arg(currency), description = sqlc.arg(description) WHERE id = sqlc.arg(id);
+UPDATE stocks SET name = sqlc.arg(name), has_amount = sqlc.arg(hasAmount), currency = sqlc.arg(currency), description = sqlc.arg(description) WHERE id = sqlc.arg(id);
 
 -- name: DeleteStock :exec
 DELETE FROM stocks WHERE id = sqlc.arg(id);

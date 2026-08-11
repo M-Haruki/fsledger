@@ -2,10 +2,10 @@
 SELECT description, occurred_at FROM transactions WHERE id = sqlc.arg(id);
 
 -- name: CreateTransaction :one
-INSERT INTO transactions (description, occurred_at) VALUES (sqlc.arg(description), sqlc.arg(occurred_at)) RETURNING id;
+INSERT INTO transactions (description, occurred_at) VALUES (sqlc.arg(description), sqlc.arg(occurredAt)) RETURNING id;
 
 -- name: UpdateTransaction :exec
-UPDATE transactions SET description = sqlc.arg(description), occurred_at = sqlc.arg(occurred_at) WHERE id = sqlc.arg(id);
+UPDATE transactions SET description = sqlc.arg(description), occurred_at = sqlc.arg(occurredAt) WHERE id = sqlc.arg(id);
 
 -- name: DeleteTransaction :exec
 DELETE FROM transactions WHERE id = sqlc.arg(id);
