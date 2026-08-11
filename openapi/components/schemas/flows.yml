@@ -2,7 +2,7 @@ components:
   schemas:
     FlowID:
       type: object
-      properties: 
+      properties:
         id:
           type: string
           format: uuid
@@ -10,7 +10,7 @@ components:
         - id
     FlowData:
       type: object
-      properties: 
+      properties:
         from:
           type: string
           format: uuid
@@ -36,7 +36,7 @@ components:
         tags:
           - 9462e790-5796-4791-af0d-399720973378
     FlowGetData:
-      properties: 
+      properties:
         from:
           type: object
           properties:

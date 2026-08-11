@@ -2,7 +2,7 @@ components:
   schemas:
     TransactionIDs:
       type: object
-      properties: 
+      properties:
         id:
           type: string
           format: uuid
@@ -20,7 +20,7 @@ components:
           - id: c7594bc2-1d85-4414-a3f3-ce4ab5d858ab
     TransactionBase:
       type: object
-      properties: 
+      properties:
         desc:
           type: string
         occurred_at:
@@ -92,8 +92,8 @@ components:
               type: array
               items:
                 allOf:
-                - $ref: "./flows.yml#/components/schemas/FlowID"
-                - $ref: "./flows.yml#/components/schemas/FlowGetData"
+                  - $ref: "./flows.yml#/components/schemas/FlowID"
+                  - $ref: "./flows.yml#/components/schemas/FlowGetData"
           required:
             - tags
             - flows
