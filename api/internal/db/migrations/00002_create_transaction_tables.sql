@@ -2,7 +2,7 @@
 CREATE TABLE transactions (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
   description text NOT NULL,
-  occurred_at timestamptz NOT NULL DEFAULT now(),
+  occurred_at timestamptz NOT NULL,
   PRIMARY KEY (id)
 );
 

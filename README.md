@@ -40,7 +40,7 @@ erDiagram
     transactions{
         uuid id PK "DEFAULT gen_random_uuid()"
         text description
-        timestamptz occurred_at "DEFAULT now()"
+        timestamptz occurred_at
     }
 
     transaction_tags{
