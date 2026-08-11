@@ -15,10 +15,13 @@ oapi-gen:
 
 db-migrate-status:
 	go -C ./api run ./cmd/migrate status
+
 db-migrate-up:
 	go -C ./api run ./cmd/migrate up
+
 db-migrate-down:
 	go -C ./api run ./cmd/migrate down
+
 db-sqlc-gen:
 	rm -rf ./api/internal/db/sqlc/*
 	go -C ./api tool sqlc generate
