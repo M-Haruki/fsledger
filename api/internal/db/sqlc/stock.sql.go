@@ -17,7 +17,7 @@ INSERT INTO stocks (name, has_amount, currency, description) VALUES ($1, $2, $3,
 
 type CreateStockParams struct {
 	Name        string
-	HasAmount   bool
+	Hasamount   bool
 	Currency    string
 	Description string
 }
@@ -25,7 +25,7 @@ type CreateStockParams struct {
 func (q *Queries) CreateStock(ctx context.Context, arg CreateStockParams) (pgtype.UUID, error) {
 	row := q.db.QueryRow(ctx, createStock,
 		arg.Name,
-		arg.HasAmount,
+		arg.Hasamount,
 		arg.Currency,
 		arg.Description,
 	)
@@ -179,7 +179,7 @@ UPDATE stocks SET name = $1, has_amount = $2, currency = $3, description = $4 WH
 
 type UpdateStockParams struct {
 	Name        string
-	HasAmount   bool
+	Hasamount   bool
 	Currency    string
 	Description string
 	ID          pgtype.UUID
@@ -188,7 +188,7 @@ type UpdateStockParams struct {
 func (q *Queries) UpdateStock(ctx context.Context, arg UpdateStockParams) error {
 	_, err := q.db.Exec(ctx, updateStock,
 		arg.Name,
-		arg.HasAmount,
+		arg.Hasamount,
 		arg.Currency,
 		arg.Description,
 		arg.ID,

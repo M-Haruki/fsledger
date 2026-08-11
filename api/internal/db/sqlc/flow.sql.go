@@ -16,17 +16,17 @@ INSERT INTO flows (transaction_id, from_stock_id, to_stock_id, amount) VALUES ($
 `
 
 type CreateFlowParams struct {
-	TransactionID pgtype.UUID
-	FromStockID   pgtype.UUID
-	ToStockID     pgtype.UUID
+	Transactionid pgtype.UUID
+	Fromstockid   pgtype.UUID
+	Tostockid     pgtype.UUID
 	Amount        pgtype.Numeric
 }
 
 func (q *Queries) CreateFlow(ctx context.Context, arg CreateFlowParams) (pgtype.UUID, error) {
 	row := q.db.QueryRow(ctx, createFlow,
-		arg.TransactionID,
-		arg.FromStockID,
-		arg.ToStockID,
+		arg.Transactionid,
+		arg.Fromstockid,
+		arg.Tostockid,
 		arg.Amount,
 	)
 	var id pgtype.UUID
@@ -168,16 +168,16 @@ UPDATE flows SET from_stock_id = $1, to_stock_id = $2, amount = $3 WHERE id = $4
 `
 
 type UpdateFlowParams struct {
-	FromStockID pgtype.UUID
-	ToStockID   pgtype.UUID
+	Fromstockid pgtype.UUID
+	Tostockid   pgtype.UUID
 	Amount      pgtype.Numeric
 	ID          pgtype.UUID
 }
 
 func (q *Queries) UpdateFlow(ctx context.Context, arg UpdateFlowParams) error {
 	_, err := q.db.Exec(ctx, updateFlow,
-		arg.FromStockID,
-		arg.ToStockID,
+		arg.Fromstockid,
+		arg.Tostockid,
 		arg.Amount,
 		arg.ID,
 	)

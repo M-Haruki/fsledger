@@ -48,7 +48,7 @@ type StockTagRelation struct {
 type Transaction struct {
 	ID          pgtype.UUID
 	Description string
-	OccurredAt  pgtype.Timestamptz
+	OccurredAt  pgtype.Date
 }
 
 type TransactionTag struct {

@@ -17,11 +17,11 @@ INSERT INTO transactions (description, occurred_at) VALUES ($1, $2) RETURNING id
 
 type CreateTransactionParams struct {
 	Description string
-	OccurredAt  pgtype.Timestamptz
+	Occurredat  pgtype.Date
 }
 
 func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionParams) (pgtype.UUID, error) {
-	row := q.db.QueryRow(ctx, createTransaction, arg.Description, arg.OccurredAt)
+	row := q.db.QueryRow(ctx, createTransaction, arg.Description, arg.Occurredat)
 	var id pgtype.UUID
 	err := row.Scan(&id)
 	return id, err
@@ -62,7 +62,7 @@ SELECT description, occurred_at FROM transactions WHERE id = $1
 
 type GetTransactionRow struct {
 	Description string
-	OccurredAt  pgtype.Timestamptz
+	OccurredAt  pgtype.Date
 }
 
 func (q *Queries) GetTransaction(ctx context.Context, id pgtype.UUID) (GetTransactionRow, error) {
@@ -142,12 +142,12 @@ UPDATE transactions SET description = $1, occurred_at = $2 WHERE id = $3
 
 type UpdateTransactionParams struct {
 	Description string
-	OccurredAt  pgtype.Timestamptz
+	Occurredat  pgtype.Date
 	ID          pgtype.UUID
 }
 
 func (q *Queries) UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) error {
-	_, err := q.db.Exec(ctx, updateTransaction, arg.Description, arg.OccurredAt, arg.ID)
+	_, err := q.db.Exec(ctx, updateTransaction, arg.Description, arg.Occurredat, arg.ID)
 	return err
 }
 

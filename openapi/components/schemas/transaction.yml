@@ -25,7 +25,7 @@ components:
           type: string
         occurred_at:
           type: string
-          format: date-time
+          format: date
       required:
         - desc
         - occurred_at
