@@ -1,7 +1,10 @@
 {
-  "name": "web",
+  "name": "fsledger",
+  "description": "A highly customizable personal ledger based on the Flow & Stock model.",
+  "author": "M-Haruki",
+  "license": "AGPL-3.0-only",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
