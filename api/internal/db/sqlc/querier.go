@@ -11,6 +11,7 @@ import (
 )
 
 type Querier interface {
+	Check(ctx context.Context) error
 	CreateFlow(ctx context.Context, arg CreateFlowParams) (pgtype.UUID, error)
 	CreateFlowTag(ctx context.Context, name string) (pgtype.UUID, error)
 	CreateStock(ctx context.Context, arg CreateStockParams) (pgtype.UUID, error)
