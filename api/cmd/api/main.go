@@ -1,16 +1,13 @@
 package main
 
 import (
-	"fmt"
-
+	"github.com/M-Haruki/fsledger/api/internal/common"
 	"github.com/labstack/echo/v5"
 )
 
 func main() {
-	fmt.Println("Demo Server")
 	e := echo.New()
-	e.GET("/", func(c *echo.Context) error {
-		return c.JSON(200, map[string]string{"message": "Hello, World!"})
-	})
+	api := e.Group("/api")
+	common.RegisterRoutes(api)
 	e.Start(":1323")
 }
