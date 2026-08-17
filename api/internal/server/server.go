@@ -8,6 +8,7 @@ import (
 	"github.com/M-Haruki/fsledger/api/internal/db"
 	"github.com/M-Haruki/fsledger/api/internal/db/sqlc"
 	"github.com/M-Haruki/fsledger/api/internal/openapi"
+	"github.com/M-Haruki/fsledger/api/internal/stock"
 	"github.com/labstack/echo/v5"
 )
 
@@ -24,14 +25,18 @@ func New(ctx context.Context) (*Server, error) {
 
 	queries := sqlc.New(db)
 
+	// common
 	commonRepo := common.NewRepository(queries)
 	commonService := common.NewService(*commonRepo)
 	commonHandler := common.NewHandler(commonService)
 
+	// stock
+	stockHandler := stock.NewHandler()
+
+	strictServer := newStrictServer(commonHandler, stockHandler)
+	strictHandler := openapi.NewStrictHandler(strictServer, nil)
+
 	e := echo.New()
-
-	strictHandler := openapi.NewStrictHandler(commonHandler, nil)
-
 	openapi.RegisterHandlersWithBaseURL(e, strictHandler, "/api")
 
 	return &Server{
