@@ -69,7 +69,7 @@ func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockReq
 	if err != nil {
 		if errors.Is(err, ErrStockNotFound) {
 			h.log.ErrorContext(ctx, "stock not found", "error", err)
-			return openapi.GetStock404JSONResponse{}, nil
+			return openapi.GetStock404JSONResponse{Message: "stock not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "get stock failed", "error", err)
 		return openapi.GetStock500JSONResponse{}, nil
@@ -93,5 +93,14 @@ func (h *StockHandler) UpdateStock(ctx context.Context, request openapi.UpdateSt
 }
 
 func (h *StockHandler) DeleteStock(ctx context.Context, request openapi.DeleteStockRequestObject) (openapi.DeleteStockResponseObject, error) {
+	err := h.service.repo.DeleteStock(ctx, uuid.UUID(request.Id))
+	if err != nil {
+		if errors.Is(err, ErrStockNotFound) {
+			h.log.ErrorContext(ctx, "stock not found", "error", err)
+			return openapi.DeleteStock404JSONResponse{Message: "stock not found"}, nil
+		}
+		h.log.ErrorContext(ctx, "delete stock failed", "error", err)
+		return openapi.DeleteStock500JSONResponse{Message: "internal server error"}, nil
+	}
 	return openapi.DeleteStock204Response{}, nil
 }

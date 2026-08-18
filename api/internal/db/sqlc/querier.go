@@ -7,6 +7,7 @@ package sqlc
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -21,7 +22,7 @@ type Querier interface {
 	CreateTransactionTag(ctx context.Context, name string) (pgtype.UUID, error)
 	DeleteFlow(ctx context.Context, id pgtype.UUID) error
 	DeleteFlowTag(ctx context.Context, id pgtype.UUID) error
-	DeleteStock(ctx context.Context, id pgtype.UUID) error
+	DeleteStock(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
 	DeleteStockTag(ctx context.Context, id pgtype.UUID) error
 	DeleteStockTagRelation(ctx context.Context, arg DeleteStockTagRelationParams) error
 	DeleteTransaction(ctx context.Context, id pgtype.UUID) error

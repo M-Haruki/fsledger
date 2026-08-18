@@ -8,6 +8,7 @@ package sqlc
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -59,13 +60,12 @@ func (q *Queries) CreateStockTagRelation(ctx context.Context, arg CreateStockTag
 	return err
 }
 
-const deleteStock = `-- name: DeleteStock :exec
+const deleteStock = `-- name: DeleteStock :execresult
 DELETE FROM stocks WHERE id = $1
 `
 
-func (q *Queries) DeleteStock(ctx context.Context, id pgtype.UUID) error {
-	_, err := q.db.Exec(ctx, deleteStock, id)
-	return err
+func (q *Queries) DeleteStock(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, deleteStock, id)
 }
 
 const deleteStockTag = `-- name: DeleteStockTag :exec

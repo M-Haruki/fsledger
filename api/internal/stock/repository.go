@@ -116,3 +116,16 @@ func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stockResponse,
 
 	return res, nil
 }
+
+func (r *Repository) DeleteStock(ctx context.Context, id uuid.UUID) error {
+	result, err := r.queries.DeleteStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
+	if err != nil {
+		return err
+	}
+	rows := result.RowsAffected()
+	if rows == 0 {
+		// not found
+		return ErrStockNotFound
+	}
+	return nil
+}

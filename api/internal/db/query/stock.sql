@@ -10,7 +10,7 @@ INSERT INTO stocks (name, has_amount, currency, description) VALUES (sqlc.arg(na
 -- name: UpdateStock :exec
 UPDATE stocks SET name = sqlc.arg(name), has_amount = sqlc.arg(hasAmount), currency = sqlc.arg(currency), description = sqlc.arg(description) WHERE id = sqlc.arg(id);
 
--- name: DeleteStock :exec
+-- name: DeleteStock :execresult
 DELETE FROM stocks WHERE id = sqlc.arg(id);
 
 -- name: ListStockTags :many
