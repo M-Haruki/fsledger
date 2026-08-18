@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"log/slog"
 	"os"
 
 	"github.com/M-Haruki/fsledger/api/internal/common"
@@ -18,23 +19,24 @@ type Server struct {
 }
 
 func New(ctx context.Context, cfg Config) (*Server, error) {
+	// logger
+	log := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: cfg.LogLevel}))
 
+	// db
 	db, err := db.New(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
 		return nil, err
 	}
-
 	queries := sqlc.New(db)
 
 	// common
 	commonRepo := common.NewRepository(queries)
 	commonService := common.NewService(*commonRepo)
-	commonHandler := common.NewHandler(commonService)
-
+	commonHandler := common.NewHandler(commonService, log)
 	// stock
 	stockRepo := stock.NewRepository(queries)
 	stockService := stock.NewService(*stockRepo)
-	stockHandler := stock.NewHandler(stockService)
+	stockHandler := stock.NewHandler(stockService, log)
 
 	strictServer := newStrictServer(commonHandler, stockHandler)
 	strictHandler := openapi.NewStrictHandler(strictServer, nil)

@@ -1,5 +1,8 @@
 package server
 
+import "log/slog"
+
 type Config struct {
-	IsDev bool
+	IsDev    bool
+	LogLevel slog.Leveler
 }

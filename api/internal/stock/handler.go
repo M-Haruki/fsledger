@@ -2,6 +2,7 @@ package stock
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/M-Haruki/fsledger/api/internal/openapi"
 	openapi_types "github.com/oapi-codegen/runtime/types"
@@ -9,11 +10,13 @@ import (
 
 type StockHandler struct {
 	service *Service
+	log     *slog.Logger
 }
 
-func NewHandler(service *Service) *StockHandler {
+func NewHandler(service *Service, log *slog.Logger) *StockHandler {
 	return &StockHandler{
 		service: service,
+		log:     log,
 	}
 }
 
