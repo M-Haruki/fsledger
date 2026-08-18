@@ -89,6 +89,21 @@ func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockReq
 }
 
 func (h *StockHandler) UpdateStock(ctx context.Context, request openapi.UpdateStockRequestObject) (openapi.UpdateStockResponseObject, error) {
+	req := stockRequest{
+		name:        request.Body.Name,
+		has_amount:  request.Body.HasAmount,
+		currency:    request.Body.Currency,
+		description: request.Body.Description,
+		tags:        make([]uuid.UUID, len(request.Body.Tags)),
+	}
+	for i, id := range request.Body.Tags {
+		req.tags[i] = uuid.UUID(id)
+	}
+	err := h.service.repo.UpdateStock(ctx, uuid.UUID(request.Id), req)
+	if err != nil {
+		h.log.ErrorContext(ctx, "update stock failed", "error", err)
+		return openapi.UpdateStock500JSONResponse{}, nil
+	}
 	return openapi.UpdateStock204Response{}, nil
 }
 

@@ -32,7 +32,7 @@ DELETE FROM stock_tags WHERE id = sqlc.arg(id);
 INSERT INTO stock_tag_relations (stock_id, tag_id) VALUES (sqlc.arg(stock_id), sqlc.arg(tag_id));
 
 -- name: DeleteStockTagRelation :exec
-DELETE FROM stock_tag_relations WHERE stock_id = sqlc.arg(stock_id) AND tag_id = sqlc.arg(tag_id);
+DELETE FROM stock_tag_relations WHERE stock_id = sqlc.arg(stock_id);
 
 -- name: ListTagsByStock :many
 SELECT r.tag_id AS id, t.name AS name FROM stock_tag_relations r JOIN stock_tags t ON r.tag_id = t.id WHERE r.stock_id = sqlc.arg(id);

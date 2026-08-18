@@ -78,16 +78,11 @@ func (q *Queries) DeleteStockTag(ctx context.Context, id pgtype.UUID) error {
 }
 
 const deleteStockTagRelation = `-- name: DeleteStockTagRelation :exec
-DELETE FROM stock_tag_relations WHERE stock_id = $1 AND tag_id = $2
+DELETE FROM stock_tag_relations WHERE stock_id = $1
 `
 
-type DeleteStockTagRelationParams struct {
-	StockID pgtype.UUID
-	TagID   pgtype.UUID
-}
-
-func (q *Queries) DeleteStockTagRelation(ctx context.Context, arg DeleteStockTagRelationParams) error {
-	_, err := q.db.Exec(ctx, deleteStockTagRelation, arg.StockID, arg.TagID)
+func (q *Queries) DeleteStockTagRelation(ctx context.Context, stockID pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, deleteStockTagRelation, stockID)
 	return err
 }
 

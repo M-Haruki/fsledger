@@ -117,6 +117,54 @@ func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stockResponse,
 	return res, nil
 }
 
+func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock stockRequest) error {
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx)
+	q := sqlc.New(tx)
+
+	err = q.UpdateStock(ctx, sqlc.UpdateStockParams{
+		ID:          pgtype.UUID{Bytes: id, Valid: true},
+		Name:        stock.name,
+		Hasamount:   stock.has_amount,
+		Currency:    stock.currency,
+		Description: stock.description,
+	})
+	if err != nil {
+		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
+			if pgErr.Code == "23505" {
+				// duplicate key
+				return ErrStockNameDuplicate
+			}
+		}
+		return err
+	}
+	err = q.DeleteStockTagRelation(ctx, pgtype.UUID{Bytes: id, Valid: true})
+	if err != nil {
+		return err
+	}
+	for _, tagId := range stock.tags {
+		err := q.CreateStockTagRelation(ctx, sqlc.CreateStockTagRelationParams{StockID: pgtype.UUID{Bytes: id, Valid: true}, TagID: pgtype.UUID{Bytes: tagId, Valid: true}})
+		if err != nil {
+			if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
+				if pgErr.Code == "23503" {
+					// tag not found
+					return ErrStockTagNotFound
+				}
+			}
+			return err
+		}
+	}
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *Repository) DeleteStock(ctx context.Context, id uuid.UUID) error {
 	result, err := r.queries.DeleteStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
