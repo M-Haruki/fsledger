@@ -40,14 +40,18 @@ components:
           type: boolean
         currency:
           type: string
+        description:
+          type: string
       required:
         - name
         - has_amount
         - currency
+        - description
       example:
         name: bank B
         has_amount: true
         currency: $
+        description: my main bank
     StockData:
       allOf:
         - $ref: "#/components/schemas/StockBase"

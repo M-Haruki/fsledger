@@ -45,6 +45,20 @@ func (q *Queries) CreateStockTag(ctx context.Context, name string) (pgtype.UUID,
 	return id, err
 }
 
+const createStockTagRelation = `-- name: CreateStockTagRelation :exec
+INSERT INTO stock_tag_relations (stock_id, tag_id) VALUES ($1, $2)
+`
+
+type CreateStockTagRelationParams struct {
+	StockID pgtype.UUID
+	TagID   pgtype.UUID
+}
+
+func (q *Queries) CreateStockTagRelation(ctx context.Context, arg CreateStockTagRelationParams) error {
+	_, err := q.db.Exec(ctx, createStockTagRelation, arg.StockID, arg.TagID)
+	return err
+}
+
 const deleteStock = `-- name: DeleteStock :exec
 DELETE FROM stocks WHERE id = $1
 `
@@ -60,6 +74,20 @@ DELETE FROM stock_tags WHERE id = $1
 
 func (q *Queries) DeleteStockTag(ctx context.Context, id pgtype.UUID) error {
 	_, err := q.db.Exec(ctx, deleteStockTag, id)
+	return err
+}
+
+const deleteStockTagRelation = `-- name: DeleteStockTagRelation :exec
+DELETE FROM stock_tag_relations WHERE stock_id = $1 AND tag_id = $2
+`
+
+type DeleteStockTagRelationParams struct {
+	StockID pgtype.UUID
+	TagID   pgtype.UUID
+}
+
+func (q *Queries) DeleteStockTagRelation(ctx context.Context, arg DeleteStockTagRelationParams) error {
+	_, err := q.db.Exec(ctx, deleteStockTagRelation, arg.StockID, arg.TagID)
 	return err
 }
 

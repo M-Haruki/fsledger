@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/M-Haruki/fsledger/api/internal/openapi"
+	"github.com/google/uuid"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -35,5 +36,20 @@ func (h *StockHandler) ListStocks(ctx context.Context, request openapi.ListStock
 }
 
 func (h *StockHandler) CreateStock(ctx context.Context, request openapi.CreateStockRequestObject) (openapi.CreateStockResponseObject, error) {
-	return openapi.CreateStock201JSONResponse{}, nil
+	req := stock{
+		name:        request.Body.Name,
+		has_amount:  request.Body.HasAmount,
+		currency:    request.Body.Currency,
+		description: request.Body.Description,
+		tags:        make([]uuid.UUID, len(request.Body.Tags)),
+	}
+	for i, id := range request.Body.Tags {
+		req.tags[i] = uuid.UUID(id)
+	}
+	id, err := h.service.repo.CreateStock(ctx, req)
+	if err != nil {
+		h.log.ErrorContext(ctx, "create stock failed", "error", err)
+		return openapi.CreateStock500JSONResponse{Message: "internal server error"}, nil
+	}
+	return openapi.CreateStock201JSONResponse{Id: openapi_types.UUID(id)}, nil
 }

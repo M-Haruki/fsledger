@@ -36,7 +36,7 @@ func New(ctx context.Context, cfg Config) (*Server, error) {
 	commonService := common.NewService(*commonRepo)
 	commonHandler := common.NewHandler(commonService, logger)
 	// stock
-	stockRepo := stock.NewRepository(queries)
+	stockRepo := stock.NewRepository(db, queries)
 	stockService := stock.NewService(*stockRepo)
 	stockHandler := stock.NewHandler(stockService, logger)
 

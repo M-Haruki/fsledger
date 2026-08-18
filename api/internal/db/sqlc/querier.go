@@ -16,12 +16,14 @@ type Querier interface {
 	CreateFlowTag(ctx context.Context, name string) (pgtype.UUID, error)
 	CreateStock(ctx context.Context, arg CreateStockParams) (pgtype.UUID, error)
 	CreateStockTag(ctx context.Context, name string) (pgtype.UUID, error)
+	CreateStockTagRelation(ctx context.Context, arg CreateStockTagRelationParams) error
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (pgtype.UUID, error)
 	CreateTransactionTag(ctx context.Context, name string) (pgtype.UUID, error)
 	DeleteFlow(ctx context.Context, id pgtype.UUID) error
 	DeleteFlowTag(ctx context.Context, id pgtype.UUID) error
 	DeleteStock(ctx context.Context, id pgtype.UUID) error
 	DeleteStockTag(ctx context.Context, id pgtype.UUID) error
+	DeleteStockTagRelation(ctx context.Context, arg DeleteStockTagRelationParams) error
 	DeleteTransaction(ctx context.Context, id pgtype.UUID) error
 	DeleteTransactionTag(ctx context.Context, id pgtype.UUID) error
 	GetFlowTag(ctx context.Context, id pgtype.UUID) (FlowTag, error)
