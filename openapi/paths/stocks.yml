@@ -15,6 +15,10 @@ Stocks:
               $ref: "../components/schemas/stocks.yml#/components/schemas/Stocks"
       "500":
         description: "Server Error"
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/ServerError"
   post:
     operationId: createStock
     summary: Create

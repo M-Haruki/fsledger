@@ -35,6 +35,7 @@ components:
       properties:
         name:
           type: string
+          minLength: 1
         has_amount:
           type: boolean
         currency:

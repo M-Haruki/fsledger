@@ -20,7 +20,7 @@ func NewHandler(service *Service) *StockHandler {
 func (h *StockHandler) ListStocks(ctx context.Context, request openapi.ListStocksRequestObject) (openapi.ListStocksResponseObject, error) {
 	raw, err := h.service.repo.ListStocks(ctx)
 	if err != nil {
-		return openapi.ListStocks500Response{}, nil
+		return openapi.ListStocks500JSONResponse{Error: "internal server error"}, nil
 	}
 	result := make(openapi.Stocks, len(raw))
 	for i, data := range raw {

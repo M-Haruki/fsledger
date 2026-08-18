@@ -53,6 +53,10 @@ paths:
                 $ref: '#/components/schemas/Stocks'
         '500':
           description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
     post:
       operationId: createStock
       summary: Create
@@ -97,11 +101,21 @@ components:
           name: my wallet
         - id: bde589b4-7550-45c4-a06d-dea931e24031
           name: out
+    ServerError:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+      example:
+        error: internal server error
     StockBase:
       type: object
       properties:
         name:
           type: string
+          minLength: 1
         has_amount:
           type: boolean
         currency:
