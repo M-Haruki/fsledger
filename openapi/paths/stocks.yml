@@ -13,6 +13,8 @@ Stocks:
           application/json:
             schema:
               $ref: "../components/schemas/stocks.yml#/components/schemas/Stocks"
+      "500":
+        description: "Server Error"
   post:
     operationId: createStock
     summary: Create
@@ -33,6 +35,8 @@ Stocks:
           application/json:
             schema:
               $ref: "../components/schemas/stocks.yml#/components/schemas/StockID"
+      "500":
+        description: "Server Error"
 StocksID:
   get:
     operationId: getStock

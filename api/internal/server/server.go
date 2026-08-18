@@ -9,6 +9,7 @@ import (
 	"github.com/M-Haruki/fsledger/api/internal/db/sqlc"
 	"github.com/M-Haruki/fsledger/api/internal/openapi"
 	"github.com/M-Haruki/fsledger/api/internal/stock"
+	"github.com/M-Haruki/fsledger/api/internal/swagger"
 	"github.com/labstack/echo/v5"
 )
 
@@ -16,7 +17,7 @@ type Server struct {
 	echo *echo.Echo
 }
 
-func New(ctx context.Context) (*Server, error) {
+func New(ctx context.Context, cfg Config) (*Server, error) {
 
 	db, err := db.New(ctx, os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -31,13 +32,19 @@ func New(ctx context.Context) (*Server, error) {
 	commonHandler := common.NewHandler(commonService)
 
 	// stock
-	stockHandler := stock.NewHandler()
+	stockRepo := stock.NewRepository(queries)
+	stockService := stock.NewService(*stockRepo)
+	stockHandler := stock.NewHandler(stockService)
 
 	strictServer := newStrictServer(commonHandler, stockHandler)
 	strictHandler := openapi.NewStrictHandler(strictServer, nil)
 
 	e := echo.New()
 	openapi.RegisterHandlersWithBaseURL(e, strictHandler, "/api")
+
+	if cfg.IsDev {
+		swagger.RegisterHandlers(e)
+	}
 
 	return &Server{
 		echo: e,

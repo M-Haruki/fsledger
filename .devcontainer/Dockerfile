@@ -21,9 +21,9 @@ RUN curl -LO https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linu
 
 # pnpm
 ENV PNPM_VERSION=11.20.0
-RUN curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=${PNPM_VERSION} SHELL=/bin/bash sh -
 ENV PNPM_HOME="/root/.local/share/pnpm"
 ENV PATH="${PNPM_HOME}/bin:${PATH}"
+RUN curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=${PNPM_VERSION} SHELL=/bin/bash sh -
 RUN pnpm config set store-dir /root/.local/share/pnpm/store --global
 
 WORKDIR /workspace

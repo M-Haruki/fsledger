@@ -9,5 +9,5 @@ Health:
     responses:
       "204":
         description: Healthy.
-      "500":
+      "503":
         description: Unhealthy.

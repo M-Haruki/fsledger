@@ -13,6 +13,7 @@ services:
     command: sleep infinity
     environment:
       - NODE_ENV=development
+      - APP_ENV=development
       - DATABASE_URL=postgres://postgres:pass@postgres:5432/fsledger?sslmode=disable
     stdin_open: true
     tty: true

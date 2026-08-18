@@ -1,0 +1,143 @@
+openapi: 3.1.0
+info:
+  title: FSLedger
+  version: 0.0.1
+  description: A highly customizable personal ledger based on the Flow & Stock model.
+  contact:
+    url: https://github.com/M-Haruki/fsledger
+  license:
+    name: GNU Affero General Public License v3.0
+    url: https://github.com/M-Haruki/fsledger/blob/main/LICENSE
+servers:
+  - url: http://localhost:1323/api
+    description: develop environment
+tags:
+  - name: stock
+    description: stock
+  - name: transaction
+    description: transaction
+  - name: flow
+    description: flow
+  - name: tag
+    description: tag
+  - name: common
+    description: common
+paths:
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Health Check
+      description: A health check endpoint for docker.
+      tags:
+        - common
+      security: []
+      responses:
+        '204':
+          description: Healthy.
+        '503':
+          description: Unhealthy.
+  /stocks:
+    get:
+      operationId: listStocks
+      summary: List
+      description: Get all stocks' id and name.
+      tags:
+        - stock
+      security: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stocks'
+        '500':
+          description: Server Error
+    post:
+      operationId: createStock
+      summary: Create
+      description: Create new stock then get created stock id.
+      tags:
+        - stock
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockData'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockID'
+        '500':
+          description: Server Error
+components:
+  schemas:
+    Stocks:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+          name:
+            type: string
+        required:
+          - id
+          - name
+      example:
+        - id: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
+          name: bank A
+        - id: 0afeb903-d823-44a7-b4ef-0017e72bad5d
+          name: my wallet
+        - id: bde589b4-7550-45c4-a06d-dea931e24031
+          name: out
+    StockBase:
+      type: object
+      properties:
+        name:
+          type: string
+        has_amount:
+          type: boolean
+        currency:
+          type: string
+      required:
+        - name
+        - has_amount
+        - currency
+      example:
+        name: bank B
+        has_amount: true
+        currency: $
+    StockData:
+      allOf:
+        - $ref: '#/components/schemas/StockBase'
+        - type: object
+          properties:
+            tags:
+              type: array
+              items:
+                type: string
+                format: uuid
+          required:
+            - tags
+          example:
+            tags:
+              - 45021b9e-330c-4a1f-891c-4067fab27cb0
+              - 3c01d765-c6ad-4423-a893-f59e265c30d3
+              - 87b0cad1-6101-4863-96e9-51c2bf93973c
+    StockID:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+      required:
+        - id
+      example:
+        id: 873ccb0f-e7f4-4d22-9422-e8bbb38354a5

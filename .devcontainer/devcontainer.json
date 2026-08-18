@@ -7,12 +7,10 @@
   "forwardPorts": [5173, 1323],
   "portsAttributes": {
     "5173": {
-      "label": "node vite",
-      "onAutoForward": "openBrowser"
+      "label": "node vite"
     },
     "1323": {
-      "label": "go echo",
-      "onAutoForward": "openBrowser"
+      "label": "go echo"
     }
   },
 
