@@ -17,6 +17,7 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/labstack/echo/v5"
+	"github.com/oapi-codegen/runtime"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -42,6 +43,15 @@ type StockData struct {
 	Tags        []openapi_types.UUID `json:"tags"`
 }
 
+// StockGetData defines model for StockGetData.
+type StockGetData struct {
+	Currency    string `json:"currency"`
+	Description string `json:"description"`
+	HasAmount   bool   `json:"has_amount"`
+	Name        string `json:"name"`
+	Tags        Tags   `json:"tags"`
+}
+
 // StockID defines model for StockID.
 type StockID struct {
 	Id openapi_types.UUID `json:"id"`
@@ -53,8 +63,30 @@ type Stocks = []struct {
 	Name string             `json:"name"`
 }
 
+// TagData defines model for TagData.
+type TagData struct {
+	Name string `json:"name"`
+}
+
+// TagID defines model for TagID.
+type TagID struct {
+	Id openapi_types.UUID `json:"id"`
+}
+
+// Tags defines model for Tags.
+type Tags = []struct {
+	Id   openapi_types.UUID `json:"id"`
+	Name string             `json:"name"`
+}
+
+// StockIDParam defines model for StockIDParam.
+type StockIDParam = openapi_types.UUID
+
 // CreateStockJSONRequestBody defines body for CreateStock for application/json ContentType.
 type CreateStockJSONRequestBody = StockData
+
+// UpdateStockJSONRequestBody defines body for UpdateStock for application/json ContentType.
+type UpdateStockJSONRequestBody = StockData
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -67,6 +99,15 @@ type ServerInterface interface {
 	// CreateStock Create
 	// (POST /stocks)
 	CreateStock(ctx *echo.Context) error
+	// DeleteStock Delete
+	// (DELETE /stocks/{id})
+	DeleteStock(ctx *echo.Context, id StockIDParam) error
+	// GetStock Get
+	// (GET /stocks/{id})
+	GetStock(ctx *echo.Context, id StockIDParam) error
+	// UpdateStock Update
+	// (PUT /stocks/{id})
+	UpdateStock(ctx *echo.Context, id StockIDParam) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -98,6 +139,54 @@ func (w *ServerInterfaceWrapper) CreateStock(ctx *echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.CreateStock(ctx)
+	return err
+}
+
+// DeleteStock converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteStock(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id StockIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.DeleteStock(ctx, id)
+	return err
+}
+
+// GetStock converts echo context to params.
+func (w *ServerInterfaceWrapper) GetStock(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id StockIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetStock(ctx, id)
+	return err
+}
+
+// UpdateStock converts echo context to params.
+func (w *ServerInterfaceWrapper) UpdateStock(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id StockIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.UpdateStock(ctx, id)
 	return err
 }
 
@@ -151,6 +240,9 @@ func RegisterHandlersWithOptions(router EchoRouter, si ServerInterface, options 
 	router.GET(options.BaseURL+"/health", wrapper.HealthCheck, options.OperationMiddlewares["healthCheck"]...)
 	router.GET(options.BaseURL+"/stocks", wrapper.ListStocks, options.OperationMiddlewares["listStocks"]...)
 	router.POST(options.BaseURL+"/stocks", wrapper.CreateStock, options.OperationMiddlewares["createStock"]...)
+	router.DELETE(options.BaseURL+"/stocks/:id", wrapper.DeleteStock, options.OperationMiddlewares["deleteStock"]...)
+	router.GET(options.BaseURL+"/stocks/:id", wrapper.GetStock, options.OperationMiddlewares["getStock"]...)
+	router.PUT(options.BaseURL+"/stocks/:id", wrapper.UpdateStock, options.OperationMiddlewares["updateStock"]...)
 
 }
 
@@ -268,6 +360,145 @@ func (response CreateStock500JSONResponse) VisitCreateStockResponse(w http.Respo
 	return err
 }
 
+type DeleteStockRequestObject struct {
+	Id StockIDParam `json:"id"`
+}
+
+type DeleteStockResponseObject interface {
+	VisitDeleteStockResponse(w http.ResponseWriter) error
+}
+
+type DeleteStock204Response struct {
+}
+
+func (response DeleteStock204Response) VisitDeleteStockResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteStock404JSONResponse Error
+
+func (response DeleteStock404JSONResponse) VisitDeleteStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteStock500JSONResponse Error
+
+func (response DeleteStock500JSONResponse) VisitDeleteStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetStockRequestObject struct {
+	Id StockIDParam `json:"id"`
+}
+
+type GetStockResponseObject interface {
+	VisitGetStockResponse(w http.ResponseWriter) error
+}
+
+type GetStock200JSONResponse StockGetData
+
+func (response GetStock200JSONResponse) VisitGetStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetStock404JSONResponse Error
+
+func (response GetStock404JSONResponse) VisitGetStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetStock500JSONResponse Error
+
+func (response GetStock500JSONResponse) VisitGetStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateStockRequestObject struct {
+	Id   StockIDParam `json:"id"`
+	Body *UpdateStockJSONRequestBody
+}
+
+type UpdateStockResponseObject interface {
+	VisitUpdateStockResponse(w http.ResponseWriter) error
+}
+
+type UpdateStock204Response struct {
+}
+
+func (response UpdateStock204Response) VisitUpdateStockResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type UpdateStock404JSONResponse Error
+
+func (response UpdateStock404JSONResponse) VisitUpdateStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateStock500JSONResponse Error
+
+func (response UpdateStock500JSONResponse) VisitUpdateStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// HealthCheck Health Check
@@ -279,6 +510,15 @@ type StrictServerInterface interface {
 	// CreateStock Create
 	// (POST /stocks)
 	CreateStock(ctx context.Context, request CreateStockRequestObject) (CreateStockResponseObject, error)
+	// DeleteStock Delete
+	// (DELETE /stocks/{id})
+	DeleteStock(ctx context.Context, request DeleteStockRequestObject) (DeleteStockResponseObject, error)
+	// GetStock Get
+	// (GET /stocks/{id})
+	GetStock(ctx context.Context, request GetStockRequestObject) (GetStockResponseObject, error)
+	// UpdateStock Update
+	// (PUT /stocks/{id})
+	UpdateStock(ctx context.Context, request UpdateStockRequestObject) (UpdateStockResponseObject, error)
 }
 
 type StrictHandlerFunc func(ctx *echo.Context, request any) (any, error)
@@ -378,31 +618,126 @@ func (sh *strictHandler) CreateStock(ctx *echo.Context) error {
 	return nil
 }
 
+// DeleteStock operation middleware
+func (sh *strictHandler) DeleteStock(ctx *echo.Context, id StockIDParam) error {
+	var request DeleteStockRequestObject
+
+	request.Id = id
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteStock(ctx.Request().Context(), request.(DeleteStockRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteStock")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(DeleteStockResponseObject); ok {
+		return validResponse.VisitDeleteStockResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetStock operation middleware
+func (sh *strictHandler) GetStock(ctx *echo.Context, id StockIDParam) error {
+	var request GetStockRequestObject
+
+	request.Id = id
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetStock(ctx.Request().Context(), request.(GetStockRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetStock")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetStockResponseObject); ok {
+		return validResponse.VisitGetStockResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// UpdateStock operation middleware
+func (sh *strictHandler) UpdateStock(ctx *echo.Context, id StockIDParam) error {
+	var request UpdateStockRequestObject
+
+	request.Id = id
+
+	var body UpdateStockJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateStock(ctx.Request().Context(), request.(UpdateStockRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateStock")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(UpdateStockResponseObject); ok {
+		return validResponse.VisitUpdateStockResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
 // Base64 encoded, compressed with deflate, json marshaled OpenAPI spec.
 // Stored as a slice of fixed-width chunks rather than one concatenated
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"zJZbb+M2Fse/CnF2gH0Ro7tl6W0y1wDZ2cUG85QGBUUe2ZpIpIakkrqBv3tByrFjy9MpimnRN0k8N/7O",
-	"4Z96Aq76QUmU1kD1BIavsWf+8Z3WSrsH/IX1Q4fusUdj2AqhgksmyP/x64jGwjaAQasBtW3RHJk9gd0M",
-	"ztxY3coVbLcBaPw6thoFVLd7w7vg2VDVX5D7kDdW8ftLZvCkBj5qjZJvoIJXEIBAw3U72FZJqKDfkJ61",
-	"ktRM3kMAa2Z+Zr0apYXK6hEDkKx3adw6uZxXfgg+K/0k1Zn1l9n2y7VSHTLp1qfcT9C38hrlyq6hioPv",
-	"EPI+R6GDQ5HHJX0T4ltmmcvLuu6/DVS3T/BKYwMV/Cs8dD/ctT48cN8GR+AtWxlXUpZHSVyXSNM04jRj",
-	"cUOXZcxpFi2KhtVJwesIAkh5FItikVO+YIJmWZJStixT2uQlJoucp5FIIYBlUUeciZgu4iim2XKR0nKB",
-	"Jc1jntRNmZZFyuFu1qipmCdoLfb+oVG6ZxYqGMdWQDDvzu4D05ptZph9uDnAu2eEV29PprAVUMGySDmv",
-	"o4Zi0WQ0E0lCyyxJKC7ruk6XaZ6xfD5jzvW79Z7U14pvt9cclXa7q43zvBALUdJGRBnNmjKmJeY1zTDN",
-	"4mIZYVYXcHweXvuOe++INViXUUrFMklplrGC1hk2NIriAoukZiIXB+9+Qx5Z16E9BKgF5suyzmiR5xHN",
-	"cp5RFi0EFcjKNMYki9L4EECNDnZw6OafIHY4X99FuTM9R/RkSrYBtLJRXhqUtIz7oz3qDipYWzuYKgxX",
-	"rV2P9QVXffgf+pHp8b4NG9OhWKGeyQa8Jut2te42hI/Gqr79ldUdkgG1UZJ1ZHIjNTMoiJLErpG879Qj",
-	"+WmMomRBfMdJrwR2FxBA13KUk0TuUH749Jm8bhrUinxAiZp15H9j3bWcXE+25CG9cOfzj28irDtVh05X",
-	"w+urN+8+3bzzpFrr5g3e31xPWw3gAbWZdhldRBexs1IDSja0UEF6Efu8A7Nr39VwjaxzIvgEK/RcZ6S8",
-	"AeFr5PcEpRhUKy1plCZC8XvUjoCbE+Y8rtzYffQeb5wDuLabQUkzDVESZfMck/3mwpWaR+lzn3GScDYM",
-	"Xct99PCLmVR/kkn39HsiOl2efn6OE36W633KbQAG+ahbu4Hq9i4AM/Y905t9XeR5I8/Sy1XfO6V3rqHZ",
-	"H/6z+D6gJazryGT2b9IKwqQgbkzm3K5bY3diMsMW/TAquwxnsEz8o7+e/w3qB9Tkef3bHXBEXpD3FKd7",
-	"SJkztN9oZBaJxMcJuDu4kqzQEu5XxO5zK+bwJ18PByatQmMvldj8WPD+N2B7LIfup2g763j8YxNfvT3X",
-	"iWnXwh+97O9o/ckv6z9r3CYaZwZucnJRjL/cj+MLfMBODQTlQ6uV7NH/IB6kvQrDTnHWrZWxVZwmaejE",
-	"2F21uzynAc1uCne3yfTqbvVjM6uZNIz7t73xy49zl6ZTjwdb/3YmLlu9iMdWZ0x2Gri32r1v77a/BQAA",
-	"//8=",
+	"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",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,

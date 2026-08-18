@@ -93,6 +93,89 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /stocks/{id}:
+    get:
+      operationId: getStock
+      summary: Get
+      description: Get stock details.
+      tags:
+        - stock
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/StockIDParam'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StockGetData'
+        '404':
+          description: The stock not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: updateStock
+      summary: Update
+      description: Change a stock.
+      tags:
+        - stock
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/StockIDParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StockData'
+      responses:
+        '204':
+          description: Changed.
+        '404':
+          description: The stock not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: deleteStock
+      summary: Delete
+      description: Delete a stock.
+      tags:
+        - stock
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/StockIDParam'
+      responses:
+        '204':
+          description: Changed.
+        '404':
+          description: The stock not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Error:
@@ -173,3 +256,65 @@ components:
         - id
       example:
         id: 873ccb0f-e7f4-4d22-9422-e8bbb38354a5
+    TagID:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+      required:
+        - id
+      example:
+        id: 45021b9e-330c-4a1f-891c-4067fab27cb0
+    TagData:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+      example:
+        name: banks
+    Tags:
+      type: array
+      items:
+        type: object
+        allOf:
+          - $ref: '#/components/schemas/TagID'
+          - $ref: '#/components/schemas/TagData'
+        required:
+          - id
+          - name
+      example:
+        - id: 45021b9e-330c-4a1f-891c-4067fab27cb0
+          name: banks
+        - id: 3c01d765-c6ad-4423-a893-f59e265c30d3
+          name: daily use
+        - id: 87b0cad1-6101-4863-96e9-51c2bf93973c
+          name: savings
+    StockGetData:
+      allOf:
+        - $ref: '#/components/schemas/StockBase'
+        - type: object
+          properties:
+            tags:
+              $ref: '#/components/schemas/Tags'
+          required:
+            - tags
+          example:
+            tags:
+              - id: 45021b9e-330c-4a1f-891c-4067fab27cb0
+                name: banks
+              - id: 3c01d765-c6ad-4423-a893-f59e265c30d3
+                name: daily use
+              - id: 87b0cad1-6101-4863-96e9-51c2bf93973c
+                name: savings
+  parameters:
+    StockIDParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 873ccb0f-e7f4-4d22-9422-e8bbb38354a5

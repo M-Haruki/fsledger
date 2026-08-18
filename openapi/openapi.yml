@@ -27,8 +27,8 @@ paths:
     $ref: "./paths/common.yml#/Health"
   /stocks:
     $ref: "paths/stocks.yml#/Stocks"
-  # /stocks/{id}:
-  #   $ref: "paths/stocks.yml#/StocksID"
+  /stocks/{id}:
+    $ref: "paths/stocks.yml#/StocksID"
   # /transactions:
   #   $ref: "paths/transactions.yml#/Transactions"
   # /transactions/{id}:

@@ -2,9 +2,12 @@ package stock
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/M-Haruki/fsledger/api/internal/db/sqlc"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -21,11 +24,11 @@ func NewRepository(d *pgxpool.Pool, q *sqlc.Queries) *Repository {
 	}
 }
 
-func (r *Repository) ListStocks(ctx context.Context) ([]stockOverview, error) {
+func (r *Repository) ListStocks(ctx context.Context) ([]stockSummary, error) {
 	raw, err := r.queries.ListStocks(ctx)
-	result := make([]stockOverview, len(raw))
+	result := make([]stockSummary, len(raw))
 	for i, data := range raw {
-		result[i] = stockOverview{
+		result[i] = stockSummary{
 			id:   uuid.UUID(data.ID.Bytes),
 			name: data.Name,
 		}
@@ -33,13 +36,14 @@ func (r *Repository) ListStocks(ctx context.Context) ([]stockOverview, error) {
 	return result, err
 }
 
-func (r *Repository) CreateStock(ctx context.Context, stock stock) (uuid.UUID, error) {
+func (r *Repository) CreateStock(ctx context.Context, stock stockRequest) (uuid.UUID, error) {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
 		return uuid.Nil, err
 	}
 	defer tx.Rollback(ctx)
 	q := sqlc.New(tx)
+
 	id, err := q.CreateStock(ctx, sqlc.CreateStockParams{
 		Name:        stock.name,
 		Hasamount:   stock.has_amount,
@@ -47,17 +51,68 @@ func (r *Repository) CreateStock(ctx context.Context, stock stock) (uuid.UUID, e
 		Description: stock.description,
 	})
 	if err != nil {
+		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
+			if pgErr.Code == "23505" {
+				// duplicate key
+				return uuid.Nil, ErrStockNameDuplicate
+			}
+		}
 		return uuid.Nil, err
 	}
 	for _, tagId := range stock.tags {
 		err := q.CreateStockTagRelation(ctx, sqlc.CreateStockTagRelationParams{StockID: id, TagID: pgtype.UUID{Bytes: tagId, Valid: true}})
 		if err != nil {
+			if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
+				if pgErr.Code == "23503" {
+					// tag not found
+					return uuid.Nil, ErrStockTagNotFound
+				}
+			}
 			return uuid.Nil, err
 		}
 	}
+
 	err = tx.Commit(ctx)
 	if err != nil {
 		return uuid.Nil, err
 	}
+
 	return uuid.UUID(id.Bytes), nil
+}
+
+func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stockResponse, error) {
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return stockResponse{}, err
+	}
+	defer tx.Rollback(ctx)
+	q := sqlc.New(tx)
+
+	stock, err := q.GetStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return stockResponse{}, ErrStockNotFound
+		}
+		return stockResponse{}, err
+	}
+	tags, err := q.ListTagsByStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
+
+	err = tx.Commit(ctx)
+	if err != nil {
+		return stockResponse{}, err
+	}
+
+	res := stockResponse{
+		name:        stock.Name,
+		has_amount:  stock.HasAmount,
+		currency:    stock.Currency,
+		description: stock.Description,
+		tags:        make([]tag, len(tags)),
+	}
+	for i, atag := range tags {
+		res.tags[i] = tag{id: uuid.UUID(atag.ID.Bytes), name: atag.Name}
+	}
+
+	return res, nil
 }

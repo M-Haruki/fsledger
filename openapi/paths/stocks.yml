@@ -70,6 +70,16 @@ StocksID:
               $ref: "../components/schemas/stocks.yml#/components/schemas/StockGetData"
       "404":
         description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: "Server Error"
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
   put:
     operationId: updateStock
     summary: Update
@@ -90,6 +100,16 @@ StocksID:
         description: Changed.
       "404":
         description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: "Server Error"
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
   delete:
     operationId: deleteStock
     summary: Delete
@@ -101,6 +121,16 @@ StocksID:
       - $ref: "../components/parameters/stock.yml#/components/parameters/StockIDParam"
     responses:
       "204":
-        description: Deleted.
+        description: Changed.
       "404":
         description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: "Server Error"
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
