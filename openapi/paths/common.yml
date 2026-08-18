@@ -11,3 +11,7 @@ Health:
         description: Healthy.
       "503":
         description: Unhealthy.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"

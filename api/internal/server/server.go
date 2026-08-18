@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"log"
 	"log/slog"
 	"os"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/M-Haruki/fsledger/api/internal/stock"
 	"github.com/M-Haruki/fsledger/api/internal/swagger"
 	"github.com/labstack/echo/v5"
+	echomiddleware "github.com/oapi-codegen/echo-v5-middleware"
 )
 
 type Server struct {
@@ -20,7 +22,7 @@ type Server struct {
 
 func New(ctx context.Context, cfg Config) (*Server, error) {
 	// logger
-	log := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: cfg.LogLevel}))
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: cfg.LogLevel}))
 
 	// db
 	db, err := db.New(ctx, os.Getenv("DATABASE_URL"))
@@ -32,18 +34,28 @@ func New(ctx context.Context, cfg Config) (*Server, error) {
 	// common
 	commonRepo := common.NewRepository(queries)
 	commonService := common.NewService(*commonRepo)
-	commonHandler := common.NewHandler(commonService, log)
+	commonHandler := common.NewHandler(commonService, logger)
 	// stock
 	stockRepo := stock.NewRepository(queries)
 	stockService := stock.NewService(*stockRepo)
-	stockHandler := stock.NewHandler(stockService, log)
+	stockHandler := stock.NewHandler(stockService, logger)
 
 	strictServer := newStrictServer(commonHandler, stockHandler)
 	strictHandler := openapi.NewStrictHandler(strictServer, nil)
 
+	// echo
 	e := echo.New()
-	openapi.RegisterHandlersWithBaseURL(e, strictHandler, "/api")
 
+	// openapi
+	api := e.Group("/api")
+	validateSwagger, err := openapi.GetSpec()
+	if err != nil {
+		log.Fatal(err)
+	}
+	api.Use(echomiddleware.OapiRequestValidator(validateSwagger))
+	openapi.RegisterHandlers(api, strictHandler)
+
+	// swagger ui
 	if cfg.IsDev {
 		swagger.RegisterHandlers(e)
 	}

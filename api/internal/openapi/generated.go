@@ -20,9 +20,9 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
-// ServerError defines model for ServerError.
-type ServerError struct {
-	Error string `json:"error"`
+// Error defines model for Error.
+type Error struct {
+	Message string `json:"message"`
 }
 
 // StockBase defines model for StockBase.
@@ -167,12 +167,18 @@ func (response HealthCheck204Response) VisitHealthCheckResponse(w http.ResponseW
 	return nil
 }
 
-type HealthCheck503Response struct {
-}
+type HealthCheck503JSONResponse Error
 
-func (response HealthCheck503Response) VisitHealthCheckResponse(w http.ResponseWriter) error {
+func (response HealthCheck503JSONResponse) VisitHealthCheckResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(503)
-	return nil
+	_, err := buf.WriteTo(w)
+	return err
 }
 
 type ListStocksRequestObject struct {
@@ -196,7 +202,7 @@ func (response ListStocks200JSONResponse) VisitListStocksResponse(w http.Respons
 	return err
 }
 
-type ListStocks500JSONResponse ServerError
+type ListStocks500JSONResponse Error
 
 func (response ListStocks500JSONResponse) VisitListStocksResponse(w http.ResponseWriter) error {
 
@@ -232,12 +238,32 @@ func (response CreateStock201JSONResponse) VisitCreateStockResponse(w http.Respo
 	return err
 }
 
-type CreateStock500Response struct {
+type CreateStock400JSONResponse Error
+
+func (response CreateStock400JSONResponse) VisitCreateStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
 }
 
-func (response CreateStock500Response) VisitCreateStockResponse(w http.ResponseWriter) error {
+type CreateStock500JSONResponse Error
+
+func (response CreateStock500JSONResponse) VisitCreateStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(500)
-	return nil
+	_, err := buf.WriteTo(w)
+	return err
 }
 
 // StrictServerInterface represents all server handlers.
@@ -355,25 +381,25 @@ func (sh *strictHandler) CreateStock(ctx *echo.Context) error {
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"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",
+	"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",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,

@@ -23,7 +23,7 @@ func (h *CommonHandler) HealthCheck(ctx context.Context, request openapi.HealthC
 	err := h.service.HealthCheck(ctx)
 	if err != nil {
 		h.log.ErrorContext(ctx, "health check failed", "error", err)
-		return openapi.HealthCheck503Response{}, nil
+		return openapi.HealthCheck503JSONResponse{Message: "Unhealthy"}, nil
 	}
 	return openapi.HealthCheck204Response{}, nil
 }

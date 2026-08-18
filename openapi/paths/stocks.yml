@@ -14,11 +14,11 @@ Stocks:
             schema:
               $ref: "../components/schemas/stocks.yml#/components/schemas/Stocks"
       "500":
-        description: "Server Error"
+        description: Server Error
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/common.yml#/components/schemas/ServerError"
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
   post:
     operationId: createStock
     summary: Create
@@ -39,8 +39,18 @@ Stocks:
           application/json:
             schema:
               $ref: "../components/schemas/stocks.yml#/components/schemas/StockID"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
         description: "Server Error"
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
 StocksID:
   get:
     operationId: getStock
