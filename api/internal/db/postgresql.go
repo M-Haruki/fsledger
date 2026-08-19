@@ -13,6 +13,7 @@ func New(ctx context.Context, url string) (*pgxpool.Pool, error) {
 	}
 	err = pool.Ping(ctx)
 	if err != nil {
+		pool.Close()
 		return nil, err
 	}
 	return pool, err

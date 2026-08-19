@@ -16,7 +16,8 @@ func main() {
 	defer stop()
 
 	cfg := server.Config{
-		IsDev: os.Getenv("APP_ENV") == "dev",
+		IsDev:       os.Getenv("APP_ENV") == "dev",
+		DatabaseURL: os.Getenv("DATABASE_URL"),
 	}
 	switch os.Getenv("LOG_LEVEL") {
 	case "debug":

@@ -1,6 +1,8 @@
 package common
 
 import (
+	"context"
+
 	"github.com/M-Haruki/fsledger/api/internal/db/sqlc"
 )
 
@@ -14,6 +16,6 @@ func NewRepository(q *sqlc.Queries) *Repository {
 	}
 }
 
-// func (r *Repository) DBCheck(ctx context.Context) error {
-// 	return r.queries.Check(ctx)
-// }
+func (r *Repository) DBCheck(ctx context.Context) error {
+	return r.queries.Check(ctx)
+}

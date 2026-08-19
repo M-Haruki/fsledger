@@ -13,5 +13,5 @@ func NewService(repo Repository) *Service {
 }
 
 func (s *Service) HealthCheck(ctx context.Context) error {
-	return s.repo.queries.Check(ctx)
+	return s.repo.DBCheck(ctx)
 }

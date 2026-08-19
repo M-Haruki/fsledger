@@ -23,7 +23,7 @@ func NewHandler(service *Service, log *slog.Logger) *StockHandler {
 }
 
 func (h *StockHandler) ListStocks(ctx context.Context, request openapi.ListStocksRequestObject) (openapi.ListStocksResponseObject, error) {
-	raw, err := h.service.repo.ListStocks(ctx)
+	raw, err := h.service.ListStocks(ctx)
 	if err != nil {
 		h.log.ErrorContext(ctx, "list stock failed", "error", err)
 		return openapi.ListStocks500JSONResponse{Message: "internal server error"}, nil
@@ -39,7 +39,7 @@ func (h *StockHandler) ListStocks(ctx context.Context, request openapi.ListStock
 func (h *StockHandler) CreateStock(ctx context.Context, request openapi.CreateStockRequestObject) (openapi.CreateStockResponseObject, error) {
 	req := stockRequest{
 		name:        request.Body.Name,
-		has_amount:  request.Body.HasAmount,
+		hasAmount:   request.Body.HasAmount,
 		currency:    request.Body.Currency,
 		description: request.Body.Description,
 		tags:        make([]uuid.UUID, len(request.Body.Tags)),
@@ -47,7 +47,7 @@ func (h *StockHandler) CreateStock(ctx context.Context, request openapi.CreateSt
 	for i, id := range request.Body.Tags {
 		req.tags[i] = uuid.UUID(id)
 	}
-	id, err := h.service.repo.CreateStock(ctx, req)
+	id, err := h.service.CreateStock(ctx, req)
 	if err != nil {
 		if errors.Is(err, ErrStockNameDuplicate) {
 			h.log.ErrorContext(ctx, "stock name duplicate", "error", err)
@@ -65,7 +65,7 @@ func (h *StockHandler) CreateStock(ctx context.Context, request openapi.CreateSt
 
 func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockRequestObject) (openapi.GetStockResponseObject, error) {
 	id := uuid.UUID(request.Id)
-	res, err := h.service.repo.GetStock(ctx, id)
+	res, err := h.service.GetStock(ctx, id)
 	if err != nil {
 		if errors.Is(err, ErrStockNotFound) {
 			h.log.ErrorContext(ctx, "stock not found", "error", err)
@@ -76,7 +76,7 @@ func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockReq
 	}
 	response := openapi.StockGetData{
 		Name:        res.name,
-		HasAmount:   res.has_amount,
+		HasAmount:   res.hasAmount,
 		Currency:    res.currency,
 		Description: res.description,
 		Tags:        make(openapi.Tags, len(res.tags)),
@@ -91,7 +91,7 @@ func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockReq
 func (h *StockHandler) UpdateStock(ctx context.Context, request openapi.UpdateStockRequestObject) (openapi.UpdateStockResponseObject, error) {
 	req := stockRequest{
 		name:        request.Body.Name,
-		has_amount:  request.Body.HasAmount,
+		hasAmount:   request.Body.HasAmount,
 		currency:    request.Body.Currency,
 		description: request.Body.Description,
 		tags:        make([]uuid.UUID, len(request.Body.Tags)),
@@ -99,7 +99,7 @@ func (h *StockHandler) UpdateStock(ctx context.Context, request openapi.UpdateSt
 	for i, id := range request.Body.Tags {
 		req.tags[i] = uuid.UUID(id)
 	}
-	err := h.service.repo.UpdateStock(ctx, uuid.UUID(request.Id), req)
+	err := h.service.UpdateStock(ctx, uuid.UUID(request.Id), req)
 	if err != nil {
 		if errors.Is(err, ErrStockNotFound) {
 			h.log.ErrorContext(ctx, "stock not found", "error", err)
@@ -120,7 +120,7 @@ func (h *StockHandler) UpdateStock(ctx context.Context, request openapi.UpdateSt
 }
 
 func (h *StockHandler) DeleteStock(ctx context.Context, request openapi.DeleteStockRequestObject) (openapi.DeleteStockResponseObject, error) {
-	err := h.service.repo.DeleteStock(ctx, uuid.UUID(request.Id))
+	err := h.service.DeleteStock(ctx, uuid.UUID(request.Id))
 	if err != nil {
 		if errors.Is(err, ErrStockNotFound) {
 			h.log.ErrorContext(ctx, "stock not found", "error", err)

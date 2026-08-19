@@ -13,7 +13,7 @@ type stockSummary struct {
 
 type stockRequest struct {
 	name        string
-	has_amount  bool
+	hasAmount   bool
 	currency    string
 	description string
 	tags        []uuid.UUID
@@ -21,7 +21,7 @@ type stockRequest struct {
 
 type stockResponse struct {
 	name        string
-	has_amount  bool
+	hasAmount   bool
 	currency    string
 	description string
 	tags        []tag

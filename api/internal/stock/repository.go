@@ -46,7 +46,7 @@ func (r *Repository) CreateStock(ctx context.Context, stock stockRequest) (uuid.
 
 	id, err := q.CreateStock(ctx, sqlc.CreateStockParams{
 		Name:        stock.name,
-		Hasamount:   stock.has_amount,
+		Hasamount:   stock.hasAmount,
 		Currency:    stock.currency,
 		Description: stock.description,
 	})
@@ -107,7 +107,7 @@ func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stockResponse,
 
 	res := stockResponse{
 		name:        stock.Name,
-		has_amount:  stock.HasAmount,
+		hasAmount:   stock.HasAmount,
 		currency:    stock.Currency,
 		description: stock.Description,
 		tags:        make([]tag, len(tags)),
@@ -130,7 +130,7 @@ func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock stockR
 	result, err := q.UpdateStock(ctx, sqlc.UpdateStockParams{
 		ID:          pgtype.UUID{Bytes: id, Valid: true},
 		Name:        stock.name,
-		Hasamount:   stock.has_amount,
+		Hasamount:   stock.hasAmount,
 		Currency:    stock.currency,
 		Description: stock.description,
 	})
