@@ -101,6 +101,18 @@ func (h *StockHandler) UpdateStock(ctx context.Context, request openapi.UpdateSt
 	}
 	err := h.service.repo.UpdateStock(ctx, uuid.UUID(request.Id), req)
 	if err != nil {
+		if errors.Is(err, ErrStockNotFound) {
+			h.log.ErrorContext(ctx, "stock not found", "error", err)
+			return openapi.UpdateStock404JSONResponse{Message: "stock not found"}, nil
+		}
+		if errors.Is(err, ErrStockNameDuplicate) {
+			h.log.ErrorContext(ctx, "stock name duplicate", "error", err)
+			return openapi.UpdateStock400JSONResponse{Message: "stock name duplicate"}, nil
+		}
+		if errors.Is(err, ErrStockTagNotFound) {
+			h.log.ErrorContext(ctx, "stock tag not found", "error", err)
+			return openapi.UpdateStock400JSONResponse{Message: "stock tag not found"}, nil
+		}
 		h.log.ErrorContext(ctx, "update stock failed", "error", err)
 		return openapi.UpdateStock500JSONResponse{}, nil
 	}

@@ -196,7 +196,7 @@ func (q *Queries) ListTagsByStock(ctx context.Context, id pgtype.UUID) ([]ListTa
 	return items, nil
 }
 
-const updateStock = `-- name: UpdateStock :exec
+const updateStock = `-- name: UpdateStock :execresult
 UPDATE stocks SET name = $1, has_amount = $2, currency = $3, description = $4 WHERE id = $5
 `
 
@@ -208,15 +208,14 @@ type UpdateStockParams struct {
 	ID          pgtype.UUID
 }
 
-func (q *Queries) UpdateStock(ctx context.Context, arg UpdateStockParams) error {
-	_, err := q.db.Exec(ctx, updateStock,
+func (q *Queries) UpdateStock(ctx context.Context, arg UpdateStockParams) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, updateStock,
 		arg.Name,
 		arg.Hasamount,
 		arg.Currency,
 		arg.Description,
 		arg.ID,
 	)
-	return err
 }
 
 const updateStockTag = `-- name: UpdateStockTag :exec

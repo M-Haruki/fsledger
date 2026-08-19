@@ -110,6 +110,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StockGetData'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
           description: The stock not found.
           content:
@@ -140,6 +146,12 @@ paths:
       responses:
         '204':
           description: Changed.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
           description: The stock not found.
           content:
@@ -164,6 +176,12 @@ paths:
       responses:
         '204':
           description: Changed.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '404':
           description: The stock not found.
           content:

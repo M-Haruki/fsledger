@@ -2,9 +2,9 @@ package server
 
 import (
 	"context"
-	"log"
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/M-Haruki/fsledger/api/internal/common"
 	"github.com/M-Haruki/fsledger/api/internal/db"
@@ -12,12 +12,14 @@ import (
 	"github.com/M-Haruki/fsledger/api/internal/openapi"
 	"github.com/M-Haruki/fsledger/api/internal/stock"
 	"github.com/M-Haruki/fsledger/api/internal/swagger"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/labstack/echo/v5"
 	echomiddleware "github.com/oapi-codegen/echo-v5-middleware"
 )
 
 type Server struct {
 	echo *echo.Echo
+	db   *pgxpool.Pool
 }
 
 func New(ctx context.Context, cfg Config) (*Server, error) {
@@ -50,7 +52,8 @@ func New(ctx context.Context, cfg Config) (*Server, error) {
 	api := e.Group("/api")
 	validateSwagger, err := openapi.GetSpec()
 	if err != nil {
-		log.Fatal(err)
+		db.Close()
+		return nil, err
 	}
 	api.Use(echomiddleware.OapiRequestValidator(validateSwagger))
 	openapi.RegisterHandlers(api, strictHandler)
@@ -62,9 +65,18 @@ func New(ctx context.Context, cfg Config) (*Server, error) {
 
 	return &Server{
 		echo: e,
+		db:   db,
 	}, nil
 }
 
-func (s *Server) Start(addr string) error {
-	return s.echo.Start(addr)
+func (s *Server) Start(ctx context.Context, addr string) error {
+	sc := echo.StartConfig{
+		Address:         addr,
+		GracefulTimeout: 5 * time.Second,
+	}
+	return sc.Start(ctx, s.echo)
+}
+
+func (s *Server) Close() {
+	s.db.Close()
 }

@@ -7,7 +7,7 @@ SELECT id, name, has_amount, currency, description FROM stocks WHERE id = sqlc.a
 -- name: CreateStock :one
 INSERT INTO stocks (name, has_amount, currency, description) VALUES (sqlc.arg(name), sqlc.arg(hasAmount), sqlc.arg(currency), sqlc.arg(description)) RETURNING id;
 
--- name: UpdateStock :exec
+-- name: UpdateStock :execresult
 UPDATE stocks SET name = sqlc.arg(name), has_amount = sqlc.arg(hasAmount), currency = sqlc.arg(currency), description = sqlc.arg(description) WHERE id = sqlc.arg(id);
 
 -- name: DeleteStock :execresult

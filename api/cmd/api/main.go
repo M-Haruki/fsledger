@@ -5,12 +5,15 @@ import (
 	"log"
 	"log/slog"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/M-Haruki/fsledger/api/internal/server"
 )
 
 func main() {
-	ctx := context.Background()
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
 
 	cfg := server.Config{
 		IsDev: os.Getenv("APP_ENV") == "dev",
@@ -32,8 +35,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer server.Close()
 
-	if err := server.Start(":1323"); err != nil {
+	if err := server.Start(ctx, ":1323"); err != nil {
 		log.Fatal(err)
 	}
 }

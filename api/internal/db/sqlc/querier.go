@@ -42,7 +42,7 @@ type Querier interface {
 	ListTransactionTags(ctx context.Context) ([]TransactionTag, error)
 	UpdateFlow(ctx context.Context, arg UpdateFlowParams) error
 	UpdateFlowTag(ctx context.Context, arg UpdateFlowTagParams) error
-	UpdateStock(ctx context.Context, arg UpdateStockParams) error
+	UpdateStock(ctx context.Context, arg UpdateStockParams) (pgconn.CommandTag, error)
 	UpdateStockTag(ctx context.Context, arg UpdateStockTagParams) error
 	UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) error
 	UpdateTransactionTag(ctx context.Context, arg UpdateTransactionTagParams) error

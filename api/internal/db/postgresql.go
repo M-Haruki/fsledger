@@ -7,5 +7,13 @@ import (
 )
 
 func New(ctx context.Context, url string) (*pgxpool.Pool, error) {
-	return pgxpool.New(ctx, url)
+	pool, err := pgxpool.New(ctx, url)
+	if err != nil {
+		return nil, err
+	}
+	err = pool.Ping(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return pool, err
 }

@@ -68,6 +68,12 @@ StocksID:
           application/json:
             schema:
               $ref: "../components/schemas/stocks.yml#/components/schemas/StockGetData"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
         description: The stock not found.
         content:
@@ -98,6 +104,12 @@ StocksID:
     responses:
       "204":
         description: Changed.
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
         description: The stock not found.
         content:
@@ -122,6 +134,12 @@ StocksID:
     responses:
       "204":
         description: Changed.
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
         description: The stock not found.
         content:

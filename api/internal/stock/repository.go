@@ -97,7 +97,9 @@ func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stockResponse,
 		return stockResponse{}, err
 	}
 	tags, err := q.ListTagsByStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
-
+	if err != nil {
+		return stockResponse{}, err
+	}
 	err = tx.Commit(ctx)
 	if err != nil {
 		return stockResponse{}, err
@@ -125,7 +127,7 @@ func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock stockR
 	defer tx.Rollback(ctx)
 	q := sqlc.New(tx)
 
-	err = q.UpdateStock(ctx, sqlc.UpdateStockParams{
+	result, err := q.UpdateStock(ctx, sqlc.UpdateStockParams{
 		ID:          pgtype.UUID{Bytes: id, Valid: true},
 		Name:        stock.name,
 		Hasamount:   stock.has_amount,
@@ -140,6 +142,10 @@ func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock stockR
 			}
 		}
 		return err
+	}
+	if result.RowsAffected() == 0 {
+		// not found
+		return ErrStockNotFound
 	}
 	err = q.DeleteStockTagRelation(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
@@ -170,8 +176,7 @@ func (r *Repository) DeleteStock(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return err
 	}
-	rows := result.RowsAffected()
-	if rows == 0 {
+	if result.RowsAffected() == 0 {
 		// not found
 		return ErrStockNotFound
 	}
