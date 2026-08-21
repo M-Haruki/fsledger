@@ -18,7 +18,19 @@ Transactions:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionIDs"
+              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionID"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: "Server Error"
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
 TransactionsID:
   get:
     operationId: getTransaction
@@ -36,8 +48,24 @@ TransactionsID:
           application/json:
             schema:
               $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionGetData"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
         description: The transaction not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: "Server Error"
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
   put:
     operationId: updateTransaction
     summary: Update
@@ -52,12 +80,28 @@ TransactionsID:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionData"
+            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionPostData"
     responses:
       "204":
-        description: "Changed."
+        description: Changed.
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
         description: The transaction not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: "Server Error"
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
   delete:
     operationId: deleteTransaction
     summary: Delete
@@ -69,6 +113,22 @@ TransactionsID:
       - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionID"
     responses:
       "204":
-        description: "Deleted."
+        description: Deleted.
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
         description: The transaction not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: "Server Error"
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"

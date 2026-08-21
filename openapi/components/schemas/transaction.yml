@@ -1,23 +1,15 @@
 components:
   schemas:
-    TransactionIDs:
+    TransactionID:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        flows:
-          type: array
-          items:
-            $ref: "./flows.yml#/components/schemas/FlowID"
       required:
         - id
-        - flows
       example:
         id: 6d313569-d48f-45a4-9cfb-978c880ed460
-        flows:
-          - id: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
-          - id: c7594bc2-1d85-4414-a3f3-ce4ab5d858ab
     TransactionBase:
       type: object
       properties:
@@ -29,24 +21,6 @@ components:
       required:
         - desc
         - occurred_at
-    TransactionData:
-      allOf:
-        - $ref: "#/components/schemas/TransactionBase"
-        - type: object
-          properties:
-            tags:
-              type: array
-              items:
-                type: string
-                format: uuid
-          required:
-            - tags
-      example:
-        desc: Shopping at a nearby grocery store. Also I earn some points.
-        occurred_at: "2026-08-07T02:10:00+09:00"
-        tags:
-          - ce15fc88-deda-4c78-9f4e-a1611152cb13
-          - 8f4b9006-b89a-4533-9521-0854055fb9da
     TransactionPostData:
       allOf:
         - $ref: "#/components/schemas/TransactionBase"

@@ -4,7 +4,7 @@ Tags_:
     summary: List
     description: Get all tags.
     tags:
-      - tag
+      - flow
     security: []
     responses:
       "200":
@@ -30,7 +30,7 @@ Tags_:
     summary: Create
     description: Create a new tag.
     tags:
-      - tag
+      - flow
     security: []
     requestBody:
       required: true
@@ -63,7 +63,7 @@ TagsID:
     summary: Get
     description: Get a tag.
     tags:
-      - tag
+      - flow
     security: []
     parameters:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
@@ -97,7 +97,7 @@ TagsID:
     summary: Update
     description: Change a tag.
     tags:
-      - tag
+      - flow
     security: []
     parameters:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
@@ -133,7 +133,7 @@ TagsID:
     summary: Delete
     description: Delete a tag.
     tags:
-      - tag
+      - flow
     security: []
     parameters:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"

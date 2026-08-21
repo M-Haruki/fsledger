@@ -18,8 +18,6 @@ tags:
     description: transaction
   - name: flow
     description: flow
-  - name: tag
-    description: tag
   - name: common
     description: common
 paths:
@@ -33,19 +31,15 @@ paths:
     $ref: "paths/stock-tags.yml#/Tags_"
   /stocks/tags/{id}:
     $ref: "paths/stock-tags.yml#/TagsID"
-  # /transactions:
-  #   $ref: "paths/transactions.yml#/Transactions"
-  # /transactions/{id}:
-  #   $ref: "paths/transactions.yml#/TransactionsID"
-  # /transactions/{id}/flow:
-  #   $ref: "paths/flows.yml#/Flows"
-  # /flows/{id}:
-  #   $ref: "paths/flows.yml#/FlowsID"
-  # /transactions/tags:
-  #   $ref: "paths/transaction-tags.yml#/Tags_"
-  # /transactions/tags/{id}:
-  #   $ref: "paths/transaction-tags.yml#/TagsID"
-  # /flows/tags:
-  #   $ref: "paths/flow-tags.yml#/Tags_"
-  # /flows/tags/{id}:
-  #   $ref: "paths/flow-tags.yml#/TagsID"
+  /transactions:
+    $ref: "paths/transactions.yml#/Transactions"
+  /transactions/{id}:
+    $ref: "paths/transactions.yml#/TransactionsID"
+  /transactions/tags:
+    $ref: "paths/transaction-tags.yml#/Tags_"
+  /transactions/tags/{id}:
+    $ref: "paths/transaction-tags.yml#/TagsID"
+  /flows/tags:
+    $ref: "paths/flow-tags.yml#/Tags_"
+  /flows/tags/{id}:
+    $ref: "paths/flow-tags.yml#/TagsID"

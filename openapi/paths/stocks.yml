@@ -133,7 +133,7 @@ StocksID:
       - $ref: "../components/parameters/stock.yml#/components/parameters/StockIDParam"
     responses:
       "204":
-        description: Changed.
+        description: Deleted.
       "400":
         description: Bad Request
         content:
