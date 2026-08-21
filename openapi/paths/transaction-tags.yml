@@ -1,13 +1,11 @@
 Tags_:
   get:
-    operationId: listTags
+    operationId: listTransactionTags
     summary: List
     description: Get all tags.
     tags:
       - tag
     security: []
-    parameters:
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
     responses:
       "200":
         description: ""
@@ -28,14 +26,12 @@ Tags_:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
   post:
-    operationId: createTags
+    operationId: createTransactionTags
     summary: Create
     description: Create a new tag.
     tags:
       - tag
     security: []
-    parameters:
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
     requestBody:
       required: true
       content:
@@ -63,14 +59,13 @@ Tags_:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
 TagsID:
   get:
-    operationId: getTag
+    operationId: getTransactionTag
     summary: Get
     description: Get a tag.
     tags:
       - tag
     security: []
     parameters:
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
     responses:
       "200":
@@ -98,14 +93,13 @@ TagsID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
   put:
-    operationId: updateTag
+    operationId: updateTransactionTag
     summary: Update
     description: Change a tag.
     tags:
       - tag
     security: []
     parameters:
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
     requestBody:
       required: true
@@ -135,14 +129,13 @@ TagsID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
   delete:
-    operationId: deleteTag
+    operationId: deleteTransactionTag
     summary: Delete
     description: Delete a tag.
     tags:
       - tag
     security: []
     parameters:
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagType"
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
     responses:
       "204":

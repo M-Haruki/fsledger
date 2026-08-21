@@ -68,13 +68,12 @@ func (q *Queries) DeleteStock(ctx context.Context, id pgtype.UUID) (pgconn.Comma
 	return q.db.Exec(ctx, deleteStock, id)
 }
 
-const deleteStockTag = `-- name: DeleteStockTag :exec
+const deleteStockTag = `-- name: DeleteStockTag :execresult
 DELETE FROM stock_tags WHERE id = $1
 `
 
-func (q *Queries) DeleteStockTag(ctx context.Context, id pgtype.UUID) error {
-	_, err := q.db.Exec(ctx, deleteStockTag, id)
-	return err
+func (q *Queries) DeleteStockTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, deleteStockTag, id)
 }
 
 const deleteStockTagRelation = `-- name: DeleteStockTagRelation :exec
@@ -87,14 +86,20 @@ func (q *Queries) DeleteStockTagRelation(ctx context.Context, stockID pgtype.UUI
 }
 
 const getStock = `-- name: GetStock :one
-SELECT id, name, has_amount, currency, description FROM stocks WHERE id = $1
+SELECT name, has_amount, currency, description FROM stocks WHERE id = $1
 `
 
-func (q *Queries) GetStock(ctx context.Context, id pgtype.UUID) (Stock, error) {
+type GetStockRow struct {
+	Name        string
+	HasAmount   bool
+	Currency    string
+	Description string
+}
+
+func (q *Queries) GetStock(ctx context.Context, id pgtype.UUID) (GetStockRow, error) {
 	row := q.db.QueryRow(ctx, getStock, id)
-	var i Stock
+	var i GetStockRow
 	err := row.Scan(
-		&i.ID,
 		&i.Name,
 		&i.HasAmount,
 		&i.Currency,
@@ -104,14 +109,14 @@ func (q *Queries) GetStock(ctx context.Context, id pgtype.UUID) (Stock, error) {
 }
 
 const getStockTag = `-- name: GetStockTag :one
-SELECT id, name FROM stock_tags WHERE id = $1
+SELECT name FROM stock_tags WHERE id = $1
 `
 
-func (q *Queries) GetStockTag(ctx context.Context, id pgtype.UUID) (StockTag, error) {
+func (q *Queries) GetStockTag(ctx context.Context, id pgtype.UUID) (string, error) {
 	row := q.db.QueryRow(ctx, getStockTag, id)
-	var i StockTag
-	err := row.Scan(&i.ID, &i.Name)
-	return i, err
+	var name string
+	err := row.Scan(&name)
+	return name, err
 }
 
 const listStockTags = `-- name: ListStockTags :many
@@ -218,7 +223,7 @@ func (q *Queries) UpdateStock(ctx context.Context, arg UpdateStockParams) (pgcon
 	)
 }
 
-const updateStockTag = `-- name: UpdateStockTag :exec
+const updateStockTag = `-- name: UpdateStockTag :execresult
 UPDATE stock_tags SET name = $1 WHERE id = $2
 `
 
@@ -227,7 +232,6 @@ type UpdateStockTagParams struct {
 	ID   pgtype.UUID
 }
 
-func (q *Queries) UpdateStockTag(ctx context.Context, arg UpdateStockTagParams) error {
-	_, err := q.db.Exec(ctx, updateStockTag, arg.Name, arg.ID)
-	return err
+func (q *Queries) UpdateStockTag(ctx context.Context, arg UpdateStockTagParams) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, updateStockTag, arg.Name, arg.ID)
 }

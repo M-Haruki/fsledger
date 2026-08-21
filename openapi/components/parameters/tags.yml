@@ -1,16 +1,5 @@
 components:
   parameters:
-    TagType:
-      name: type
-      in: path
-      required: true
-      schema:
-        type: string
-        enum:
-          - stocks
-          - transactions
-          - flows
-      example: stocks
     TagIDParam:
       name: id
       in: path

@@ -50,11 +50,9 @@ func (h *StockHandler) CreateStock(ctx context.Context, request openapi.CreateSt
 	id, err := h.service.CreateStock(ctx, req)
 	if err != nil {
 		if errors.Is(err, ErrStockNameDuplicate) {
-			h.log.ErrorContext(ctx, "stock name duplicate", "error", err)
 			return openapi.CreateStock400JSONResponse{Message: "stock name duplicate"}, nil
 		}
 		if errors.Is(err, ErrStockTagNotFound) {
-			h.log.ErrorContext(ctx, "stock tag not found", "error", err)
 			return openapi.CreateStock400JSONResponse{Message: "stock tag not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "create stock failed", "error", err)
@@ -68,7 +66,6 @@ func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockReq
 	res, err := h.service.GetStock(ctx, id)
 	if err != nil {
 		if errors.Is(err, ErrStockNotFound) {
-			h.log.ErrorContext(ctx, "stock not found", "error", err)
 			return openapi.GetStock404JSONResponse{Message: "stock not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "get stock failed", "error", err)
@@ -102,15 +99,12 @@ func (h *StockHandler) UpdateStock(ctx context.Context, request openapi.UpdateSt
 	err := h.service.UpdateStock(ctx, uuid.UUID(request.Id), req)
 	if err != nil {
 		if errors.Is(err, ErrStockNotFound) {
-			h.log.ErrorContext(ctx, "stock not found", "error", err)
 			return openapi.UpdateStock404JSONResponse{Message: "stock not found"}, nil
 		}
 		if errors.Is(err, ErrStockNameDuplicate) {
-			h.log.ErrorContext(ctx, "stock name duplicate", "error", err)
 			return openapi.UpdateStock400JSONResponse{Message: "stock name duplicate"}, nil
 		}
 		if errors.Is(err, ErrStockTagNotFound) {
-			h.log.ErrorContext(ctx, "stock tag not found", "error", err)
 			return openapi.UpdateStock400JSONResponse{Message: "stock tag not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "update stock failed", "error", err)
@@ -123,11 +117,72 @@ func (h *StockHandler) DeleteStock(ctx context.Context, request openapi.DeleteSt
 	err := h.service.DeleteStock(ctx, uuid.UUID(request.Id))
 	if err != nil {
 		if errors.Is(err, ErrStockNotFound) {
-			h.log.ErrorContext(ctx, "stock not found", "error", err)
 			return openapi.DeleteStock404JSONResponse{Message: "stock not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "delete stock failed", "error", err)
 		return openapi.DeleteStock500JSONResponse{Message: "internal server error"}, nil
 	}
 	return openapi.DeleteStock204Response{}, nil
+}
+
+func (h *StockHandler) ListStockTags(ctx context.Context, request openapi.ListStockTagsRequestObject) (openapi.ListStockTagsResponseObject, error) {
+	res, err := h.service.ListStockTags(ctx)
+	if err != nil {
+		h.log.ErrorContext(ctx, "list stock tags failed", "error", err)
+		return openapi.ListStockTags500JSONResponse{Message: "internal server error"}, nil
+	}
+	response := make(openapi.Tags, len(res))
+	for i, atag := range res {
+		response[i].Id = openapi_types.UUID(atag.id)
+		response[i].Name = atag.name
+	}
+	return openapi.ListStockTags200JSONResponse(response), nil
+}
+
+func (h *StockHandler) CreateStockTags(ctx context.Context, request openapi.CreateStockTagsRequestObject) (openapi.CreateStockTagsResponseObject, error) {
+	id, err := h.service.CreateStockTag(ctx, request.Body.Name)
+	if err != nil {
+		if errors.Is(err, ErrStockTagNameDuplicate) {
+			return openapi.CreateStockTags400JSONResponse{Message: "stock tag name duplicate"}, nil
+		}
+		h.log.ErrorContext(ctx, "create stock tag failed", "error", err)
+		return openapi.CreateStockTags500JSONResponse{Message: "internal server error"}, nil
+	}
+	return openapi.CreateStockTags201JSONResponse{Id: openapi_types.UUID(id)}, nil
+}
+
+func (h *StockHandler) GetStockTag(ctx context.Context, request openapi.GetStockTagRequestObject) (openapi.GetStockTagResponseObject, error) {
+	name, err := h.service.GetStockTag(ctx, uuid.UUID(request.Id))
+	if err != nil {
+		if errors.Is(err, ErrStockTagNotFound) {
+			return openapi.GetStockTag404JSONResponse{Message: "stock tag not found"}, nil
+		}
+		h.log.ErrorContext(ctx, "get stock tag failed", "error", err)
+		return openapi.GetStockTag500JSONResponse{Message: "internal server error"}, nil
+	}
+	return openapi.GetStockTag200JSONResponse{Name: name}, nil
+}
+
+func (h *StockHandler) UpdateStockTag(ctx context.Context, request openapi.UpdateStockTagRequestObject) (openapi.UpdateStockTagResponseObject, error) {
+	err := h.service.UpdateStockTag(ctx, uuid.UUID(request.Id), request.Body.Name)
+	if err != nil {
+		if errors.Is(err, ErrStockTagNotFound) {
+			return openapi.UpdateStockTag404JSONResponse{Message: "stock tag not found"}, nil
+		}
+		h.log.ErrorContext(ctx, "update stock tag failed", "error", err)
+		return openapi.UpdateStockTag500JSONResponse{Message: "internal server error"}, nil
+	}
+	return openapi.UpdateStockTag204Response{}, nil
+}
+
+func (h *StockHandler) DeleteStockTag(ctx context.Context, request openapi.DeleteStockTagRequestObject) (openapi.DeleteStockTagResponseObject, error) {
+	err := h.service.DeleteStockTag(ctx, uuid.UUID(request.Id))
+	if err != nil {
+		if errors.Is(err, ErrStockTagNotFound) {
+			return openapi.DeleteStockTag404JSONResponse{Message: "stock tag not found"}, nil
+		}
+		h.log.ErrorContext(ctx, "delete stock tag failed", "error", err)
+		return openapi.DeleteStockTag500JSONResponse{Message: "internal server error"}, nil
+	}
+	return openapi.DeleteStockTag204Response{}, nil
 }

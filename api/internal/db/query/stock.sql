@@ -2,7 +2,7 @@
 SELECT id, name FROM stocks;
 
 -- name: GetStock :one
-SELECT id, name, has_amount, currency, description FROM stocks WHERE id = sqlc.arg(id);
+SELECT name, has_amount, currency, description FROM stocks WHERE id = sqlc.arg(id);
 
 -- name: CreateStock :one
 INSERT INTO stocks (name, has_amount, currency, description) VALUES (sqlc.arg(name), sqlc.arg(hasAmount), sqlc.arg(currency), sqlc.arg(description)) RETURNING id;
@@ -17,15 +17,15 @@ DELETE FROM stocks WHERE id = sqlc.arg(id);
 SELECT id, name FROM stock_tags;
 
 -- name: GetStockTag :one
-SELECT id, name FROM stock_tags WHERE id = sqlc.arg(id);
+SELECT name FROM stock_tags WHERE id = sqlc.arg(id);
 
 -- name: CreateStockTag :one
 INSERT INTO stock_tags (name) VALUES (sqlc.arg(name)) RETURNING id;
 
--- name: UpdateStockTag :exec
+-- name: UpdateStockTag :execresult
 UPDATE stock_tags SET name = sqlc.arg(name) WHERE id = sqlc.arg(id);
 
--- name: DeleteStockTag :exec
+-- name: DeleteStockTag :execresult
 DELETE FROM stock_tags WHERE id = sqlc.arg(id);
 
 -- name: CreateStockTagRelation :exec

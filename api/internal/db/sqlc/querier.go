@@ -23,13 +23,13 @@ type Querier interface {
 	DeleteFlow(ctx context.Context, id pgtype.UUID) error
 	DeleteFlowTag(ctx context.Context, id pgtype.UUID) error
 	DeleteStock(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
-	DeleteStockTag(ctx context.Context, id pgtype.UUID) error
+	DeleteStockTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
 	DeleteStockTagRelation(ctx context.Context, stockID pgtype.UUID) error
 	DeleteTransaction(ctx context.Context, id pgtype.UUID) error
 	DeleteTransactionTag(ctx context.Context, id pgtype.UUID) error
 	GetFlowTag(ctx context.Context, id pgtype.UUID) (FlowTag, error)
-	GetStock(ctx context.Context, id pgtype.UUID) (Stock, error)
-	GetStockTag(ctx context.Context, id pgtype.UUID) (StockTag, error)
+	GetStock(ctx context.Context, id pgtype.UUID) (GetStockRow, error)
+	GetStockTag(ctx context.Context, id pgtype.UUID) (string, error)
 	GetTransaction(ctx context.Context, id pgtype.UUID) (GetTransactionRow, error)
 	GetTransactionTag(ctx context.Context, id pgtype.UUID) (TransactionTag, error)
 	ListFlowByTransaction(ctx context.Context, id pgtype.UUID) ([]ListFlowByTransactionRow, error)
@@ -43,7 +43,7 @@ type Querier interface {
 	UpdateFlow(ctx context.Context, arg UpdateFlowParams) error
 	UpdateFlowTag(ctx context.Context, arg UpdateFlowTagParams) error
 	UpdateStock(ctx context.Context, arg UpdateStockParams) (pgconn.CommandTag, error)
-	UpdateStockTag(ctx context.Context, arg UpdateStockTagParams) error
+	UpdateStockTag(ctx context.Context, arg UpdateStockTagParams) (pgconn.CommandTag, error)
 	UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) error
 	UpdateTransactionTag(ctx context.Context, arg UpdateTransactionTagParams) error
 }

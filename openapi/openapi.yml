@@ -29,6 +29,10 @@ paths:
     $ref: "paths/stocks.yml#/Stocks"
   /stocks/{id}:
     $ref: "paths/stocks.yml#/StocksID"
+  /stocks/tags:
+    $ref: "paths/stock-tags.yml#/Tags_"
+  /stocks/tags/{id}:
+    $ref: "paths/stock-tags.yml#/TagsID"
   # /transactions:
   #   $ref: "paths/transactions.yml#/Transactions"
   # /transactions/{id}:
@@ -37,7 +41,11 @@ paths:
   #   $ref: "paths/flows.yml#/Flows"
   # /flows/{id}:
   #   $ref: "paths/flows.yml#/FlowsID"
-  /tags/{type}:
-    $ref: "paths/tags.yml#/Tags_"
-  /tags/{type}/{id}:
-    $ref: "paths/tags.yml#/TagsID"
+  # /transactions/tags:
+  #   $ref: "paths/transaction-tags.yml#/Tags_"
+  # /transactions/tags/{id}:
+  #   $ref: "paths/transaction-tags.yml#/TagsID"
+  # /flows/tags:
+  #   $ref: "paths/flow-tags.yml#/Tags_"
+  # /flows/tags/{id}:
+  #   $ref: "paths/flow-tags.yml#/TagsID"

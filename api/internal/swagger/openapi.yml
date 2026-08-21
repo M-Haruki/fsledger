@@ -194,16 +194,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /tags/{type}:
+  /stocks/tags:
     get:
-      operationId: listTags
+      operationId: listStockTags
       summary: List
       description: Get all tags.
       tags:
         - tag
       security: []
-      parameters:
-        - $ref: '#/components/parameters/TagType'
       responses:
         '200':
           description: ''
@@ -224,14 +222,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     post:
-      operationId: createTags
+      operationId: createStockTags
       summary: Create
       description: Create a new tag.
       tags:
         - tag
       security: []
-      parameters:
-        - $ref: '#/components/parameters/TagType'
       requestBody:
         required: true
         content:
@@ -257,16 +253,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /tags/{type}/{id}:
+  /stocks/tags/{id}:
     get:
-      operationId: getTag
+      operationId: getStockTag
       summary: Get
       description: Get a tag.
       tags:
         - tag
       security: []
       parameters:
-        - $ref: '#/components/parameters/TagType'
         - $ref: '#/components/parameters/TagIDParam'
       responses:
         '200':
@@ -294,14 +289,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     put:
-      operationId: updateTag
+      operationId: updateStockTag
       summary: Update
       description: Change a tag.
       tags:
         - tag
       security: []
       parameters:
-        - $ref: '#/components/parameters/TagType'
         - $ref: '#/components/parameters/TagIDParam'
       requestBody:
         required: true
@@ -331,14 +325,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
     delete:
-      operationId: deleteTag
+      operationId: deleteStockTag
       summary: Delete
       description: Delete a tag.
       tags:
         - tag
       security: []
       parameters:
-        - $ref: '#/components/parameters/TagType'
         - $ref: '#/components/parameters/TagIDParam'
       responses:
         '204':
@@ -503,17 +496,6 @@ components:
         type: string
         format: uuid
       example: 873ccb0f-e7f4-4d22-9422-e8bbb38354a5
-    TagType:
-      name: type
-      in: path
-      required: true
-      schema:
-        type: string
-        enum:
-          - stocks
-          - transactions
-          - flows
-      example: stocks
     TagIDParam:
       name: id
       in: path

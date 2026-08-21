@@ -21,132 +21,6 @@ import (
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
-// Defines values for TagType.
-const (
-	TagTypeFlows        TagType = "flows"
-	TagTypeStocks       TagType = "stocks"
-	TagTypeTransactions TagType = "transactions"
-)
-
-// Valid indicates whether the value is a known member of the TagType enum.
-func (e TagType) Valid() bool {
-	switch e {
-	case TagTypeFlows:
-		return true
-	case TagTypeStocks:
-		return true
-	case TagTypeTransactions:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for ListTagsParamsType.
-const (
-	ListTagsParamsTypeFlows        ListTagsParamsType = "flows"
-	ListTagsParamsTypeStocks       ListTagsParamsType = "stocks"
-	ListTagsParamsTypeTransactions ListTagsParamsType = "transactions"
-)
-
-// Valid indicates whether the value is a known member of the ListTagsParamsType enum.
-func (e ListTagsParamsType) Valid() bool {
-	switch e {
-	case ListTagsParamsTypeFlows:
-		return true
-	case ListTagsParamsTypeStocks:
-		return true
-	case ListTagsParamsTypeTransactions:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for CreateTagsParamsType.
-const (
-	CreateTagsParamsTypeFlows        CreateTagsParamsType = "flows"
-	CreateTagsParamsTypeStocks       CreateTagsParamsType = "stocks"
-	CreateTagsParamsTypeTransactions CreateTagsParamsType = "transactions"
-)
-
-// Valid indicates whether the value is a known member of the CreateTagsParamsType enum.
-func (e CreateTagsParamsType) Valid() bool {
-	switch e {
-	case CreateTagsParamsTypeFlows:
-		return true
-	case CreateTagsParamsTypeStocks:
-		return true
-	case CreateTagsParamsTypeTransactions:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for DeleteTagParamsType.
-const (
-	DeleteTagParamsTypeFlows        DeleteTagParamsType = "flows"
-	DeleteTagParamsTypeStocks       DeleteTagParamsType = "stocks"
-	DeleteTagParamsTypeTransactions DeleteTagParamsType = "transactions"
-)
-
-// Valid indicates whether the value is a known member of the DeleteTagParamsType enum.
-func (e DeleteTagParamsType) Valid() bool {
-	switch e {
-	case DeleteTagParamsTypeFlows:
-		return true
-	case DeleteTagParamsTypeStocks:
-		return true
-	case DeleteTagParamsTypeTransactions:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for GetTagParamsType.
-const (
-	GetTagParamsTypeFlows        GetTagParamsType = "flows"
-	GetTagParamsTypeStocks       GetTagParamsType = "stocks"
-	GetTagParamsTypeTransactions GetTagParamsType = "transactions"
-)
-
-// Valid indicates whether the value is a known member of the GetTagParamsType enum.
-func (e GetTagParamsType) Valid() bool {
-	switch e {
-	case GetTagParamsTypeFlows:
-		return true
-	case GetTagParamsTypeStocks:
-		return true
-	case GetTagParamsTypeTransactions:
-		return true
-	default:
-		return false
-	}
-}
-
-// Defines values for UpdateTagParamsType.
-const (
-	UpdateTagParamsTypeFlows        UpdateTagParamsType = "flows"
-	UpdateTagParamsTypeStocks       UpdateTagParamsType = "stocks"
-	UpdateTagParamsTypeTransactions UpdateTagParamsType = "transactions"
-)
-
-// Valid indicates whether the value is a known member of the UpdateTagParamsType enum.
-func (e UpdateTagParamsType) Valid() bool {
-	switch e {
-	case UpdateTagParamsTypeFlows:
-		return true
-	case UpdateTagParamsTypeStocks:
-		return true
-	case UpdateTagParamsTypeTransactions:
-		return true
-	default:
-		return false
-	}
-}
-
 // Error defines model for Error.
 type Error struct {
 	Message string `json:"message"`
@@ -211,35 +85,17 @@ type StockIDParam = openapi_types.UUID
 // TagIDParam defines model for TagIDParam.
 type TagIDParam = openapi_types.UUID
 
-// TagType defines model for TagType.
-type TagType string
-
-// ListTagsParamsType defines parameters for ListTags.
-type ListTagsParamsType string
-
-// CreateTagsParamsType defines parameters for CreateTags.
-type CreateTagsParamsType string
-
-// DeleteTagParamsType defines parameters for DeleteTag.
-type DeleteTagParamsType string
-
-// GetTagParamsType defines parameters for GetTag.
-type GetTagParamsType string
-
-// UpdateTagParamsType defines parameters for UpdateTag.
-type UpdateTagParamsType string
-
 // CreateStockJSONRequestBody defines body for CreateStock for application/json ContentType.
 type CreateStockJSONRequestBody = StockData
 
+// CreateStockTagsJSONRequestBody defines body for CreateStockTags for application/json ContentType.
+type CreateStockTagsJSONRequestBody = TagData
+
+// UpdateStockTagJSONRequestBody defines body for UpdateStockTag for application/json ContentType.
+type UpdateStockTagJSONRequestBody = TagData
+
 // UpdateStockJSONRequestBody defines body for UpdateStock for application/json ContentType.
 type UpdateStockJSONRequestBody = StockData
-
-// CreateTagsJSONRequestBody defines body for CreateTags for application/json ContentType.
-type CreateTagsJSONRequestBody = TagData
-
-// UpdateTagJSONRequestBody defines body for UpdateTag for application/json ContentType.
-type UpdateTagJSONRequestBody = TagData
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -252,6 +108,21 @@ type ServerInterface interface {
 	// CreateStock Create
 	// (POST /stocks)
 	CreateStock(ctx *echo.Context) error
+	// ListStockTags List
+	// (GET /stocks/tags)
+	ListStockTags(ctx *echo.Context) error
+	// CreateStockTags Create
+	// (POST /stocks/tags)
+	CreateStockTags(ctx *echo.Context) error
+	// DeleteStockTag Delete
+	// (DELETE /stocks/tags/{id})
+	DeleteStockTag(ctx *echo.Context, id TagIDParam) error
+	// GetStockTag Get
+	// (GET /stocks/tags/{id})
+	GetStockTag(ctx *echo.Context, id TagIDParam) error
+	// UpdateStockTag Update
+	// (PUT /stocks/tags/{id})
+	UpdateStockTag(ctx *echo.Context, id TagIDParam) error
 	// DeleteStock Delete
 	// (DELETE /stocks/{id})
 	DeleteStock(ctx *echo.Context, id StockIDParam) error
@@ -261,21 +132,6 @@ type ServerInterface interface {
 	// UpdateStock Update
 	// (PUT /stocks/{id})
 	UpdateStock(ctx *echo.Context, id StockIDParam) error
-	// ListTags List
-	// (GET /tags/{type})
-	ListTags(ctx *echo.Context, pType ListTagsParamsType) error
-	// CreateTags Create
-	// (POST /tags/{type})
-	CreateTags(ctx *echo.Context, pType CreateTagsParamsType) error
-	// DeleteTag Delete
-	// (DELETE /tags/{type}/{id})
-	DeleteTag(ctx *echo.Context, pType DeleteTagParamsType, id TagIDParam) error
-	// GetTag Get
-	// (GET /tags/{type}/{id})
-	GetTag(ctx *echo.Context, pType GetTagParamsType, id TagIDParam) error
-	// UpdateTag Update
-	// (PUT /tags/{type}/{id})
-	UpdateTag(ctx *echo.Context, pType UpdateTagParamsType, id TagIDParam) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -307,6 +163,72 @@ func (w *ServerInterfaceWrapper) CreateStock(ctx *echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.CreateStock(ctx)
+	return err
+}
+
+// ListStockTags converts echo context to params.
+func (w *ServerInterfaceWrapper) ListStockTags(ctx *echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.ListStockTags(ctx)
+	return err
+}
+
+// CreateStockTags converts echo context to params.
+func (w *ServerInterfaceWrapper) CreateStockTags(ctx *echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.CreateStockTags(ctx)
+	return err
+}
+
+// DeleteStockTag converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteStockTag(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id TagIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.DeleteStockTag(ctx, id)
+	return err
+}
+
+// GetStockTag converts echo context to params.
+func (w *ServerInterfaceWrapper) GetStockTag(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id TagIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetStockTag(ctx, id)
+	return err
+}
+
+// UpdateStockTag converts echo context to params.
+func (w *ServerInterfaceWrapper) UpdateStockTag(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id TagIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.UpdateStockTag(ctx, id)
 	return err
 }
 
@@ -355,110 +277,6 @@ func (w *ServerInterfaceWrapper) UpdateStock(ctx *echo.Context) error {
 
 	// Invoke the callback with all the unmarshaled arguments
 	err = w.Handler.UpdateStock(ctx, id)
-	return err
-}
-
-// ListTags converts echo context to params.
-func (w *ServerInterfaceWrapper) ListTags(ctx *echo.Context) error {
-	var err error
-	// ------------- Path parameter "type" -------------
-	var pType ListTagsParamsType
-
-	err = runtime.BindStyledParameterWithOptions("simple", "type", ctx.Param("type"), &pType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter type: %s", err))
-	}
-
-	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.ListTags(ctx, pType)
-	return err
-}
-
-// CreateTags converts echo context to params.
-func (w *ServerInterfaceWrapper) CreateTags(ctx *echo.Context) error {
-	var err error
-	// ------------- Path parameter "type" -------------
-	var pType CreateTagsParamsType
-
-	err = runtime.BindStyledParameterWithOptions("simple", "type", ctx.Param("type"), &pType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter type: %s", err))
-	}
-
-	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.CreateTags(ctx, pType)
-	return err
-}
-
-// DeleteTag converts echo context to params.
-func (w *ServerInterfaceWrapper) DeleteTag(ctx *echo.Context) error {
-	var err error
-	// ------------- Path parameter "type" -------------
-	var pType DeleteTagParamsType
-
-	err = runtime.BindStyledParameterWithOptions("simple", "type", ctx.Param("type"), &pType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter type: %s", err))
-	}
-
-	// ------------- Path parameter "id" -------------
-	var id TagIDParam
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
-	}
-
-	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.DeleteTag(ctx, pType, id)
-	return err
-}
-
-// GetTag converts echo context to params.
-func (w *ServerInterfaceWrapper) GetTag(ctx *echo.Context) error {
-	var err error
-	// ------------- Path parameter "type" -------------
-	var pType GetTagParamsType
-
-	err = runtime.BindStyledParameterWithOptions("simple", "type", ctx.Param("type"), &pType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter type: %s", err))
-	}
-
-	// ------------- Path parameter "id" -------------
-	var id TagIDParam
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
-	}
-
-	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetTag(ctx, pType, id)
-	return err
-}
-
-// UpdateTag converts echo context to params.
-func (w *ServerInterfaceWrapper) UpdateTag(ctx *echo.Context) error {
-	var err error
-	// ------------- Path parameter "type" -------------
-	var pType UpdateTagParamsType
-
-	err = runtime.BindStyledParameterWithOptions("simple", "type", ctx.Param("type"), &pType, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter type: %s", err))
-	}
-
-	// ------------- Path parameter "id" -------------
-	var id TagIDParam
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
-	}
-
-	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.UpdateTag(ctx, pType, id)
 	return err
 }
 
@@ -515,11 +333,11 @@ func RegisterHandlersWithOptions(router EchoRouter, si ServerInterface, options 
 	router.DELETE(options.BaseURL+"/stocks/:id", wrapper.DeleteStock, options.OperationMiddlewares["deleteStock"]...)
 	router.GET(options.BaseURL+"/stocks/:id", wrapper.GetStock, options.OperationMiddlewares["getStock"]...)
 	router.PUT(options.BaseURL+"/stocks/:id", wrapper.UpdateStock, options.OperationMiddlewares["updateStock"]...)
-	router.GET(options.BaseURL+"/tags/:type", wrapper.ListTags, options.OperationMiddlewares["listTags"]...)
-	router.POST(options.BaseURL+"/tags/:type", wrapper.CreateTags, options.OperationMiddlewares["createTags"]...)
-	router.DELETE(options.BaseURL+"/tags/:type/:id", wrapper.DeleteTag, options.OperationMiddlewares["deleteTag"]...)
-	router.GET(options.BaseURL+"/tags/:type/:id", wrapper.GetTag, options.OperationMiddlewares["getTag"]...)
-	router.PUT(options.BaseURL+"/tags/:type/:id", wrapper.UpdateTag, options.OperationMiddlewares["updateTag"]...)
+	router.GET(options.BaseURL+"/stocks/tags", wrapper.ListStockTags, options.OperationMiddlewares["listStockTags"]...)
+	router.POST(options.BaseURL+"/stocks/tags", wrapper.CreateStockTags, options.OperationMiddlewares["createStockTags"]...)
+	router.DELETE(options.BaseURL+"/stocks/tags/:id", wrapper.DeleteStockTag, options.OperationMiddlewares["deleteStockTag"]...)
+	router.GET(options.BaseURL+"/stocks/tags/:id", wrapper.GetStockTag, options.OperationMiddlewares["getStockTag"]...)
+	router.PUT(options.BaseURL+"/stocks/tags/:id", wrapper.UpdateStockTag, options.OperationMiddlewares["updateStockTag"]...)
 
 }
 
@@ -626,6 +444,286 @@ func (response CreateStock400JSONResponse) VisitCreateStockResponse(w http.Respo
 type CreateStock500JSONResponse Error
 
 func (response CreateStock500JSONResponse) VisitCreateStockResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListStockTagsRequestObject struct {
+}
+
+type ListStockTagsResponseObject interface {
+	VisitListStockTagsResponse(w http.ResponseWriter) error
+}
+
+type ListStockTags200JSONResponse Tags
+
+func (response ListStockTags200JSONResponse) VisitListStockTagsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListStockTags400JSONResponse Error
+
+func (response ListStockTags400JSONResponse) VisitListStockTagsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type ListStockTags500JSONResponse Error
+
+func (response ListStockTags500JSONResponse) VisitListStockTagsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateStockTagsRequestObject struct {
+	Body *CreateStockTagsJSONRequestBody
+}
+
+type CreateStockTagsResponseObject interface {
+	VisitCreateStockTagsResponse(w http.ResponseWriter) error
+}
+
+type CreateStockTags201JSONResponse TagID
+
+func (response CreateStockTags201JSONResponse) VisitCreateStockTagsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateStockTags400JSONResponse Error
+
+func (response CreateStockTags400JSONResponse) VisitCreateStockTagsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateStockTags500JSONResponse Error
+
+func (response CreateStockTags500JSONResponse) VisitCreateStockTagsResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteStockTagRequestObject struct {
+	Id TagIDParam `json:"id"`
+}
+
+type DeleteStockTagResponseObject interface {
+	VisitDeleteStockTagResponse(w http.ResponseWriter) error
+}
+
+type DeleteStockTag204Response struct {
+}
+
+func (response DeleteStockTag204Response) VisitDeleteStockTagResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteStockTag400JSONResponse Error
+
+func (response DeleteStockTag400JSONResponse) VisitDeleteStockTagResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteStockTag404JSONResponse Error
+
+func (response DeleteStockTag404JSONResponse) VisitDeleteStockTagResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteStockTag500JSONResponse Error
+
+func (response DeleteStockTag500JSONResponse) VisitDeleteStockTagResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetStockTagRequestObject struct {
+	Id TagIDParam `json:"id"`
+}
+
+type GetStockTagResponseObject interface {
+	VisitGetStockTagResponse(w http.ResponseWriter) error
+}
+
+type GetStockTag200JSONResponse TagData
+
+func (response GetStockTag200JSONResponse) VisitGetStockTagResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetStockTag400JSONResponse Error
+
+func (response GetStockTag400JSONResponse) VisitGetStockTagResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetStockTag404JSONResponse Error
+
+func (response GetStockTag404JSONResponse) VisitGetStockTagResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetStockTag500JSONResponse Error
+
+func (response GetStockTag500JSONResponse) VisitGetStockTagResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateStockTagRequestObject struct {
+	Id   TagIDParam `json:"id"`
+	Body *UpdateStockTagJSONRequestBody
+}
+
+type UpdateStockTagResponseObject interface {
+	VisitUpdateStockTagResponse(w http.ResponseWriter) error
+}
+
+type UpdateStockTag204Response struct {
+}
+
+func (response UpdateStockTag204Response) VisitUpdateStockTagResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type UpdateStockTag400JSONResponse Error
+
+func (response UpdateStockTag400JSONResponse) VisitUpdateStockTagResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateStockTag404JSONResponse Error
+
+func (response UpdateStockTag404JSONResponse) VisitUpdateStockTagResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateStockTag500JSONResponse Error
+
+func (response UpdateStockTag500JSONResponse) VisitUpdateStockTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -818,291 +916,6 @@ func (response UpdateStock500JSONResponse) VisitUpdateStockResponse(w http.Respo
 	return err
 }
 
-type ListTagsRequestObject struct {
-	Type ListTagsParamsType `json:"type"`
-}
-
-type ListTagsResponseObject interface {
-	VisitListTagsResponse(w http.ResponseWriter) error
-}
-
-type ListTags200JSONResponse Tags
-
-func (response ListTags200JSONResponse) VisitListTagsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListTags400JSONResponse Error
-
-func (response ListTags400JSONResponse) VisitListTagsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type ListTags500JSONResponse Error
-
-func (response ListTags500JSONResponse) VisitListTagsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateTagsRequestObject struct {
-	Type CreateTagsParamsType `json:"type"`
-	Body *CreateTagsJSONRequestBody
-}
-
-type CreateTagsResponseObject interface {
-	VisitCreateTagsResponse(w http.ResponseWriter) error
-}
-
-type CreateTags201JSONResponse TagID
-
-func (response CreateTags201JSONResponse) VisitCreateTagsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateTags400JSONResponse Error
-
-func (response CreateTags400JSONResponse) VisitCreateTagsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type CreateTags500JSONResponse Error
-
-func (response CreateTags500JSONResponse) VisitCreateTagsResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteTagRequestObject struct {
-	Type DeleteTagParamsType `json:"type"`
-	Id   TagIDParam          `json:"id"`
-}
-
-type DeleteTagResponseObject interface {
-	VisitDeleteTagResponse(w http.ResponseWriter) error
-}
-
-type DeleteTag204Response struct {
-}
-
-func (response DeleteTag204Response) VisitDeleteTagResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type DeleteTag400JSONResponse Error
-
-func (response DeleteTag400JSONResponse) VisitDeleteTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteTag404JSONResponse Error
-
-func (response DeleteTag404JSONResponse) VisitDeleteTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type DeleteTag500JSONResponse Error
-
-func (response DeleteTag500JSONResponse) VisitDeleteTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetTagRequestObject struct {
-	Type GetTagParamsType `json:"type"`
-	Id   TagIDParam       `json:"id"`
-}
-
-type GetTagResponseObject interface {
-	VisitGetTagResponse(w http.ResponseWriter) error
-}
-
-type GetTag200JSONResponse TagData
-
-func (response GetTag200JSONResponse) VisitGetTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(200)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetTag400JSONResponse Error
-
-func (response GetTag400JSONResponse) VisitGetTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetTag404JSONResponse Error
-
-func (response GetTag404JSONResponse) VisitGetTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type GetTag500JSONResponse Error
-
-func (response GetTag500JSONResponse) VisitGetTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateTagRequestObject struct {
-	Type UpdateTagParamsType `json:"type"`
-	Id   TagIDParam          `json:"id"`
-	Body *UpdateTagJSONRequestBody
-}
-
-type UpdateTagResponseObject interface {
-	VisitUpdateTagResponse(w http.ResponseWriter) error
-}
-
-type UpdateTag204Response struct {
-}
-
-func (response UpdateTag204Response) VisitUpdateTagResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
-}
-
-type UpdateTag400JSONResponse Error
-
-func (response UpdateTag400JSONResponse) VisitUpdateTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(400)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateTag404JSONResponse Error
-
-func (response UpdateTag404JSONResponse) VisitUpdateTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(404)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
-type UpdateTag500JSONResponse Error
-
-func (response UpdateTag500JSONResponse) VisitUpdateTagResponse(w http.ResponseWriter) error {
-
-	var buf bytes.Buffer
-	if err := json.NewEncoder(&buf).Encode(response); err != nil {
-		return err
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(500)
-	_, err := buf.WriteTo(w)
-	return err
-}
-
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// HealthCheck Health Check
@@ -1114,6 +927,21 @@ type StrictServerInterface interface {
 	// CreateStock Create
 	// (POST /stocks)
 	CreateStock(ctx context.Context, request CreateStockRequestObject) (CreateStockResponseObject, error)
+	// ListStockTags List
+	// (GET /stocks/tags)
+	ListStockTags(ctx context.Context, request ListStockTagsRequestObject) (ListStockTagsResponseObject, error)
+	// CreateStockTags Create
+	// (POST /stocks/tags)
+	CreateStockTags(ctx context.Context, request CreateStockTagsRequestObject) (CreateStockTagsResponseObject, error)
+	// DeleteStockTag Delete
+	// (DELETE /stocks/tags/{id})
+	DeleteStockTag(ctx context.Context, request DeleteStockTagRequestObject) (DeleteStockTagResponseObject, error)
+	// GetStockTag Get
+	// (GET /stocks/tags/{id})
+	GetStockTag(ctx context.Context, request GetStockTagRequestObject) (GetStockTagResponseObject, error)
+	// UpdateStockTag Update
+	// (PUT /stocks/tags/{id})
+	UpdateStockTag(ctx context.Context, request UpdateStockTagRequestObject) (UpdateStockTagResponseObject, error)
 	// DeleteStock Delete
 	// (DELETE /stocks/{id})
 	DeleteStock(ctx context.Context, request DeleteStockRequestObject) (DeleteStockResponseObject, error)
@@ -1123,21 +951,6 @@ type StrictServerInterface interface {
 	// UpdateStock Update
 	// (PUT /stocks/{id})
 	UpdateStock(ctx context.Context, request UpdateStockRequestObject) (UpdateStockResponseObject, error)
-	// ListTags List
-	// (GET /tags/{type})
-	ListTags(ctx context.Context, request ListTagsRequestObject) (ListTagsResponseObject, error)
-	// CreateTags Create
-	// (POST /tags/{type})
-	CreateTags(ctx context.Context, request CreateTagsRequestObject) (CreateTagsResponseObject, error)
-	// DeleteTag Delete
-	// (DELETE /tags/{type}/{id})
-	DeleteTag(ctx context.Context, request DeleteTagRequestObject) (DeleteTagResponseObject, error)
-	// GetTag Get
-	// (GET /tags/{type}/{id})
-	GetTag(ctx context.Context, request GetTagRequestObject) (GetTagResponseObject, error)
-	// UpdateTag Update
-	// (PUT /tags/{type}/{id})
-	UpdateTag(ctx context.Context, request UpdateTagRequestObject) (UpdateTagResponseObject, error)
 }
 
 type StrictHandlerFunc func(ctx *echo.Context, request any) (any, error)
@@ -1237,6 +1050,159 @@ func (sh *strictHandler) CreateStock(ctx *echo.Context) error {
 	return nil
 }
 
+// ListStockTags operation middleware
+func (sh *strictHandler) ListStockTags(ctx *echo.Context) error {
+	var request ListStockTagsRequestObject
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.ListStockTags(ctx.Request().Context(), request.(ListStockTagsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "ListStockTags")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(ListStockTagsResponseObject); ok {
+		return validResponse.VisitListStockTagsResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// CreateStockTags operation middleware
+func (sh *strictHandler) CreateStockTags(ctx *echo.Context) error {
+	var request CreateStockTagsRequestObject
+
+	var body CreateStockTagsJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateStockTags(ctx.Request().Context(), request.(CreateStockTagsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateStockTags")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(CreateStockTagsResponseObject); ok {
+		return validResponse.VisitCreateStockTagsResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// DeleteStockTag operation middleware
+func (sh *strictHandler) DeleteStockTag(ctx *echo.Context, id TagIDParam) error {
+	var request DeleteStockTagRequestObject
+
+	request.Id = id
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteStockTag(ctx.Request().Context(), request.(DeleteStockTagRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteStockTag")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(DeleteStockTagResponseObject); ok {
+		return validResponse.VisitDeleteStockTagResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetStockTag operation middleware
+func (sh *strictHandler) GetStockTag(ctx *echo.Context, id TagIDParam) error {
+	var request GetStockTagRequestObject
+
+	request.Id = id
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetStockTag(ctx.Request().Context(), request.(GetStockTagRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetStockTag")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetStockTagResponseObject); ok {
+		return validResponse.VisitGetStockTagResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// UpdateStockTag operation middleware
+func (sh *strictHandler) UpdateStockTag(ctx *echo.Context, id TagIDParam) error {
+	var request UpdateStockTagRequestObject
+
+	request.Id = id
+
+	var body UpdateStockTagJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateStockTag(ctx.Request().Context(), request.(UpdateStockTagRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateStockTag")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(UpdateStockTagResponseObject); ok {
+		return validResponse.VisitUpdateStockTagResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
 // DeleteStock operation middleware
 func (sh *strictHandler) DeleteStock(ctx *echo.Context, id StockIDParam) error {
 	var request DeleteStockRequestObject
@@ -1328,199 +1294,38 @@ func (sh *strictHandler) UpdateStock(ctx *echo.Context, id StockIDParam) error {
 	return nil
 }
 
-// ListTags operation middleware
-func (sh *strictHandler) ListTags(ctx *echo.Context, pType ListTagsParamsType) error {
-	var request ListTagsRequestObject
-
-	request.Type = pType
-
-	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.ListTags(ctx.Request().Context(), request.(ListTagsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "ListTags")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(ListTagsResponseObject); ok {
-		return validResponse.VisitListTagsResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// CreateTags operation middleware
-func (sh *strictHandler) CreateTags(ctx *echo.Context, pType CreateTagsParamsType) error {
-	var request CreateTagsRequestObject
-
-	request.Type = pType
-
-	var body CreateTagsJSONRequestBody
-	var err error
-	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
-		// Bind only the request body, so that path and query parameters
-		// are not also bound into the body struct.
-		err = echo.BindBody(ctx, &body)
-	} else {
-		// A custom binder is installed on the Echo instance; defer to it
-		// entirely, since echo.Binder does not expose body-only binding.
-		err = ctx.Bind(&body)
-	}
-	if err != nil {
-		return err
-	}
-	request.Body = &body
-
-	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateTags(ctx.Request().Context(), request.(CreateTagsRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateTags")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(CreateTagsResponseObject); ok {
-		return validResponse.VisitCreateTagsResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// DeleteTag operation middleware
-func (sh *strictHandler) DeleteTag(ctx *echo.Context, pType DeleteTagParamsType, id TagIDParam) error {
-	var request DeleteTagRequestObject
-
-	request.Type = pType
-	request.Id = id
-
-	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.DeleteTag(ctx.Request().Context(), request.(DeleteTagRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "DeleteTag")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(DeleteTagResponseObject); ok {
-		return validResponse.VisitDeleteTagResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// GetTag operation middleware
-func (sh *strictHandler) GetTag(ctx *echo.Context, pType GetTagParamsType, id TagIDParam) error {
-	var request GetTagRequestObject
-
-	request.Type = pType
-	request.Id = id
-
-	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetTag(ctx.Request().Context(), request.(GetTagRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetTag")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(GetTagResponseObject); ok {
-		return validResponse.VisitGetTagResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("unexpected response type: %T", response)
-	}
-	return nil
-}
-
-// UpdateTag operation middleware
-func (sh *strictHandler) UpdateTag(ctx *echo.Context, pType UpdateTagParamsType, id TagIDParam) error {
-	var request UpdateTagRequestObject
-
-	request.Type = pType
-	request.Id = id
-
-	var body UpdateTagJSONRequestBody
-	var err error
-	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
-		// Bind only the request body, so that path and query parameters
-		// are not also bound into the body struct.
-		err = echo.BindBody(ctx, &body)
-	} else {
-		// A custom binder is installed on the Echo instance; defer to it
-		// entirely, since echo.Binder does not expose body-only binding.
-		err = ctx.Bind(&body)
-	}
-	if err != nil {
-		return err
-	}
-	request.Body = &body
-
-	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.UpdateTag(ctx.Request().Context(), request.(UpdateTagRequestObject))
-	}
-	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "UpdateTag")
-	}
-
-	response, err := handler(ctx, request)
-
-	if err != nil {
-		return err
-	} else if validResponse, ok := response.(UpdateTagResponseObject); ok {
-		return validResponse.VisitUpdateTagResponse(ctx.Response())
-	} else if response != nil {
-		return fmt.Errorf("unexpected response type: %T", response)
-	}
-	return nil
-}
-
 // Base64 encoded, compressed with deflate, json marshaled OpenAPI spec.
 // Stored as a slice of fixed-width chunks rather than one concatenated
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"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",
-	"VHO9vd7+PwAA//8=",
+	"7Fpbj6M4Fv4rlnekfYEAgVzf+jY1LdXOjra7n3pLK2MfEk+BzdimarNR/vvKhoQkkFR6lJquluoRODd/",
+	"5zuXQNaYyqKUAoTReL7GJVGkAAPKXX0ykt5/fP+bvWmv4b+kKHPAczydxJSmYebDJEv8hA2H/iwZDn2Y",
+	"pmkaT+NRQkbYw1zgOS6JWWIPC1JYTc6whxX8UXEFDM+NqsDDmi6hINZFJlVBDJ7jqnKSZlVaLW0UFwu8",
+	"2Xj4M1n0hpSMwmGUzsCP45D6CYkyfzqLqJ+E40lG0uGEpuGzhLTZCjvMPigl1UFka1yA1mRhld4Shv4F",
+	"f1SgDd54uFSyBGU46AOxdc+x2/i+7gTvdsHI9HegzqTL2Vui4SgGWikFgq7wHP+EPcxAU8VLw6XFo1ih",
+	"gnCBUiLusYeXRP+HFLISZotGg5R9jt52I2+Nd0I/ctXzfN/b7nEqZQ5E2Oe17zUuuLgFsTBLPI+8JxBy",
+	"OgemvTbIw5BOgvieGJd/kuf/zPD86xr/pCDDc/y3oC2aoEl90OK+8Q6AN2ShbUgX8jOmYcQm45FPx4T5",
+	"STKMfTKdxX42msFwPKJxyGLs4ekkDSlhkT+OwshPpuPYn41h5o8iOkyzWTybxBTfdRJVB7PG3EChLyD3",
+	"7gZRiqw6MDtzXQDvthDegLkuimtbrBfX+h5rtTPolC9EuFFmhOcrVDUROQMXYb8zoMkDFwtdo9KfjXOI",
+	"fLYy34r7x/dH1d/EfUHT7gRpVS/py/vxcXa6rPRBaNuMUjqasDGb+RkLEz/JZpE/g1HqJxAn0WQaQpJO",
+	"DjOK3rQZCUkG6SyMfTYdxn6SkImfJpD5YRhNYDJMCRuxVrtYoUeS52BaAymD0XSWJv5kNAr9ZEQTn4Rj",
+	"5jMgsziCYRLGUWtAVhZsr62iP4FY29eehLIR7UP0sDrdcNwW3F72j+rgKNzL4jgZgpvHfXS7qEifk26f",
+	"m/LqkO3HbB97fLusmdaZsX6fkHKUsQ7+LPFsQrjIpNsFpDCEulleqRzP8dKYUs+DYMHNskoHVBbBP/xf",
+	"iKrueZDpHNgCVGdPwG/Qki+W+QrRShtZ8P+RNAdUgtJSkBzVaiglGhiSApkloJ9z+Yj+XYXhcIxcq0GF",
+	"ZJAPsIdzTkHo/WK4+fULepNloCS6AQGK5Oi3Ks05Rbe1LHqIB5YFlx8iSHOZBnaRCm4/vvvw66cPDilu",
+	"3H7686fb+qgefgCl61OGg3AQWSlZgiAlt/waRM6v3VFdsoMlkNxuPWu8AIdrBykngOgS6D0CwUrJhUGZ",
+	"VIhJeg/KImBrjFiNj5aDvziNd1bB7b66lELXBTgMk66PWn41sKGOwnibZ6h3NlKWOafOevC7rte8dn8+",
+	"R756W3b8OXT4RSx3Lu2CDbRS3Kzw/Oudh3VVFEStdnGh7UG2uxaVRWFXO6sa6N3U6YXvBgwieY5qsb8j",
+	"zhARDFmadHG75do0U6wDW3g1VBoPPbDU+IfPj/8nUA+g0Pb56QxYRPaQdyjWi6fUPWi/U0AMIAGPNeC2",
+	"cAVagEHUPWHNbc664Ne6DpzmBxto81ay1XWBr7vh4Yyxv4I2nYxH13Vsm3U3E/WpmSu95K9I/dFv1JdF",
+	"txqNHsK1lR5s1+qz5W6FztS32x2escSbtb63wF+zfNRUDFk83VKIayqGLM42jl1er988dovUX9s6mi3v",
+	"tXF8Y+OoSXXUNoI1Z5uaYjkY6JLtvbuPSD/R6qdborklrn2femJbb0WCvVeb9Tb+1FpW+/t+KU7qoJ7X",
+	"5+clNEuBkHarrQQbvDx+1anoaVqnp1A/h27APBOBwudpdS9jgL1ScUfFG+gdnlXf7FwSsTjZzr6UjFyz",
+	"nX3nmZucOv9rA30BrK3Jdm5AXzybnfzZ6fzNXD74FHrZcH7l1ssdzu1ripPjuT4VA0N4rk+P6asz6cqv",
+	"kbaf4F5H9csf1Xsvz84O6xP9bW9cX4OV3/312mtP/aHm9e5NnFOyVmrmHdpn8AC5LBGIB66kKMD9N6P9",
+	"yDIPglxSki+lNvMoHsYBKblj5O4vAIcGdcP37fcyd7nxjsWMIkIT6q52wvs3uypZLh9bWXfVY9ctxlt7",
+	"ZNEj0nyN2Ek115u7zf8DAAD//w==",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,

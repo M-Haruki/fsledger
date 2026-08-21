@@ -1,0 +1,160 @@
+Tags_:
+  get:
+    operationId: listFlowTags
+    summary: List
+    description: Get all tags.
+    tags:
+      - tag
+    security: []
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/tags.yml#/components/schemas/Tags"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+  post:
+    operationId: createFlowTags
+    summary: Create
+    description: Create a new tag.
+    tags:
+      - tag
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/tags.yml#/components/schemas/TagData"
+    responses:
+      "201":
+        description: Created.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/tags.yml#/components/schemas/TagID"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+TagsID:
+  get:
+    operationId: getFlowTag
+    summary: Get
+    description: Get a tag.
+    tags:
+      - tag
+    security: []
+    parameters:
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
+    responses:
+      "200":
+        description: ""
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/tags.yml#/components/schemas/TagData"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "404":
+        description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+  put:
+    operationId: updateFlowTag
+    summary: Update
+    description: Change a tag.
+    tags:
+      - tag
+    security: []
+    parameters:
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/tags.yml#/components/schemas/TagData"
+    responses:
+      "204":
+        description: "Changed."
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "404":
+        description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+  delete:
+    operationId: deleteFlowTag
+    summary: Delete
+    description: Delete a tag.
+    tags:
+      - tag
+    security: []
+    parameters:
+      - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
+    responses:
+      "204":
+        description: "Deleted."
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "404":
+        description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"

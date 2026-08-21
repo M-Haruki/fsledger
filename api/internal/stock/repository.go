@@ -182,3 +182,70 @@ func (r *Repository) DeleteStock(ctx context.Context, id uuid.UUID) error {
 	}
 	return nil
 }
+
+func (r *Repository) ListStockTags(ctx context.Context) ([]tag, error) {
+	res, err := r.queries.ListStockTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+	result := make([]tag, len(res))
+	for i, atag := range res {
+		result[i] = tag{
+			id:   uuid.UUID(atag.ID.Bytes),
+			name: atag.Name,
+		}
+	}
+	return result, nil
+}
+
+func (r *Repository) CreateStockTag(ctx context.Context, name string) (uuid.UUID, error) {
+	id, err := r.queries.CreateStockTag(ctx, name)
+	if err != nil {
+		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
+			if pgErr.Code == "23505" {
+				// duplicate key
+				return uuid.Nil, ErrStockTagNameDuplicate
+			}
+		}
+		return uuid.Nil, err
+	}
+	return uuid.UUID(id.Bytes), nil
+}
+
+func (r *Repository) GetStockTag(ctx context.Context, id uuid.UUID) (string, error) {
+	name, err := r.queries.GetStockTag(ctx, pgtype.UUID{Bytes: id, Valid: true})
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", ErrStockTagNotFound
+		}
+		return "", err
+	}
+	return name, nil
+}
+
+func (r *Repository) UpdateStockTag(ctx context.Context, id uuid.UUID, name string) error {
+	result, err := r.queries.UpdateStockTag(ctx, sqlc.UpdateStockTagParams{
+		Name: name,
+		ID:   pgtype.UUID{Bytes: id, Valid: true},
+	})
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() == 0 {
+		// not found
+		return ErrStockTagNotFound
+	}
+	return nil
+}
+
+func (r *Repository) DeleteStockTag(ctx context.Context, id uuid.UUID) error {
+	result, err := r.queries.DeleteStockTag(ctx, pgtype.UUID{Bytes: id, Valid: true})
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() == 0 {
+		// not found
+		return ErrStockTagNotFound
+	}
+	return nil
+}
