@@ -36,7 +36,7 @@ func (r *Repository) ListStocks(ctx context.Context) ([]stockSummary, error) {
 	return result, err
 }
 
-func (r *Repository) CreateStock(ctx context.Context, stock stockRequest) (uuid.UUID, error) {
+func (r *Repository) CreateStock(ctx context.Context, stock stock) (uuid.UUID, error) {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
 		return uuid.Nil, err
@@ -80,46 +80,46 @@ func (r *Repository) CreateStock(ctx context.Context, stock stockRequest) (uuid.
 	return uuid.UUID(id.Bytes), nil
 }
 
-func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stockResponse, error) {
+func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stock, error) {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
-		return stockResponse{}, err
+		return stock{}, err
 	}
 	defer tx.Rollback(ctx)
 	q := sqlc.New(tx)
 
-	stock, err := q.GetStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
+	astock, err := q.GetStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return stockResponse{}, ErrStockNotFound
+			return stock{}, ErrStockNotFound
 		}
-		return stockResponse{}, err
+		return stock{}, err
 	}
-	tags, err := q.ListTagsByStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
+	tags, err := q.ListTagIDsByStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
-		return stockResponse{}, err
+		return stock{}, err
 	}
 	err = tx.Commit(ctx)
 	if err != nil {
-		return stockResponse{}, err
+		return stock{}, err
 	}
 
-	res := stockResponse{
-		name:        stock.Name,
-		hasAmount:   stock.HasAmount,
-		currency:    stock.Currency,
-		description: stock.Description,
-		tags:        make([]tag, len(tags)),
+	res := stock{
+		name:        astock.Name,
+		hasAmount:   astock.HasAmount,
+		currency:    astock.Currency,
+		description: astock.Description,
+		tags:        make([]uuid.UUID, len(tags)),
 	}
 	for i, atag := range tags {
-		res.tags[i] = tag{id: uuid.UUID(atag.ID.Bytes), name: atag.Name}
+		res.tags[i] = uuid.UUID(atag.Bytes)
 	}
 
 	return res, nil
 }
 
-func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock stockRequest) error {
+func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock stock) error {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
 		return err

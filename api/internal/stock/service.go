@@ -19,13 +19,13 @@ func NewService(repo Repository) *Service {
 func (s *Service) ListStocks(ctx context.Context) ([]stockSummary, error) {
 	return s.repo.ListStocks(ctx)
 }
-func (s *Service) CreateStock(ctx context.Context, stock stockRequest) (uuid.UUID, error) {
+func (s *Service) CreateStock(ctx context.Context, stock stock) (uuid.UUID, error) {
 	return s.repo.CreateStock(ctx, stock)
 }
-func (s *Service) GetStock(ctx context.Context, id uuid.UUID) (stockResponse, error) {
+func (s *Service) GetStock(ctx context.Context, id uuid.UUID) (stock, error) {
 	return s.repo.GetStock(ctx, id)
 }
-func (s *Service) UpdateStock(ctx context.Context, id uuid.UUID, stock stockRequest) error {
+func (s *Service) UpdateStock(ctx context.Context, id uuid.UUID, stock stock) error {
 	return s.repo.UpdateStock(ctx, id, stock)
 }
 func (s *Service) DeleteStock(ctx context.Context, id uuid.UUID) error {

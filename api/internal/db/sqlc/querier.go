@@ -36,8 +36,8 @@ type Querier interface {
 	ListFlowTags(ctx context.Context) ([]FlowTag, error)
 	ListStockTags(ctx context.Context) ([]StockTag, error)
 	ListStocks(ctx context.Context) ([]ListStocksRow, error)
+	ListTagIDsByStock(ctx context.Context, id pgtype.UUID) ([]pgtype.UUID, error)
 	ListTagsByFlow(ctx context.Context, id pgtype.UUID) ([]ListTagsByFlowRow, error)
-	ListTagsByStock(ctx context.Context, id pgtype.UUID) ([]ListTagsByStockRow, error)
 	ListTagsByTransaction(ctx context.Context, id pgtype.UUID) ([]ListTagsByTransactionRow, error)
 	ListTransactionTags(ctx context.Context) ([]TransactionTag, error)
 	UpdateFlow(ctx context.Context, arg UpdateFlowParams) error

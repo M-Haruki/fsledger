@@ -11,20 +11,12 @@ type stockSummary struct {
 	name string
 }
 
-type stockRequest struct {
+type stock struct {
 	name        string
 	hasAmount   bool
 	currency    string
 	description string
 	tags        []uuid.UUID
-}
-
-type stockResponse struct {
-	name        string
-	hasAmount   bool
-	currency    string
-	description string
-	tags        []tag
 }
 
 type tag struct {

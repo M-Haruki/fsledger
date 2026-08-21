@@ -17,7 +17,7 @@ components:
           type: string
         occurred_at:
           type: string
-          format: date-time
+          format: date
         tags:
           type: array
           items:
@@ -34,7 +34,7 @@ components:
         - flows
       example:
         desc: Shopping at a nearby grocery store. Also I earn some points.
-        occurred_at: "2026-08-07T02:10:00+09:00"
+        occurred_at: "2026-08-07"
         tags:
           - ce15fc88-deda-4c78-9f4e-a1611152cb13
           - 8f4b9006-b89a-4533-9521-0854055fb9da

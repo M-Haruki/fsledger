@@ -18,8 +18,6 @@ tags:
     description: transaction
   - name: flow
     description: flow
-  - name: tag
-    description: tag
   - name: common
     description: common
 paths:
@@ -73,7 +71,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StockData'
+              $ref: '#/components/schemas/Stock'
       responses:
         '201':
           description: Created.
@@ -109,7 +107,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StockGetData'
+                $ref: '#/components/schemas/Stock'
         '400':
           description: Bad Request
           content:
@@ -142,7 +140,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StockData'
+              $ref: '#/components/schemas/Stock'
       responses:
         '204':
           description: Changed.
@@ -175,7 +173,7 @@ paths:
         - $ref: '#/components/parameters/StockIDParam'
       responses:
         '204':
-          description: Changed.
+          description: Deleted.
         '400':
           description: Bad Request
           content:
@@ -200,7 +198,7 @@ paths:
       summary: List
       description: Get all tags.
       tags:
-        - tag
+        - stock
       security: []
       responses:
         '200':
@@ -226,7 +224,7 @@ paths:
       summary: Create
       description: Create a new tag.
       tags:
-        - tag
+        - stock
       security: []
       requestBody:
         required: true
@@ -259,7 +257,7 @@ paths:
       summary: Get
       description: Get a tag.
       tags:
-        - tag
+        - stock
       security: []
       parameters:
         - $ref: '#/components/parameters/TagIDParam'
@@ -293,7 +291,7 @@ paths:
       summary: Update
       description: Change a tag.
       tags:
-        - tag
+        - stock
       security: []
       parameters:
         - $ref: '#/components/parameters/TagIDParam'
@@ -329,7 +327,7 @@ paths:
       summary: Delete
       description: Delete a tag.
       tags:
-        - tag
+        - stock
       security: []
       parameters:
         - $ref: '#/components/parameters/TagIDParam'
@@ -385,7 +383,7 @@ components:
           name: my wallet
         - id: bde589b4-7550-45c4-a06d-dea931e24031
           name: out
-    StockBase:
+    Stock:
       type: object
       properties:
         name:
@@ -397,33 +395,26 @@ components:
           type: string
         description:
           type: string
+        tags:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
         - name
         - has_amount
         - currency
         - description
+        - tags
       example:
         name: bank B
         has_amount: true
         currency: $
         description: my main bank
-    StockData:
-      allOf:
-        - $ref: '#/components/schemas/StockBase'
-        - type: object
-          properties:
-            tags:
-              type: array
-              items:
-                type: string
-                format: uuid
-          required:
-            - tags
-          example:
-            tags:
-              - 45021b9e-330c-4a1f-891c-4067fab27cb0
-              - 3c01d765-c6ad-4423-a893-f59e265c30d3
-              - 87b0cad1-6101-4863-96e9-51c2bf93973c
+        tags:
+          - 45021b9e-330c-4a1f-891c-4067fab27cb0
+          - 3c01d765-c6ad-4423-a893-f59e265c30d3
+          - 87b0cad1-6101-4863-96e9-51c2bf93973c
     StockID:
       type: object
       properties:
@@ -470,23 +461,6 @@ components:
           name: daily use
         - id: 87b0cad1-6101-4863-96e9-51c2bf93973c
           name: savings
-    StockGetData:
-      allOf:
-        - $ref: '#/components/schemas/StockBase'
-        - type: object
-          properties:
-            tags:
-              $ref: '#/components/schemas/Tags'
-          required:
-            - tags
-          example:
-            tags:
-              - id: 45021b9e-330c-4a1f-891c-4067fab27cb0
-                name: banks
-              - id: 3c01d765-c6ad-4423-a893-f59e265c30d3
-                name: daily use
-              - id: 87b0cad1-6101-4863-96e9-51c2bf93973c
-                name: savings
   parameters:
     StockIDParam:
       name: id

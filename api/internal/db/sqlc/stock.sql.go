@@ -172,28 +172,23 @@ func (q *Queries) ListStocks(ctx context.Context) ([]ListStocksRow, error) {
 	return items, nil
 }
 
-const listTagsByStock = `-- name: ListTagsByStock :many
-SELECT r.tag_id AS id, t.name AS name FROM stock_tag_relations r JOIN stock_tags t ON r.tag_id = t.id WHERE r.stock_id = $1
+const listTagIDsByStock = `-- name: ListTagIDsByStock :many
+SELECT tag_id FROM stock_tag_relations WHERE stock_id = $1
 `
 
-type ListTagsByStockRow struct {
-	ID   pgtype.UUID
-	Name string
-}
-
-func (q *Queries) ListTagsByStock(ctx context.Context, id pgtype.UUID) ([]ListTagsByStockRow, error) {
-	rows, err := q.db.Query(ctx, listTagsByStock, id)
+func (q *Queries) ListTagIDsByStock(ctx context.Context, id pgtype.UUID) ([]pgtype.UUID, error) {
+	rows, err := q.db.Query(ctx, listTagIDsByStock, id)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListTagsByStockRow
+	var items []pgtype.UUID
 	for rows.Next() {
-		var i ListTagsByStockRow
-		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+		var tag_id pgtype.UUID
+		if err := rows.Scan(&tag_id); err != nil {
 			return nil, err
 		}
-		items = append(items, i)
+		items = append(items, tag_id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

@@ -37,7 +37,7 @@ func (h *StockHandler) ListStocks(ctx context.Context, request openapi.ListStock
 }
 
 func (h *StockHandler) CreateStock(ctx context.Context, request openapi.CreateStockRequestObject) (openapi.CreateStockResponseObject, error) {
-	req := stockRequest{
+	req := stock{
 		name:        request.Body.Name,
 		hasAmount:   request.Body.HasAmount,
 		currency:    request.Body.Currency,
@@ -71,22 +71,21 @@ func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockReq
 		h.log.ErrorContext(ctx, "get stock failed", "error", err)
 		return openapi.GetStock500JSONResponse{}, nil
 	}
-	response := openapi.StockGetData{
+	response := openapi.Stock{
 		Name:        res.name,
 		HasAmount:   res.hasAmount,
 		Currency:    res.currency,
 		Description: res.description,
-		Tags:        make(openapi.Tags, len(res.tags)),
+		Tags:        make([]openapi_types.UUID, len(res.tags)),
 	}
 	for i, tag := range res.tags {
-		response.Tags[i].Id = openapi_types.UUID(tag.id)
-		response.Tags[i].Name = tag.name
+		response.Tags[i] = openapi_types.UUID(tag)
 	}
 	return openapi.GetStock200JSONResponse(response), nil
 }
 
 func (h *StockHandler) UpdateStock(ctx context.Context, request openapi.UpdateStockRequestObject) (openapi.UpdateStockResponseObject, error) {
-	req := stockRequest{
+	req := stock{
 		name:        request.Body.Name,
 		hasAmount:   request.Body.HasAmount,
 		currency:    request.Body.Currency,

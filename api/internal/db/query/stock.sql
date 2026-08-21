@@ -34,5 +34,5 @@ INSERT INTO stock_tag_relations (stock_id, tag_id) VALUES (sqlc.arg(stock_id), s
 -- name: DeleteStockTagRelation :exec
 DELETE FROM stock_tag_relations WHERE stock_id = sqlc.arg(stock_id);
 
--- name: ListTagsByStock :many
-SELECT r.tag_id AS id, t.name AS name FROM stock_tag_relations r JOIN stock_tags t ON r.tag_id = t.id WHERE r.stock_id = sqlc.arg(id);
+-- name: ListTagIDsByStock :many
+SELECT tag_id FROM stock_tag_relations WHERE stock_id = sqlc.arg(id);
