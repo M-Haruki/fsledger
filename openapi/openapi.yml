@@ -37,7 +37,7 @@ paths:
   #   $ref: "paths/flows.yml#/Flows"
   # /flows/{id}:
   #   $ref: "paths/flows.yml#/FlowsID"
-  # /{type}/tags:
-  #   $ref: "paths/tags.yml#/Tags_"
-  # /{type}/tags/{id}:
-  #   $ref: "paths/tags.yml#/TagsID"
+  /tags/{type}:
+    $ref: "paths/tags.yml#/Tags_"
+  /tags/{type}/{id}:
+    $ref: "paths/tags.yml#/TagsID"

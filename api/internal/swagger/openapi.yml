@@ -194,6 +194,173 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /tags/{type}:
+    get:
+      operationId: listTags
+      summary: List
+      description: Get all tags.
+      tags:
+        - tag
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TagType'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tags'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      operationId: createTags
+      summary: Create
+      description: Create a new tag.
+      tags:
+        - tag
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TagType'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagData'
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagID'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /tags/{type}/{id}:
+    get:
+      operationId: getTag
+      summary: Get
+      description: Get a tag.
+      tags:
+        - tag
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TagType'
+        - $ref: '#/components/parameters/TagIDParam'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagData'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The stock not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: updateTag
+      summary: Update
+      description: Change a tag.
+      tags:
+        - tag
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TagType'
+        - $ref: '#/components/parameters/TagIDParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagData'
+      responses:
+        '204':
+          description: Changed.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The stock not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: deleteTag
+      summary: Delete
+      description: Delete a tag.
+      tags:
+        - tag
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/TagType'
+        - $ref: '#/components/parameters/TagIDParam'
+      responses:
+        '204':
+          description: Deleted.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: The stock not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Error:
@@ -336,3 +503,22 @@ components:
         type: string
         format: uuid
       example: 873ccb0f-e7f4-4d22-9422-e8bbb38354a5
+    TagType:
+      name: type
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+          - stocks
+          - transactions
+          - flows
+      example: stocks
+    TagIDParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      example: 45021b9e-330c-4a1f-891c-4067fab27cb0

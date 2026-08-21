@@ -15,6 +15,18 @@ Tags_:
           application/json:
             schema:
               $ref: "../components/schemas/tags.yml#/components/schemas/Tags"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
   post:
     operationId: createTags
     summary: Create
@@ -37,6 +49,18 @@ Tags_:
           application/json:
             schema:
               $ref: "../components/schemas/tags.yml#/components/schemas/TagID"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
 TagsID:
   get:
     operationId: getTag
@@ -55,8 +79,24 @@ TagsID:
           application/json:
             schema:
               $ref: "../components/schemas/tags.yml#/components/schemas/TagData"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: The tag not found.
+        description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
   put:
     operationId: updateTag
     summary: Update
@@ -76,8 +116,24 @@ TagsID:
     responses:
       "204":
         description: "Changed."
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: The tag not found.
+        description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
   delete:
     operationId: deleteTag
     summary: Delete
@@ -91,5 +147,21 @@ TagsID:
     responses:
       "204":
         description: "Deleted."
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: The tag not found.
+        description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
