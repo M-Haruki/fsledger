@@ -10,6 +10,7 @@ components:
             format: uuid
           name:
             type: string
+            minLength: 1
         required:
           - id
           - name
@@ -30,7 +31,7 @@ components:
         - id
       example:
         id: 873ccb0f-e7f4-4d22-9422-e8bbb38354a5
-    Stock:
+    StockData:
       type: object
       properties:
         name:

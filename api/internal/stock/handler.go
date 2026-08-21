@@ -71,7 +71,7 @@ func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockReq
 		h.log.ErrorContext(ctx, "get stock failed", "error", err)
 		return openapi.GetStock500JSONResponse{}, nil
 	}
-	response := openapi.Stock{
+	response := openapi.StockData{
 		Name:        res.name,
 		HasAmount:   res.hasAmount,
 		Currency:    res.currency,

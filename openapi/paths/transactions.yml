@@ -11,7 +11,7 @@ Transactions:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas/transaction.yml#/components/schemas/Transaction"
+            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionData"
     responses:
       "201":
         description: "Created."
@@ -47,7 +47,7 @@ TransactionsID:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/transaction.yml#/components/schemas/Transaction"
+              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionData"
       "400":
         description: Bad Request
         content:
@@ -80,7 +80,7 @@ TransactionsID:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas/transaction.yml#/components/schemas/Transaction"
+            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionData"
     responses:
       "204":
         description: Changed.

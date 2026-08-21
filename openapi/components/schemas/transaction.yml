@@ -10,7 +10,7 @@ components:
         - id
       example:
         id: 6d313569-d48f-45a4-9cfb-978c880ed460
-    Transaction:
+    TransactionData:
       type: object
       properties:
         desc:

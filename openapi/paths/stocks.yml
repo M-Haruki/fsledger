@@ -31,7 +31,7 @@ Stocks:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas/stocks.yml#/components/schemas/Stock"
+            $ref: "../components/schemas/stocks.yml#/components/schemas/StockData"
     responses:
       "201":
         description: Created.
@@ -67,7 +67,7 @@ StocksID:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/stocks.yml#/components/schemas/Stock"
+              $ref: "../components/schemas/stocks.yml#/components/schemas/StockData"
       "400":
         description: Bad Request
         content:
@@ -100,7 +100,7 @@ StocksID:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas/stocks.yml#/components/schemas/Stock"
+            $ref: "../components/schemas/stocks.yml#/components/schemas/StockData"
     responses:
       "204":
         description: Changed.
