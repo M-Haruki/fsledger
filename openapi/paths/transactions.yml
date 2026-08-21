@@ -11,7 +11,7 @@ Transactions:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionPostData"
+            $ref: "../components/schemas/transaction.yml#/components/schemas/Transaction"
     responses:
       "201":
         description: "Created."
@@ -40,14 +40,14 @@ TransactionsID:
       - transaction
     security: []
     parameters:
-      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionID"
+      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionIDParam"
     responses:
       "200":
         description: ""
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionGetData"
+              $ref: "../components/schemas/transaction.yml#/components/schemas/Transaction"
       "400":
         description: Bad Request
         content:
@@ -74,13 +74,13 @@ TransactionsID:
       - transaction
     security: []
     parameters:
-      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionID"
+      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionIDParam"
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionPostData"
+            $ref: "../components/schemas/transaction.yml#/components/schemas/Transaction"
     responses:
       "204":
         description: Changed.
@@ -110,7 +110,7 @@ TransactionsID:
       - transaction
     security: []
     parameters:
-      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionID"
+      - $ref: "../components/parameters/transaction.yml#/components/parameters/TransactionIDParam"
     responses:
       "204":
         description: Deleted.

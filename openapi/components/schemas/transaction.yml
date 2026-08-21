@@ -10,34 +10,28 @@ components:
         - id
       example:
         id: 6d313569-d48f-45a4-9cfb-978c880ed460
-    TransactionBase:
+    Transaction:
       type: object
       properties:
         desc:
           type: string
         occurred_at:
           type: string
-          format: date
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+            format: uuid
+        flows:
+          type: array
+          items:
+            $ref: "./flows.yml#/components/schemas/FlowData"
       required:
         - desc
         - occurred_at
-    TransactionPostData:
-      allOf:
-        - $ref: "#/components/schemas/TransactionBase"
-        - type: object
-          properties:
-            tags:
-              type: array
-              items:
-                type: string
-                format: uuid
-            flows:
-              type: array
-              items:
-                $ref: "./flows.yml#/components/schemas/FlowData"
-          required:
-            - tags
-            # flow is option
+        - tags
+        - flows
       example:
         desc: Shopping at a nearby grocery store. Also I earn some points.
         occurred_at: "2026-08-07T02:10:00+09:00"
@@ -55,50 +49,3 @@ components:
             amount: 0.25
             tags:
               - 9462e790-5796-4791-af0d-399720973378
-    TransactionGetData:
-      allOf:
-        - $ref: "#/components/schemas/TransactionBase"
-        - type: object
-          properties:
-            tags:
-              $ref: "./tags.yml#/components/schemas/Tags"
-            flows:
-              type: array
-              items:
-                allOf:
-                  - $ref: "./flows.yml#/components/schemas/FlowID"
-                  - $ref: "./flows.yml#/components/schemas/FlowGetData"
-          required:
-            - tags
-            - flows
-      example:
-        desc: Shopping at a nearby grocery store. Also I got some cashback.
-        occurred_at: "2026-08-07T02:10:00+09:00"
-        tags:
-          - id: ce15fc88-deda-4c78-9f4e-a1611152cb13
-            name: shopping
-          - id: 8f4b9006-b89a-4533-9521-0854055fb9da
-            name: grocery
-        flows:
-          - id: 063e41c7-5fd9-4de9-a345-bc8dcfd441db
-            from:
-              id: 0afeb903-d823-44a7-b4ef-0017e72bad5d
-              name: my wallet
-            to:
-              id: bde589b4-7550-45c4-a06d-dea931e24031
-              name: out
-            amount: 50
-            tags:
-              - id: 76b7f51a-5d85-4bf0-b032-0e9853e79f9e
-                name: consume
-          - id: c7594bc2-1d85-4414-a3f3-ce4ab5d858ab
-            from:
-              id: bde589b4-7550-45c4-a06d-dea931e24031
-              name: out
-            to:
-              id: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
-              name: my wallet
-            amount: 0.25
-            tags:
-              - id: 9462e790-5796-4791-af0d-399720973378
-                name: cashback

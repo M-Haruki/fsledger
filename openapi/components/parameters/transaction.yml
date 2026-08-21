@@ -1,6 +1,6 @@
 components:
   parameters:
-    TransactionID:
+    TransactionIDParam:
       name: id
       in: path
       required: true
