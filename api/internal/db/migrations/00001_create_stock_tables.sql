@@ -4,6 +4,7 @@ CREATE TABLE stocks (
   name text NOT NULL,
   has_amount boolean NOT NULL,
   currency text NOT NULL,
+  currency_exponent integer NOT NULL, -- integer = int32
   description text NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (name) -- TODO: For multi-user support, change to UNIQUE (user_id, name)

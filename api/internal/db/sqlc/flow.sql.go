@@ -19,7 +19,7 @@ type CreateFlowParams struct {
 	Transactionid pgtype.UUID
 	Fromstockid   pgtype.UUID
 	Tostockid     pgtype.UUID
-	Amount        pgtype.Numeric
+	Amount        int64
 }
 
 func (q *Queries) CreateFlow(ctx context.Context, arg CreateFlowParams) (pgtype.UUID, error) {
@@ -82,7 +82,7 @@ type ListFlowByTransactionRow struct {
 	ID          pgtype.UUID
 	FromStockID pgtype.UUID
 	ToStockID   pgtype.UUID
-	Amount      pgtype.Numeric
+	Amount      int64
 }
 
 func (q *Queries) ListFlowByTransaction(ctx context.Context, id pgtype.UUID) ([]ListFlowByTransactionRow, error) {
@@ -170,7 +170,7 @@ UPDATE flows SET from_stock_id = $1, to_stock_id = $2, amount = $3 WHERE id = $4
 type UpdateFlowParams struct {
 	Fromstockid pgtype.UUID
 	Tostockid   pgtype.UUID
-	Amount      pgtype.Numeric
+	Amount      int64
 	ID          pgtype.UUID
 }
 

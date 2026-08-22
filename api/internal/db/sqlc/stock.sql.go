@@ -13,14 +13,15 @@ import (
 )
 
 const createStock = `-- name: CreateStock :one
-INSERT INTO stocks (name, has_amount, currency, description) VALUES ($1, $2, $3, $4) RETURNING id
+INSERT INTO stocks (name, has_amount, currency, currency_exponent, description) VALUES ($1, $2, $3, $4, $5) RETURNING id
 `
 
 type CreateStockParams struct {
-	Name        string
-	Hasamount   bool
-	Currency    string
-	Description string
+	Name             string
+	Hasamount        bool
+	Currency         string
+	CurrencyExponent int32
+	Description      string
 }
 
 func (q *Queries) CreateStock(ctx context.Context, arg CreateStockParams) (pgtype.UUID, error) {
@@ -28,6 +29,7 @@ func (q *Queries) CreateStock(ctx context.Context, arg CreateStockParams) (pgtyp
 		arg.Name,
 		arg.Hasamount,
 		arg.Currency,
+		arg.CurrencyExponent,
 		arg.Description,
 	)
 	var id pgtype.UUID
@@ -86,14 +88,15 @@ func (q *Queries) DeleteStockTagRelation(ctx context.Context, stockID pgtype.UUI
 }
 
 const getStock = `-- name: GetStock :one
-SELECT name, has_amount, currency, description FROM stocks WHERE id = $1
+SELECT name, has_amount, currency, currency_exponent, description FROM stocks WHERE id = $1
 `
 
 type GetStockRow struct {
-	Name        string
-	HasAmount   bool
-	Currency    string
-	Description string
+	Name             string
+	HasAmount        bool
+	Currency         string
+	CurrencyExponent int32
+	Description      string
 }
 
 func (q *Queries) GetStock(ctx context.Context, id pgtype.UUID) (GetStockRow, error) {
@@ -103,6 +106,7 @@ func (q *Queries) GetStock(ctx context.Context, id pgtype.UUID) (GetStockRow, er
 		&i.Name,
 		&i.HasAmount,
 		&i.Currency,
+		&i.CurrencyExponent,
 		&i.Description,
 	)
 	return i, err
@@ -144,12 +148,15 @@ func (q *Queries) ListStockTags(ctx context.Context) ([]StockTag, error) {
 }
 
 const listStocks = `-- name: ListStocks :many
-SELECT id, name FROM stocks
+SELECT id, name, has_amount, currency, currency_exponent FROM stocks
 `
 
 type ListStocksRow struct {
-	ID   pgtype.UUID
-	Name string
+	ID               pgtype.UUID
+	Name             string
+	HasAmount        bool
+	Currency         string
+	CurrencyExponent int32
 }
 
 func (q *Queries) ListStocks(ctx context.Context) ([]ListStocksRow, error) {
@@ -161,7 +168,13 @@ func (q *Queries) ListStocks(ctx context.Context) ([]ListStocksRow, error) {
 	var items []ListStocksRow
 	for rows.Next() {
 		var i ListStocksRow
-		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.HasAmount,
+			&i.Currency,
+			&i.CurrencyExponent,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -197,15 +210,16 @@ func (q *Queries) ListTagIDsByStock(ctx context.Context, id pgtype.UUID) ([]pgty
 }
 
 const updateStock = `-- name: UpdateStock :execresult
-UPDATE stocks SET name = $1, has_amount = $2, currency = $3, description = $4 WHERE id = $5
+UPDATE stocks SET name = $1, has_amount = $2, currency = $3, currency_exponent = $4, description = $5 WHERE id = $6
 `
 
 type UpdateStockParams struct {
-	Name        string
-	Hasamount   bool
-	Currency    string
-	Description string
-	ID          pgtype.UUID
+	Name             string
+	Hasamount        bool
+	Currency         string
+	CurrencyExponent int32
+	Description      string
+	ID               pgtype.UUID
 }
 
 func (q *Queries) UpdateStock(ctx context.Context, arg UpdateStockParams) (pgconn.CommandTag, error) {
@@ -213,6 +227,7 @@ func (q *Queries) UpdateStock(ctx context.Context, arg UpdateStockParams) (pgcon
 		arg.Name,
 		arg.Hasamount,
 		arg.Currency,
+		arg.CurrencyExponent,
 		arg.Description,
 		arg.ID,
 	)

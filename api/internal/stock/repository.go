@@ -29,8 +29,11 @@ func (r *Repository) ListStocks(ctx context.Context) ([]stockSummary, error) {
 	result := make([]stockSummary, len(raw))
 	for i, data := range raw {
 		result[i] = stockSummary{
-			id:   uuid.UUID(data.ID.Bytes),
-			name: data.Name,
+			id:               uuid.UUID(data.ID.Bytes),
+			name:             data.Name,
+			hasAmount:        data.HasAmount,
+			currency:         data.Currency,
+			currencyExponent: data.CurrencyExponent,
 		}
 	}
 	return result, err
@@ -45,10 +48,11 @@ func (r *Repository) CreateStock(ctx context.Context, stock stock) (uuid.UUID, e
 	q := sqlc.New(tx)
 
 	id, err := q.CreateStock(ctx, sqlc.CreateStockParams{
-		Name:        stock.name,
-		Hasamount:   stock.hasAmount,
-		Currency:    stock.currency,
-		Description: stock.description,
+		Name:             stock.name,
+		Hasamount:        stock.hasAmount,
+		Currency:         stock.currency,
+		CurrencyExponent: stock.currencyExponent,
+		Description:      stock.description,
 	})
 	if err != nil {
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
@@ -106,11 +110,12 @@ func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stock, error) 
 	}
 
 	res := stock{
-		name:        astock.Name,
-		hasAmount:   astock.HasAmount,
-		currency:    astock.Currency,
-		description: astock.Description,
-		tags:        make([]uuid.UUID, len(tags)),
+		name:             astock.Name,
+		hasAmount:        astock.HasAmount,
+		currency:         astock.Currency,
+		currencyExponent: astock.CurrencyExponent,
+		description:      astock.Description,
+		tags:             make([]uuid.UUID, len(tags)),
 	}
 	for i, atag := range tags {
 		res.tags[i] = uuid.UUID(atag.Bytes)
@@ -128,11 +133,12 @@ func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock stock)
 	q := sqlc.New(tx)
 
 	result, err := q.UpdateStock(ctx, sqlc.UpdateStockParams{
-		ID:          pgtype.UUID{Bytes: id, Valid: true},
-		Name:        stock.name,
-		Hasamount:   stock.hasAmount,
-		Currency:    stock.currency,
-		Description: stock.description,
+		ID:               pgtype.UUID{Bytes: id, Valid: true},
+		Name:             stock.name,
+		Hasamount:        stock.hasAmount,
+		Currency:         stock.currency,
+		CurrencyExponent: stock.currencyExponent,
+		Description:      stock.description,
 	})
 	if err != nil {
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {

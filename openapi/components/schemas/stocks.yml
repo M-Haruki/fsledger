@@ -11,16 +11,36 @@ components:
           name:
             type: string
             minLength: 1
+          hasAmount:
+            type: boolean
+          currency:
+            type: string
+          currencyExponent:
+            type: integer
+            format: int32
+            minimum: 0
         required:
           - id
           - name
+          - hasAmount
+          - currency
+          - currencyExponent
       example:
         - id: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
           name: bank A
+          hasAmount: true
+          currency: $
+          currencyExponent: 2
         - id: 0afeb903-d823-44a7-b4ef-0017e72bad5d
           name: my wallet
+          hasAmount: true
+          currency: $
+          currencyExponent: 2
         - id: bde589b4-7550-45c4-a06d-dea931e24031
           name: out
+          hasAmount: true
+          currency: $
+          currencyExponent: 2
     StockID:
       type: object
       properties:
@@ -37,10 +57,14 @@ components:
         name:
           type: string
           minLength: 1
-        has_amount:
+        hasAmount:
           type: boolean
         currency:
           type: string
+        currencyExponent:
+          type: integer
+          format: int32
+          minimum: 0
         description:
           type: string
         tags:
@@ -50,14 +74,16 @@ components:
             format: uuid
       required:
         - name
-        - has_amount
+        - hasAmount
         - currency
+        - currencyExponent
         - description
         - tags
       example:
         name: bank B
-        has_amount: true
+        hasAmount: true
         currency: $
+        currencyExponent: 2
         description: my main bank
         tags:
           - 45021b9e-330c-4a1f-891c-4067fab27cb0

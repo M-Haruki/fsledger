@@ -7,16 +7,20 @@ import (
 )
 
 type stockSummary struct {
-	id   uuid.UUID
-	name string
+	id               uuid.UUID
+	name             string
+	hasAmount        bool
+	currency         string
+	currencyExponent int32
 }
 
 type stock struct {
-	name        string
-	hasAmount   bool
-	currency    string
-	description string
-	tags        []uuid.UUID
+	name             string
+	hasAmount        bool
+	currency         string
+	currencyExponent int32
+	description      string
+	tags             []uuid.UUID
 }
 
 type tag struct {

@@ -13,7 +13,7 @@ type Flow struct {
 	TransactionID pgtype.UUID
 	FromStockID   pgtype.UUID
 	ToStockID     pgtype.UUID
-	Amount        pgtype.Numeric
+	Amount        int64
 }
 
 type FlowTag struct {
@@ -30,9 +30,10 @@ type Stock struct {
 	ID   pgtype.UUID
 	Name string
 	// Whether the total amount is meaningful
-	HasAmount   bool
-	Currency    string
-	Description string
+	HasAmount        bool
+	Currency         string
+	CurrencyExponent int32
+	Description      string
 }
 
 type StockTag struct {

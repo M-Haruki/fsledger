@@ -32,17 +32,21 @@ func (h *StockHandler) ListStocks(ctx context.Context, request openapi.ListStock
 	for i, data := range raw {
 		result[i].Id = openapi_types.UUID(data.id)
 		result[i].Name = data.name
+		result[i].HasAmount = data.hasAmount
+		result[i].Currency = data.currency
+		result[i].CurrencyExponent = data.currencyExponent
 	}
 	return openapi.ListStocks200JSONResponse(result), nil
 }
 
 func (h *StockHandler) CreateStock(ctx context.Context, request openapi.CreateStockRequestObject) (openapi.CreateStockResponseObject, error) {
 	req := stock{
-		name:        request.Body.Name,
-		hasAmount:   request.Body.HasAmount,
-		currency:    request.Body.Currency,
-		description: request.Body.Description,
-		tags:        make([]uuid.UUID, len(request.Body.Tags)),
+		name:             request.Body.Name,
+		hasAmount:        request.Body.HasAmount,
+		currency:         request.Body.Currency,
+		currencyExponent: request.Body.CurrencyExponent,
+		description:      request.Body.Description,
+		tags:             make([]uuid.UUID, len(request.Body.Tags)),
 	}
 	for i, id := range request.Body.Tags {
 		req.tags[i] = uuid.UUID(id)
@@ -72,11 +76,12 @@ func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockReq
 		return openapi.GetStock500JSONResponse{}, nil
 	}
 	response := openapi.StockData{
-		Name:        res.name,
-		HasAmount:   res.hasAmount,
-		Currency:    res.currency,
-		Description: res.description,
-		Tags:        make([]openapi_types.UUID, len(res.tags)),
+		Name:             res.name,
+		HasAmount:        res.hasAmount,
+		Currency:         res.currency,
+		CurrencyExponent: res.currencyExponent,
+		Description:      res.description,
+		Tags:             make([]openapi_types.UUID, len(res.tags)),
 	}
 	for i, tag := range res.tags {
 		response.Tags[i] = openapi_types.UUID(tag)
@@ -86,11 +91,12 @@ func (h *StockHandler) GetStock(ctx context.Context, request openapi.GetStockReq
 
 func (h *StockHandler) UpdateStock(ctx context.Context, request openapi.UpdateStockRequestObject) (openapi.UpdateStockResponseObject, error) {
 	req := stock{
-		name:        request.Body.Name,
-		hasAmount:   request.Body.HasAmount,
-		currency:    request.Body.Currency,
-		description: request.Body.Description,
-		tags:        make([]uuid.UUID, len(request.Body.Tags)),
+		name:             request.Body.Name,
+		hasAmount:        request.Body.HasAmount,
+		currency:         request.Body.Currency,
+		currencyExponent: request.Body.CurrencyExponent,
+		description:      request.Body.Description,
+		tags:             make([]uuid.UUID, len(request.Body.Tags)),
 	}
 	for i, id := range request.Body.Tags {
 		req.tags[i] = uuid.UUID(id)

@@ -8,6 +8,10 @@ A highly customizable personal ledger based on the Flow &amp; Stock model.
 - DB indexing
 - Multi User & Login System
 
+## Memo
+
+- Store the currency exponent with the currency, and use it to scale the integer amount for display in the UI.
+
 ## Database
 
 All columns are `NOT NULL`, and empty strings (`""`) are used in some text columns.
