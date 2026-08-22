@@ -28,6 +28,7 @@ erDiagram
         text name "UNIQUE"
         boolean has_amount "Whether the total amount is meaningful"
         text currency
+        integer currency_exponent
         text description
     }
 
@@ -62,7 +63,7 @@ erDiagram
         uuid transaction_id "FK transactions.id (ON DELETE CASCADE)"
         uuid from_stock_id "FK stocks.id (ON DELETE NO ACTION)"
         uuid to_stock_id "FK stocks.id (ON DELETE NO ACTION)"
-        numeric amount
+        bigint amount
     }
 
     flow_tags{
