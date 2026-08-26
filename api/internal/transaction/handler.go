@@ -22,11 +22,11 @@ func NewHandler(service *Service, log *slog.Logger) *TransactionHandler {
 	}
 }
 
+func (h *TransactionHandler) CreateTransaction(ctx context.Context, request openapi.CreateTransactionRequestObject) (openapi.CreateTransactionResponseObject, error) {
+	return openapi.CreateTransaction500JSONResponse{Message: "constructing"}, nil
+}
 func (h *TransactionHandler) GetTransaction(ctx context.Context, request openapi.GetTransactionRequestObject) (openapi.GetTransactionResponseObject, error) {
 	return openapi.GetTransaction500JSONResponse{Message: "constructing"}, nil
-}
-func (h *TransactionHandler) CreateTransaction(ctx context.Context, request openapi.CreateTransactionRequestObject) (openapi.CreateTransactionResponseObject, error) {
-	return openapi.CreateTransaction400JSONResponse{Message: "constructing"}, nil
 }
 func (h *TransactionHandler) UpdateTransaction(ctx context.Context, request openapi.UpdateTransactionRequestObject) (openapi.UpdateTransactionResponseObject, error) {
 	return openapi.UpdateTransaction500JSONResponse{Message: "constructing"}, nil
