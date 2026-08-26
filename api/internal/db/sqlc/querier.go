@@ -21,31 +21,30 @@ type Querier interface {
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (pgtype.UUID, error)
 	CreateTransactionTag(ctx context.Context, name string) (pgtype.UUID, error)
 	DeleteFlow(ctx context.Context, id pgtype.UUID) error
-	DeleteFlowTag(ctx context.Context, id pgtype.UUID) error
+	DeleteFlowTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
 	DeleteStock(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
 	DeleteStockTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
 	DeleteStockTagRelation(ctx context.Context, stockID pgtype.UUID) error
 	DeleteTransaction(ctx context.Context, id pgtype.UUID) error
-	DeleteTransactionTag(ctx context.Context, id pgtype.UUID) error
-	GetFlowTag(ctx context.Context, id pgtype.UUID) (FlowTag, error)
+	DeleteTransactionTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
+	GetFlowTag(ctx context.Context, id pgtype.UUID) (string, error)
 	GetStock(ctx context.Context, id pgtype.UUID) (GetStockRow, error)
 	GetStockTag(ctx context.Context, id pgtype.UUID) (string, error)
 	GetTransaction(ctx context.Context, id pgtype.UUID) (GetTransactionRow, error)
-	GetTransactionTag(ctx context.Context, id pgtype.UUID) (TransactionTag, error)
+	GetTransactionTag(ctx context.Context, id pgtype.UUID) (string, error)
 	ListFlowByTransaction(ctx context.Context, id pgtype.UUID) ([]ListFlowByTransactionRow, error)
 	ListFlowTags(ctx context.Context) ([]FlowTag, error)
 	ListStockTags(ctx context.Context) ([]StockTag, error)
 	ListStocks(ctx context.Context) ([]ListStocksRow, error)
 	ListTagIDsByStock(ctx context.Context, id pgtype.UUID) ([]pgtype.UUID, error)
-	ListTagsByFlow(ctx context.Context, id pgtype.UUID) ([]ListTagsByFlowRow, error)
 	ListTagsByTransaction(ctx context.Context, id pgtype.UUID) ([]ListTagsByTransactionRow, error)
 	ListTransactionTags(ctx context.Context) ([]TransactionTag, error)
 	UpdateFlow(ctx context.Context, arg UpdateFlowParams) error
-	UpdateFlowTag(ctx context.Context, arg UpdateFlowTagParams) error
+	UpdateFlowTag(ctx context.Context, arg UpdateFlowTagParams) (pgconn.CommandTag, error)
 	UpdateStock(ctx context.Context, arg UpdateStockParams) (pgconn.CommandTag, error)
 	UpdateStockTag(ctx context.Context, arg UpdateStockTagParams) (pgconn.CommandTag, error)
 	UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) error
-	UpdateTransactionTag(ctx context.Context, arg UpdateTransactionTagParams) error
+	UpdateTransactionTag(ctx context.Context, arg UpdateTransactionTagParams) (pgconn.CommandTag, error)
 }
 
 var _ Querier = (*Queries)(nil)

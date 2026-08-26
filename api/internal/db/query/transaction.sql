@@ -14,15 +14,15 @@ DELETE FROM transactions WHERE id = sqlc.arg(id);
 SELECT id, name FROM transaction_tags;
 
 -- name: GetTransactionTag :one
-SELECT id, name FROM transaction_tags WHERE id = sqlc.arg(id);
+SELECT name FROM transaction_tags WHERE id = sqlc.arg(id);
 
 -- name: CreateTransactionTag :one
 INSERT INTO transaction_tags (name) VALUES (sqlc.arg(name)) RETURNING id;
 
--- name: UpdateTransactionTag :exec
+-- name: UpdateTransactionTag :execresult
 UPDATE transaction_tags SET name = sqlc.arg(name) WHERE id = sqlc.arg(id);
 
--- name: DeleteTransactionTag :exec
+-- name: DeleteTransactionTag :execresult
 DELETE FROM transaction_tags WHERE id = sqlc.arg(id);
 
 -- name: ListTagsByTransaction :many

@@ -8,6 +8,7 @@ package sqlc
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -47,13 +48,12 @@ func (q *Queries) DeleteTransaction(ctx context.Context, id pgtype.UUID) error {
 	return err
 }
 
-const deleteTransactionTag = `-- name: DeleteTransactionTag :exec
+const deleteTransactionTag = `-- name: DeleteTransactionTag :execresult
 DELETE FROM transaction_tags WHERE id = $1
 `
 
-func (q *Queries) DeleteTransactionTag(ctx context.Context, id pgtype.UUID) error {
-	_, err := q.db.Exec(ctx, deleteTransactionTag, id)
-	return err
+func (q *Queries) DeleteTransactionTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, deleteTransactionTag, id)
 }
 
 const getTransaction = `-- name: GetTransaction :one
@@ -73,14 +73,14 @@ func (q *Queries) GetTransaction(ctx context.Context, id pgtype.UUID) (GetTransa
 }
 
 const getTransactionTag = `-- name: GetTransactionTag :one
-SELECT id, name FROM transaction_tags WHERE id = $1
+SELECT name FROM transaction_tags WHERE id = $1
 `
 
-func (q *Queries) GetTransactionTag(ctx context.Context, id pgtype.UUID) (TransactionTag, error) {
+func (q *Queries) GetTransactionTag(ctx context.Context, id pgtype.UUID) (string, error) {
 	row := q.db.QueryRow(ctx, getTransactionTag, id)
-	var i TransactionTag
-	err := row.Scan(&i.ID, &i.Name)
-	return i, err
+	var name string
+	err := row.Scan(&name)
+	return name, err
 }
 
 const listTagsByTransaction = `-- name: ListTagsByTransaction :many
@@ -151,7 +151,7 @@ func (q *Queries) UpdateTransaction(ctx context.Context, arg UpdateTransactionPa
 	return err
 }
 
-const updateTransactionTag = `-- name: UpdateTransactionTag :exec
+const updateTransactionTag = `-- name: UpdateTransactionTag :execresult
 UPDATE transaction_tags SET name = $1 WHERE id = $2
 `
 
@@ -160,7 +160,6 @@ type UpdateTransactionTagParams struct {
 	ID   pgtype.UUID
 }
 
-func (q *Queries) UpdateTransactionTag(ctx context.Context, arg UpdateTransactionTagParams) error {
-	_, err := q.db.Exec(ctx, updateTransactionTag, arg.Name, arg.ID)
-	return err
+func (q *Queries) UpdateTransactionTag(ctx context.Context, arg UpdateTransactionTagParams) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, updateTransactionTag, arg.Name, arg.ID)
 }

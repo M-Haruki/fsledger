@@ -35,11 +35,11 @@ paths:
   #   $ref: "paths/transactions.yml#/Transactions"
   # /transactions/{id}:
   #   $ref: "paths/transactions.yml#/TransactionsID"
-  # /transactions/tags:
-  #   $ref: "paths/transaction-tags.yml#/Tags_"
-  # /transactions/tags/{id}:
-  #   $ref: "paths/transaction-tags.yml#/TagsID"
-  # /flows/tags:
-  #   $ref: "paths/flow-tags.yml#/Tags_"
-  # /flows/tags/{id}:
-  #   $ref: "paths/flow-tags.yml#/TagsID"
+  /transactions/tags:
+    $ref: "paths/transaction-tags.yml#/Tags_"
+  /transactions/tags/{id}:
+    $ref: "paths/transaction-tags.yml#/TagsID"
+  /flows/tags:
+    $ref: "paths/flow-tags.yml#/Tags_"
+  /flows/tags/{id}:
+    $ref: "paths/flow-tags.yml#/TagsID"

@@ -8,6 +8,7 @@ package sqlc
 import (
 	"context"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -54,24 +55,23 @@ func (q *Queries) DeleteFlow(ctx context.Context, id pgtype.UUID) error {
 	return err
 }
 
-const deleteFlowTag = `-- name: DeleteFlowTag :exec
+const deleteFlowTag = `-- name: DeleteFlowTag :execresult
 DELETE FROM flow_tags WHERE id = $1
 `
 
-func (q *Queries) DeleteFlowTag(ctx context.Context, id pgtype.UUID) error {
-	_, err := q.db.Exec(ctx, deleteFlowTag, id)
-	return err
+func (q *Queries) DeleteFlowTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, deleteFlowTag, id)
 }
 
 const getFlowTag = `-- name: GetFlowTag :one
-SELECT id, name FROM flow_tags WHERE id = $1
+SELECT name FROM flow_tags WHERE id = $1
 `
 
-func (q *Queries) GetFlowTag(ctx context.Context, id pgtype.UUID) (FlowTag, error) {
+func (q *Queries) GetFlowTag(ctx context.Context, id pgtype.UUID) (string, error) {
 	row := q.db.QueryRow(ctx, getFlowTag, id)
-	var i FlowTag
-	err := row.Scan(&i.ID, &i.Name)
-	return i, err
+	var name string
+	err := row.Scan(&name)
+	return name, err
 }
 
 const listFlowByTransaction = `-- name: ListFlowByTransaction :many
@@ -134,35 +134,6 @@ func (q *Queries) ListFlowTags(ctx context.Context) ([]FlowTag, error) {
 	return items, nil
 }
 
-const listTagsByFlow = `-- name: ListTagsByFlow :many
-SELECT r.tag_id AS id, t.name AS name FROM flow_tag_relations r JOIN flow_tags t ON r.tag_id = t.id WHERE r.flow_id = $1
-`
-
-type ListTagsByFlowRow struct {
-	ID   pgtype.UUID
-	Name string
-}
-
-func (q *Queries) ListTagsByFlow(ctx context.Context, id pgtype.UUID) ([]ListTagsByFlowRow, error) {
-	rows, err := q.db.Query(ctx, listTagsByFlow, id)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListTagsByFlowRow
-	for rows.Next() {
-		var i ListTagsByFlowRow
-		if err := rows.Scan(&i.ID, &i.Name); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const updateFlow = `-- name: UpdateFlow :exec
 UPDATE flows SET from_stock_id = $1, to_stock_id = $2, amount = $3 WHERE id = $4
 `
@@ -184,7 +155,7 @@ func (q *Queries) UpdateFlow(ctx context.Context, arg UpdateFlowParams) error {
 	return err
 }
 
-const updateFlowTag = `-- name: UpdateFlowTag :exec
+const updateFlowTag = `-- name: UpdateFlowTag :execresult
 UPDATE flow_tags SET name = $1 WHERE id = $2
 `
 
@@ -193,7 +164,6 @@ type UpdateFlowTagParams struct {
 	ID   pgtype.UUID
 }
 
-func (q *Queries) UpdateFlowTag(ctx context.Context, arg UpdateFlowTagParams) error {
-	_, err := q.db.Exec(ctx, updateFlowTag, arg.Name, arg.ID)
-	return err
+func (q *Queries) UpdateFlowTag(ctx context.Context, arg UpdateFlowTagParams) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, updateFlowTag, arg.Name, arg.ID)
 }

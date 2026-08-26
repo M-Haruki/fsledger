@@ -14,16 +14,13 @@ DELETE FROM flows WHERE id = sqlc.arg(id);
 SELECT id, name FROM flow_tags;
 
 -- name: GetFlowTag :one
-SELECT id, name FROM flow_tags WHERE id = sqlc.arg(id);
+SELECT name FROM flow_tags WHERE id = sqlc.arg(id);
 
 -- name: CreateFlowTag :one
 INSERT INTO flow_tags (name) VALUES (sqlc.arg(name)) RETURNING id;
 
--- name: UpdateFlowTag :exec
+-- name: UpdateFlowTag :execresult
 UPDATE flow_tags SET name = sqlc.arg(name) WHERE id = sqlc.arg(id);
 
--- name: DeleteFlowTag :exec
+-- name: DeleteFlowTag :execresult
 DELETE FROM flow_tags WHERE id = sqlc.arg(id);
-
--- name: ListTagsByFlow :many
-SELECT r.tag_id AS id, t.name AS name FROM flow_tag_relations r JOIN flow_tags t ON r.tag_id = t.id WHERE r.flow_id = sqlc.arg(id);
