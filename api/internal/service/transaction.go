@@ -1,22 +1,13 @@
-package transaction
+package service
 
 import (
 	"context"
 
+	"github.com/M-Haruki/fsledger/api/internal/model"
 	"github.com/google/uuid"
 )
 
-type Service struct {
-	repo Repository
-}
-
-func NewService(repo Repository) *Service {
-	return &Service{
-		repo: repo,
-	}
-}
-
-func (s *Service) ListTransactionTags(ctx context.Context) ([]tag, error) {
+func (s *Service) ListTransactionTags(ctx context.Context) ([]model.Tag, error) {
 	return s.repo.ListTransactionTags(ctx)
 }
 func (s *Service) CreateTransactionTag(ctx context.Context, name string) (uuid.UUID, error) {

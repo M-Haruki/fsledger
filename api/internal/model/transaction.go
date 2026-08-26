@@ -1,15 +1,6 @@
-package transaction
+package model
 
-import (
-	"errors"
-
-	"github.com/google/uuid"
-)
-
-type tag struct {
-	id   uuid.UUID
-	name string
-}
+import "errors"
 
 var ErrTransactionTagNameDuplicate = errors.New("transaction tag name duplicate")
 var ErrTransactionTagNotFound = errors.New("transaction tag not found")

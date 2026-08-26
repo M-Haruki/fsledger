@@ -1,4 +1,4 @@
-package stock
+package repository
 
 import (
 	"context"
@@ -6,40 +6,28 @@ import (
 	"errors"
 
 	"github.com/M-Haruki/fsledger/api/internal/db/sqlc"
+	"github.com/M-Haruki/fsledger/api/internal/model"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type Repository struct {
-	db      *pgxpool.Pool
-	queries *sqlc.Queries
-}
-
-func NewRepository(d *pgxpool.Pool, q *sqlc.Queries) *Repository {
-	return &Repository{
-		db:      d,
-		queries: q,
-	}
-}
-
-func (r *Repository) ListStocks(ctx context.Context) ([]stockSummary, error) {
+func (r *Repository) ListStocks(ctx context.Context) ([]model.StockSummary, error) {
 	raw, err := r.queries.ListStocks(ctx)
-	result := make([]stockSummary, len(raw))
+	result := make([]model.StockSummary, len(raw))
 	for i, data := range raw {
-		result[i] = stockSummary{
-			id:               uuid.UUID(data.ID.Bytes),
-			name:             data.Name,
-			hasAmount:        data.HasAmount,
-			currency:         data.Currency,
-			currencyExponent: data.CurrencyExponent,
+		result[i] = model.StockSummary{
+			Id:               uuid.UUID(data.ID.Bytes),
+			Name:             data.Name,
+			HasAmount:        data.HasAmount,
+			Currency:         data.Currency,
+			CurrencyExponent: data.CurrencyExponent,
 		}
 	}
 	return result, err
 }
 
-func (r *Repository) CreateStock(ctx context.Context, stock stock) (uuid.UUID, error) {
+func (r *Repository) CreateStock(ctx context.Context, stock model.Stock) (uuid.UUID, error) {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
 		return uuid.Nil, err
@@ -48,28 +36,28 @@ func (r *Repository) CreateStock(ctx context.Context, stock stock) (uuid.UUID, e
 	q := sqlc.New(tx)
 
 	id, err := q.CreateStock(ctx, sqlc.CreateStockParams{
-		Name:             stock.name,
-		Hasamount:        stock.hasAmount,
-		Currency:         stock.currency,
-		CurrencyExponent: stock.currencyExponent,
-		Description:      stock.description,
+		Name:             stock.Name,
+		Hasamount:        stock.HasAmount,
+		Currency:         stock.Currency,
+		CurrencyExponent: stock.CurrencyExponent,
+		Description:      stock.Description,
 	})
 	if err != nil {
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 			if pgErr.Code == "23505" {
 				// duplicate key
-				return uuid.Nil, ErrStockNameDuplicate
+				return uuid.Nil, model.ErrStockNameDuplicate
 			}
 		}
 		return uuid.Nil, err
 	}
-	for _, tagId := range stock.tags {
+	for _, tagId := range stock.Tags {
 		err := q.CreateStockTagRelation(ctx, sqlc.CreateStockTagRelationParams{StockID: id, TagID: pgtype.UUID{Bytes: tagId, Valid: true}})
 		if err != nil {
 			if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 				if pgErr.Code == "23503" {
 					// tag not found
-					return uuid.Nil, ErrStockTagNotFound
+					return uuid.Nil, model.ErrStockTagNotFound
 				}
 			}
 			return uuid.Nil, err
@@ -84,10 +72,10 @@ func (r *Repository) CreateStock(ctx context.Context, stock stock) (uuid.UUID, e
 	return uuid.UUID(id.Bytes), nil
 }
 
-func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stock, error) {
+func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (model.Stock, error) {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
-		return stock{}, err
+		return model.Stock{}, err
 	}
 	defer tx.Rollback(ctx)
 	q := sqlc.New(tx)
@@ -96,35 +84,35 @@ func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (stock, error) 
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return stock{}, ErrStockNotFound
+			return model.Stock{}, model.ErrStockNotFound
 		}
-		return stock{}, err
+		return model.Stock{}, err
 	}
 	tags, err := q.ListTagIDsByStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
-		return stock{}, err
+		return model.Stock{}, err
 	}
 	err = tx.Commit(ctx)
 	if err != nil {
-		return stock{}, err
+		return model.Stock{}, err
 	}
 
-	res := stock{
-		name:             astock.Name,
-		hasAmount:        astock.HasAmount,
-		currency:         astock.Currency,
-		currencyExponent: astock.CurrencyExponent,
-		description:      astock.Description,
-		tags:             make([]uuid.UUID, len(tags)),
+	res := model.Stock{
+		Name:             astock.Name,
+		HasAmount:        astock.HasAmount,
+		Currency:         astock.Currency,
+		CurrencyExponent: astock.CurrencyExponent,
+		Description:      astock.Description,
+		Tags:             make([]uuid.UUID, len(tags)),
 	}
 	for i, atag := range tags {
-		res.tags[i] = uuid.UUID(atag.Bytes)
+		res.Tags[i] = uuid.UUID(atag.Bytes)
 	}
 
 	return res, nil
 }
 
-func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock stock) error {
+func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock model.Stock) error {
 	tx, err := r.db.Begin(ctx)
 	if err != nil {
 		return err
@@ -134,36 +122,36 @@ func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock stock)
 
 	result, err := q.UpdateStock(ctx, sqlc.UpdateStockParams{
 		ID:               pgtype.UUID{Bytes: id, Valid: true},
-		Name:             stock.name,
-		Hasamount:        stock.hasAmount,
-		Currency:         stock.currency,
-		CurrencyExponent: stock.currencyExponent,
-		Description:      stock.description,
+		Name:             stock.Name,
+		Hasamount:        stock.HasAmount,
+		Currency:         stock.Currency,
+		CurrencyExponent: stock.CurrencyExponent,
+		Description:      stock.Description,
 	})
 	if err != nil {
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 			if pgErr.Code == "23505" {
 				// duplicate key
-				return ErrStockNameDuplicate
+				return model.ErrStockNameDuplicate
 			}
 		}
 		return err
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return ErrStockNotFound
+		return model.ErrStockNotFound
 	}
 	err = q.DeleteStockTagRelation(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
 		return err
 	}
-	for _, tagId := range stock.tags {
+	for _, tagId := range stock.Tags {
 		err := q.CreateStockTagRelation(ctx, sqlc.CreateStockTagRelationParams{StockID: pgtype.UUID{Bytes: id, Valid: true}, TagID: pgtype.UUID{Bytes: tagId, Valid: true}})
 		if err != nil {
 			if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 				if pgErr.Code == "23503" {
 					// tag not found
-					return ErrStockTagNotFound
+					return model.ErrStockTagNotFound
 				}
 			}
 			return err
@@ -184,21 +172,21 @@ func (r *Repository) DeleteStock(ctx context.Context, id uuid.UUID) error {
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return ErrStockNotFound
+		return model.ErrStockNotFound
 	}
 	return nil
 }
 
-func (r *Repository) ListStockTags(ctx context.Context) ([]tag, error) {
+func (r *Repository) ListStockTags(ctx context.Context) ([]model.Tag, error) {
 	res, err := r.queries.ListStockTags(ctx)
 	if err != nil {
 		return nil, err
 	}
-	result := make([]tag, len(res))
+	result := make([]model.Tag, len(res))
 	for i, atag := range res {
-		result[i] = tag{
-			id:   uuid.UUID(atag.ID.Bytes),
-			name: atag.Name,
+		result[i] = model.Tag{
+			Id:   uuid.UUID(atag.ID.Bytes),
+			Name: atag.Name,
 		}
 	}
 	return result, nil
@@ -210,7 +198,7 @@ func (r *Repository) CreateStockTag(ctx context.Context, name string) (uuid.UUID
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 			if pgErr.Code == "23505" {
 				// duplicate key
-				return uuid.Nil, ErrStockTagNameDuplicate
+				return uuid.Nil, model.ErrStockTagNameDuplicate
 			}
 		}
 		return uuid.Nil, err
@@ -222,7 +210,7 @@ func (r *Repository) GetStockTag(ctx context.Context, id uuid.UUID) (string, err
 	name, err := r.queries.GetStockTag(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", ErrStockTagNotFound
+			return "", model.ErrStockTagNotFound
 		}
 		return "", err
 	}
@@ -239,7 +227,7 @@ func (r *Repository) UpdateStockTag(ctx context.Context, id uuid.UUID, name stri
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return ErrStockTagNotFound
+		return model.ErrStockTagNotFound
 	}
 	return nil
 }
@@ -251,7 +239,7 @@ func (r *Repository) DeleteStockTag(ctx context.Context, id uuid.UUID) error {
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return ErrStockTagNotFound
+		return model.ErrStockTagNotFound
 	}
 	return nil
 }

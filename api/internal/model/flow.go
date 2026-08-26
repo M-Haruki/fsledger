@@ -1,15 +1,6 @@
-package flow
+package model
 
-import (
-	"errors"
-
-	"github.com/google/uuid"
-)
-
-type tag struct {
-	id   uuid.UUID
-	name string
-}
+import "errors"
 
 var ErrFlowTagNameDuplicate = errors.New("flow tag name duplicate")
 var ErrFlowTagNotFound = errors.New("flow tag not found")

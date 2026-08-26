@@ -1,22 +1,13 @@
-package flow
+package service
 
 import (
 	"context"
 
+	"github.com/M-Haruki/fsledger/api/internal/model"
 	"github.com/google/uuid"
 )
 
-type Service struct {
-	repo Repository
-}
-
-func NewService(repo Repository) *Service {
-	return &Service{
-		repo: repo,
-	}
-}
-
-func (s *Service) ListFlowTags(ctx context.Context) ([]tag, error) {
+func (s *Service) ListFlowTags(ctx context.Context) ([]model.Tag, error) {
 	return s.repo.ListFlowTags(ctx)
 }
 func (s *Service) CreateFlowTag(ctx context.Context, name string) (uuid.UUID, error) {

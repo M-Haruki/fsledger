@@ -1,4 +1,4 @@
-package flow
+package repository
 
 import (
 	"context"
@@ -6,34 +6,22 @@ import (
 	"errors"
 
 	"github.com/M-Haruki/fsledger/api/internal/db/sqlc"
+	"github.com/M-Haruki/fsledger/api/internal/model"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type Repository struct {
-	db      *pgxpool.Pool
-	queries *sqlc.Queries
-}
-
-func NewRepository(d *pgxpool.Pool, q *sqlc.Queries) *Repository {
-	return &Repository{
-		db:      d,
-		queries: q,
-	}
-}
-
-func (r *Repository) ListFlowTags(ctx context.Context) ([]tag, error) {
+func (r *Repository) ListFlowTags(ctx context.Context) ([]model.Tag, error) {
 	res, err := r.queries.ListFlowTags(ctx)
 	if err != nil {
 		return nil, err
 	}
-	result := make([]tag, len(res))
+	result := make([]model.Tag, len(res))
 	for i, atag := range res {
-		result[i] = tag{
-			id:   uuid.UUID(atag.ID.Bytes),
-			name: atag.Name,
+		result[i] = model.Tag{
+			Id:   uuid.UUID(atag.ID.Bytes),
+			Name: atag.Name,
 		}
 	}
 	return result, nil
@@ -45,7 +33,7 @@ func (r *Repository) CreateFlowTag(ctx context.Context, name string) (uuid.UUID,
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 			if pgErr.Code == "23505" {
 				// duplicate key
-				return uuid.Nil, ErrFlowTagNameDuplicate
+				return uuid.Nil, model.ErrFlowTagNameDuplicate
 			}
 		}
 		return uuid.Nil, err
@@ -57,7 +45,7 @@ func (r *Repository) GetFlowTag(ctx context.Context, id uuid.UUID) (string, erro
 	name, err := r.queries.GetFlowTag(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", ErrFlowTagNotFound
+			return "", model.ErrFlowTagNotFound
 		}
 		return "", err
 	}
@@ -74,7 +62,7 @@ func (r *Repository) UpdateFlowTag(ctx context.Context, id uuid.UUID, name strin
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return ErrFlowTagNotFound
+		return model.ErrFlowTagNotFound
 	}
 	return nil
 }
@@ -86,7 +74,7 @@ func (r *Repository) DeleteFlowTag(ctx context.Context, id uuid.UUID) error {
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return ErrFlowTagNotFound
+		return model.ErrFlowTagNotFound
 	}
 	return nil
 }

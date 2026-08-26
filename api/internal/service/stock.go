@@ -1,37 +1,28 @@
-package stock
+package service
 
 import (
 	"context"
 
+	"github.com/M-Haruki/fsledger/api/internal/model"
 	"github.com/google/uuid"
 )
 
-type Service struct {
-	repo Repository
-}
-
-func NewService(repo Repository) *Service {
-	return &Service{
-		repo: repo,
-	}
-}
-
-func (s *Service) ListStocks(ctx context.Context) ([]stockSummary, error) {
+func (s *Service) ListStocks(ctx context.Context) ([]model.StockSummary, error) {
 	return s.repo.ListStocks(ctx)
 }
-func (s *Service) CreateStock(ctx context.Context, stock stock) (uuid.UUID, error) {
+func (s *Service) CreateStock(ctx context.Context, stock model.Stock) (uuid.UUID, error) {
 	return s.repo.CreateStock(ctx, stock)
 }
-func (s *Service) GetStock(ctx context.Context, id uuid.UUID) (stock, error) {
+func (s *Service) GetStock(ctx context.Context, id uuid.UUID) (model.Stock, error) {
 	return s.repo.GetStock(ctx, id)
 }
-func (s *Service) UpdateStock(ctx context.Context, id uuid.UUID, stock stock) error {
+func (s *Service) UpdateStock(ctx context.Context, id uuid.UUID, stock model.Stock) error {
 	return s.repo.UpdateStock(ctx, id, stock)
 }
 func (s *Service) DeleteStock(ctx context.Context, id uuid.UUID) error {
 	return s.repo.DeleteStock(ctx, id)
 }
-func (s *Service) ListStockTags(ctx context.Context) ([]tag, error) {
+func (s *Service) ListStockTags(ctx context.Context) ([]model.Tag, error) {
 	return s.repo.ListStockTags(ctx)
 }
 func (s *Service) CreateStockTag(ctx context.Context, name string) (uuid.UUID, error) {
