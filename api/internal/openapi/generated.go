@@ -26,6 +26,14 @@ type Error struct {
 	Message string `json:"message"`
 }
 
+// FlowData defines model for FlowData.
+type FlowData struct {
+	Amount int64                `json:"amount"`
+	From   openapi_types.UUID   `json:"from"`
+	Tags   []openapi_types.UUID `json:"tags"`
+	To     openapi_types.UUID   `json:"to"`
+}
+
 // StockData defines model for StockData.
 type StockData struct {
 	Currency         string               `json:"currency"`
@@ -66,11 +74,27 @@ type Tags = []struct {
 	Name string             `json:"name"`
 }
 
+// TransactionData defines model for TransactionData.
+type TransactionData struct {
+	Desc       string               `json:"desc"`
+	Flows      []FlowData           `json:"flows"`
+	OccurredAt openapi_types.Date   `json:"occurred_at"`
+	Tags       []openapi_types.UUID `json:"tags"`
+}
+
+// TransactionID defines model for TransactionID.
+type TransactionID struct {
+	Id openapi_types.UUID `json:"id"`
+}
+
 // StockIDParam defines model for StockIDParam.
 type StockIDParam = openapi_types.UUID
 
 // TagIDParam defines model for TagIDParam.
 type TagIDParam = openapi_types.UUID
+
+// TransactionIDParam defines model for TransactionIDParam.
+type TransactionIDParam = openapi_types.UUID
 
 // CreateFlowTagsJSONRequestBody defines body for CreateFlowTags for application/json ContentType.
 type CreateFlowTagsJSONRequestBody = TagData
@@ -90,11 +114,17 @@ type UpdateStockTagJSONRequestBody = TagData
 // UpdateStockJSONRequestBody defines body for UpdateStock for application/json ContentType.
 type UpdateStockJSONRequestBody = StockData
 
+// CreateTransactionJSONRequestBody defines body for CreateTransaction for application/json ContentType.
+type CreateTransactionJSONRequestBody = TransactionData
+
 // CreateTransactionTagsJSONRequestBody defines body for CreateTransactionTags for application/json ContentType.
 type CreateTransactionTagsJSONRequestBody = TagData
 
 // UpdateTransactionTagJSONRequestBody defines body for UpdateTransactionTag for application/json ContentType.
 type UpdateTransactionTagJSONRequestBody = TagData
+
+// UpdateTransactionJSONRequestBody defines body for UpdateTransaction for application/json ContentType.
+type UpdateTransactionJSONRequestBody = TransactionData
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -146,6 +176,9 @@ type ServerInterface interface {
 	// UpdateStock Update
 	// (PUT /stocks/{id})
 	UpdateStock(ctx *echo.Context, id StockIDParam) error
+	// CreateTransaction Create
+	// (POST /transactions)
+	CreateTransaction(ctx *echo.Context) error
 	// ListTransactionTags List
 	// (GET /transactions/tags)
 	ListTransactionTags(ctx *echo.Context) error
@@ -161,6 +194,15 @@ type ServerInterface interface {
 	// UpdateTransactionTag Update
 	// (PUT /transactions/tags/{id})
 	UpdateTransactionTag(ctx *echo.Context, id TagIDParam) error
+	// DeleteTransaction Delete
+	// (DELETE /transactions/{id})
+	DeleteTransaction(ctx *echo.Context, id TransactionIDParam) error
+	// GetTransaction Get
+	// (GET /transactions/{id})
+	GetTransaction(ctx *echo.Context, id TransactionIDParam) error
+	// UpdateTransaction Update
+	// (PUT /transactions/{id})
+	UpdateTransaction(ctx *echo.Context, id TransactionIDParam) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -375,6 +417,15 @@ func (w *ServerInterfaceWrapper) UpdateStock(ctx *echo.Context) error {
 	return err
 }
 
+// CreateTransaction converts echo context to params.
+func (w *ServerInterfaceWrapper) CreateTransaction(ctx *echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.CreateTransaction(ctx)
+	return err
+}
+
 // ListTransactionTags converts echo context to params.
 func (w *ServerInterfaceWrapper) ListTransactionTags(ctx *echo.Context) error {
 	var err error
@@ -441,6 +492,54 @@ func (w *ServerInterfaceWrapper) UpdateTransactionTag(ctx *echo.Context) error {
 	return err
 }
 
+// DeleteTransaction converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteTransaction(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id TransactionIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.DeleteTransaction(ctx, id)
+	return err
+}
+
+// GetTransaction converts echo context to params.
+func (w *ServerInterfaceWrapper) GetTransaction(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id TransactionIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetTransaction(ctx, id)
+	return err
+}
+
+// UpdateTransaction converts echo context to params.
+func (w *ServerInterfaceWrapper) UpdateTransaction(ctx *echo.Context) error {
+	var err error
+	// ------------- Path parameter "id" -------------
+	var id TransactionIDParam
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "uuid", ValueIsUnescaped: ctx.Request().URL.RawPath == ""})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.UpdateTransaction(ctx, id)
+	return err
+}
+
 // This is a simple interface which specifies echo.Route addition functions which
 // are present on both echo.Echo and echo.Group, since we want to allow using
 // either of them for path registration
@@ -499,6 +598,10 @@ func RegisterHandlersWithOptions(router EchoRouter, si ServerInterface, options 
 	router.DELETE(options.BaseURL+"/stocks/tags/:id", wrapper.DeleteStockTag, options.OperationMiddlewares["deleteStockTag"]...)
 	router.GET(options.BaseURL+"/stocks/tags/:id", wrapper.GetStockTag, options.OperationMiddlewares["getStockTag"]...)
 	router.PUT(options.BaseURL+"/stocks/tags/:id", wrapper.UpdateStockTag, options.OperationMiddlewares["updateStockTag"]...)
+	router.POST(options.BaseURL+"/transactions", wrapper.CreateTransaction, options.OperationMiddlewares["createTransaction"]...)
+	router.DELETE(options.BaseURL+"/transactions/:id", wrapper.DeleteTransaction, options.OperationMiddlewares["deleteTransaction"]...)
+	router.GET(options.BaseURL+"/transactions/:id", wrapper.GetTransaction, options.OperationMiddlewares["getTransaction"]...)
+	router.PUT(options.BaseURL+"/transactions/:id", wrapper.UpdateTransaction, options.OperationMiddlewares["updateTransaction"]...)
 	router.GET(options.BaseURL+"/transactions/tags", wrapper.ListTransactionTags, options.OperationMiddlewares["listTransactionTags"]...)
 	router.POST(options.BaseURL+"/transactions/tags", wrapper.CreateTransactionTags, options.OperationMiddlewares["createTransactionTags"]...)
 	router.DELETE(options.BaseURL+"/transactions/tags/:id", wrapper.DeleteTransactionTag, options.OperationMiddlewares["deleteTransactionTag"]...)
@@ -1367,6 +1470,56 @@ func (response UpdateStock500JSONResponse) VisitUpdateStockResponse(w http.Respo
 	return err
 }
 
+type CreateTransactionRequestObject struct {
+	Body *CreateTransactionJSONRequestBody
+}
+
+type CreateTransactionResponseObject interface {
+	VisitCreateTransactionResponse(w http.ResponseWriter) error
+}
+
+type CreateTransaction201JSONResponse TransactionID
+
+func (response CreateTransaction201JSONResponse) VisitCreateTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(201)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateTransaction400JSONResponse Error
+
+func (response CreateTransaction400JSONResponse) VisitCreateTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type CreateTransaction500JSONResponse Error
+
+func (response CreateTransaction500JSONResponse) VisitCreateTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 type ListTransactionTagsRequestObject struct {
 }
 
@@ -1647,6 +1800,187 @@ func (response UpdateTransactionTag500JSONResponse) VisitUpdateTransactionTagRes
 	return err
 }
 
+type DeleteTransactionRequestObject struct {
+	Id TransactionIDParam `json:"id"`
+}
+
+type DeleteTransactionResponseObject interface {
+	VisitDeleteTransactionResponse(w http.ResponseWriter) error
+}
+
+type DeleteTransaction204Response struct {
+}
+
+func (response DeleteTransaction204Response) VisitDeleteTransactionResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type DeleteTransaction400JSONResponse Error
+
+func (response DeleteTransaction400JSONResponse) VisitDeleteTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteTransaction404JSONResponse Error
+
+func (response DeleteTransaction404JSONResponse) VisitDeleteTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type DeleteTransaction500JSONResponse Error
+
+func (response DeleteTransaction500JSONResponse) VisitDeleteTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetTransactionRequestObject struct {
+	Id TransactionIDParam `json:"id"`
+}
+
+type GetTransactionResponseObject interface {
+	VisitGetTransactionResponse(w http.ResponseWriter) error
+}
+
+type GetTransaction200JSONResponse TransactionData
+
+func (response GetTransaction200JSONResponse) VisitGetTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetTransaction400JSONResponse Error
+
+func (response GetTransaction400JSONResponse) VisitGetTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetTransaction404JSONResponse Error
+
+func (response GetTransaction404JSONResponse) VisitGetTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type GetTransaction500JSONResponse Error
+
+func (response GetTransaction500JSONResponse) VisitGetTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateTransactionRequestObject struct {
+	Id   TransactionIDParam `json:"id"`
+	Body *UpdateTransactionJSONRequestBody
+}
+
+type UpdateTransactionResponseObject interface {
+	VisitUpdateTransactionResponse(w http.ResponseWriter) error
+}
+
+type UpdateTransaction204Response struct {
+}
+
+func (response UpdateTransaction204Response) VisitUpdateTransactionResponse(w http.ResponseWriter) error {
+	w.WriteHeader(204)
+	return nil
+}
+
+type UpdateTransaction400JSONResponse Error
+
+func (response UpdateTransaction400JSONResponse) VisitUpdateTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateTransaction404JSONResponse Error
+
+func (response UpdateTransaction404JSONResponse) VisitUpdateTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(404)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type UpdateTransaction500JSONResponse Error
+
+func (response UpdateTransaction500JSONResponse) VisitUpdateTransactionResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// ListFlowTags List
@@ -1697,6 +2031,9 @@ type StrictServerInterface interface {
 	// UpdateStock Update
 	// (PUT /stocks/{id})
 	UpdateStock(ctx context.Context, request UpdateStockRequestObject) (UpdateStockResponseObject, error)
+	// CreateTransaction Create
+	// (POST /transactions)
+	CreateTransaction(ctx context.Context, request CreateTransactionRequestObject) (CreateTransactionResponseObject, error)
 	// ListTransactionTags List
 	// (GET /transactions/tags)
 	ListTransactionTags(ctx context.Context, request ListTransactionTagsRequestObject) (ListTransactionTagsResponseObject, error)
@@ -1712,6 +2049,15 @@ type StrictServerInterface interface {
 	// UpdateTransactionTag Update
 	// (PUT /transactions/tags/{id})
 	UpdateTransactionTag(ctx context.Context, request UpdateTransactionTagRequestObject) (UpdateTransactionTagResponseObject, error)
+	// DeleteTransaction Delete
+	// (DELETE /transactions/{id})
+	DeleteTransaction(ctx context.Context, request DeleteTransactionRequestObject) (DeleteTransactionResponseObject, error)
+	// GetTransaction Get
+	// (GET /transactions/{id})
+	GetTransaction(ctx context.Context, request GetTransactionRequestObject) (GetTransactionResponseObject, error)
+	// UpdateTransaction Update
+	// (PUT /transactions/{id})
+	UpdateTransaction(ctx context.Context, request UpdateTransactionRequestObject) (UpdateTransactionResponseObject, error)
 }
 
 type StrictHandlerFunc func(ctx *echo.Context, request any) (any, error)
@@ -2208,6 +2554,45 @@ func (sh *strictHandler) UpdateStock(ctx *echo.Context, id StockIDParam) error {
 	return nil
 }
 
+// CreateTransaction operation middleware
+func (sh *strictHandler) CreateTransaction(ctx *echo.Context) error {
+	var request CreateTransactionRequestObject
+
+	var body CreateTransactionJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.CreateTransaction(ctx.Request().Context(), request.(CreateTransactionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "CreateTransaction")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(CreateTransactionResponseObject); ok {
+		return validResponse.VisitCreateTransactionResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
 // ListTransactionTags operation middleware
 func (sh *strictHandler) ListTransactionTags(ctx *echo.Context) error {
 	var request ListTransactionTagsRequestObject
@@ -2361,40 +2746,139 @@ func (sh *strictHandler) UpdateTransactionTag(ctx *echo.Context, id TagIDParam) 
 	return nil
 }
 
+// DeleteTransaction operation middleware
+func (sh *strictHandler) DeleteTransaction(ctx *echo.Context, id TransactionIDParam) error {
+	var request DeleteTransactionRequestObject
+
+	request.Id = id
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.DeleteTransaction(ctx.Request().Context(), request.(DeleteTransactionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "DeleteTransaction")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(DeleteTransactionResponseObject); ok {
+		return validResponse.VisitDeleteTransactionResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// GetTransaction operation middleware
+func (sh *strictHandler) GetTransaction(ctx *echo.Context, id TransactionIDParam) error {
+	var request GetTransactionRequestObject
+
+	request.Id = id
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetTransaction(ctx.Request().Context(), request.(GetTransactionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetTransaction")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(GetTransactionResponseObject); ok {
+		return validResponse.VisitGetTransactionResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// UpdateTransaction operation middleware
+func (sh *strictHandler) UpdateTransaction(ctx *echo.Context, id TransactionIDParam) error {
+	var request UpdateTransactionRequestObject
+
+	request.Id = id
+
+	var body UpdateTransactionJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.UpdateTransaction(ctx.Request().Context(), request.(UpdateTransactionRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "UpdateTransaction")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(UpdateTransactionResponseObject); ok {
+		return validResponse.VisitUpdateTransactionResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
 // Base64 encoded, compressed with deflate, json marshaled OpenAPI spec.
 // Stored as a slice of fixed-width chunks rather than one concatenated
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"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",
+	"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",
+	"9D8hbNfqq8NFzcf222XN9frz+q8AAAD//w==",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,

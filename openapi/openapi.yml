@@ -31,10 +31,10 @@ paths:
     $ref: "paths/stock-tags.yml#/Tags_"
   /stocks/tags/{id}:
     $ref: "paths/stock-tags.yml#/TagsID"
-  # /transactions:
-  #   $ref: "paths/transactions.yml#/Transactions"
-  # /transactions/{id}:
-  #   $ref: "paths/transactions.yml#/TransactionsID"
+  /transactions:
+    $ref: "paths/transactions.yml#/Transactions"
+  /transactions/{id}:
+    $ref: "paths/transactions.yml#/TransactionsID"
   /transactions/tags:
     $ref: "paths/transaction-tags.yml#/Tags_"
   /transactions/tags/{id}:
