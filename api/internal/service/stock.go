@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *Service) ListStocks(ctx context.Context) ([]model.StockSummary, error) {
+func (s *Service) ListStocks(ctx context.Context) ([]model.StockAbstract, error) {
 	return s.repo.ListStocks(ctx)
 }
 func (s *Service) CreateStock(ctx context.Context, stock model.Stock) (uuid.UUID, error) {

@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type StockSummary struct {
+type StockAbstract struct {
 	Id               uuid.UUID
 	Name             string
 	HasAmount        bool

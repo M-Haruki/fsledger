@@ -12,11 +12,11 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-func (r *Repository) ListStocks(ctx context.Context) ([]model.StockSummary, error) {
+func (r *Repository) ListStocks(ctx context.Context) ([]model.StockAbstract, error) {
 	raw, err := r.queries.ListStocks(ctx)
-	result := make([]model.StockSummary, len(raw))
+	result := make([]model.StockAbstract, len(raw))
 	for i, data := range raw {
-		result[i] = model.StockSummary{
+		result[i] = model.StockAbstract{
 			Id:               uuid.UUID(data.ID.Bytes),
 			Name:             data.Name,
 			HasAmount:        data.HasAmount,
