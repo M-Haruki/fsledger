@@ -33,7 +33,7 @@ func (r *Repository) CreateTransactionTag(ctx context.Context, name string) (uui
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 			if pgErr.Code == "23505" {
 				// duplicate key
-				return uuid.Nil, model.ErrTransactionTagNameDuplicate
+				return uuid.Nil, model.ErrTagNameDuplicate
 			}
 		}
 		return uuid.Nil, err
@@ -45,7 +45,7 @@ func (r *Repository) GetTransactionTag(ctx context.Context, id uuid.UUID) (strin
 	name, err := r.queries.GetTransactionTag(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", model.ErrTransactionTagNotFound
+			return "", model.ErrTagNotFound
 		}
 		return "", err
 	}
@@ -62,7 +62,7 @@ func (r *Repository) UpdateTransactionTag(ctx context.Context, id uuid.UUID, nam
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return model.ErrTransactionTagNotFound
+		return model.ErrTagNotFound
 	}
 	return nil
 }
@@ -74,7 +74,7 @@ func (r *Repository) DeleteTransactionTag(ctx context.Context, id uuid.UUID) err
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return model.ErrTransactionTagNotFound
+		return model.ErrTagNotFound
 	}
 	return nil
 }

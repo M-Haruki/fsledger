@@ -27,7 +27,7 @@ func (h *Handler) ListFlowTags(ctx context.Context, request openapi.ListFlowTags
 func (h *Handler) CreateFlowTags(ctx context.Context, request openapi.CreateFlowTagsRequestObject) (openapi.CreateFlowTagsResponseObject, error) {
 	id, err := h.service.CreateFlowTag(ctx, request.Body.Name)
 	if err != nil {
-		if errors.Is(err, model.ErrFlowTagNameDuplicate) {
+		if errors.Is(err, model.ErrTagNameDuplicate) {
 			return openapi.CreateFlowTags400JSONResponse{Message: "flow tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "create flow tag failed", "error", err)
@@ -39,7 +39,7 @@ func (h *Handler) CreateFlowTags(ctx context.Context, request openapi.CreateFlow
 func (h *Handler) GetFlowTag(ctx context.Context, request openapi.GetFlowTagRequestObject) (openapi.GetFlowTagResponseObject, error) {
 	name, err := h.service.GetFlowTag(ctx, uuid.UUID(request.Id))
 	if err != nil {
-		if errors.Is(err, model.ErrFlowTagNotFound) {
+		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.GetFlowTag404JSONResponse{Message: "flow tag not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "get flow tag failed", "error", err)
@@ -51,7 +51,7 @@ func (h *Handler) GetFlowTag(ctx context.Context, request openapi.GetFlowTagRequ
 func (h *Handler) UpdateFlowTag(ctx context.Context, request openapi.UpdateFlowTagRequestObject) (openapi.UpdateFlowTagResponseObject, error) {
 	err := h.service.UpdateFlowTag(ctx, uuid.UUID(request.Id), request.Body.Name)
 	if err != nil {
-		if errors.Is(err, model.ErrFlowTagNotFound) {
+		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.UpdateFlowTag404JSONResponse{Message: "flow tag not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "update flow tag failed", "error", err)
@@ -63,7 +63,7 @@ func (h *Handler) UpdateFlowTag(ctx context.Context, request openapi.UpdateFlowT
 func (h *Handler) DeleteFlowTag(ctx context.Context, request openapi.DeleteFlowTagRequestObject) (openapi.DeleteFlowTagResponseObject, error) {
 	err := h.service.DeleteFlowTag(ctx, uuid.UUID(request.Id))
 	if err != nil {
-		if errors.Is(err, model.ErrFlowTagNotFound) {
+		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.DeleteFlowTag404JSONResponse{Message: "flow tag not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "delete flow tag failed", "error", err)

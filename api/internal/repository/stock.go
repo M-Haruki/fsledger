@@ -57,7 +57,7 @@ func (r *Repository) CreateStock(ctx context.Context, stock model.Stock) (uuid.U
 			if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 				if pgErr.Code == "23503" {
 					// tag not found
-					return uuid.Nil, model.ErrStockTagNotFound
+					return uuid.Nil, model.ErrTagNotFound
 				}
 			}
 			return uuid.Nil, err
@@ -151,7 +151,7 @@ func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock model.
 			if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 				if pgErr.Code == "23503" {
 					// tag not found
-					return model.ErrStockTagNotFound
+					return model.ErrTagNotFound
 				}
 			}
 			return err
@@ -198,7 +198,7 @@ func (r *Repository) CreateStockTag(ctx context.Context, name string) (uuid.UUID
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 			if pgErr.Code == "23505" {
 				// duplicate key
-				return uuid.Nil, model.ErrStockTagNameDuplicate
+				return uuid.Nil, model.ErrTagNameDuplicate
 			}
 		}
 		return uuid.Nil, err
@@ -210,7 +210,7 @@ func (r *Repository) GetStockTag(ctx context.Context, id uuid.UUID) (string, err
 	name, err := r.queries.GetStockTag(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", model.ErrStockTagNotFound
+			return "", model.ErrTagNotFound
 		}
 		return "", err
 	}
@@ -227,7 +227,7 @@ func (r *Repository) UpdateStockTag(ctx context.Context, id uuid.UUID, name stri
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return model.ErrStockTagNotFound
+		return model.ErrTagNotFound
 	}
 	return nil
 }
@@ -239,7 +239,7 @@ func (r *Repository) DeleteStockTag(ctx context.Context, id uuid.UUID) error {
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return model.ErrStockTagNotFound
+		return model.ErrTagNotFound
 	}
 	return nil
 }

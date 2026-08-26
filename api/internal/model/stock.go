@@ -25,5 +25,3 @@ type Stock struct {
 
 var ErrStockNameDuplicate = errors.New("stock name duplicate")
 var ErrStockNotFound = errors.New("stock not found")
-var ErrStockTagNameDuplicate = errors.New("stock tag name duplicate")
-var ErrStockTagNotFound = errors.New("stock tag not found")

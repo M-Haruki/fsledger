@@ -33,7 +33,7 @@ func (r *Repository) CreateFlowTag(ctx context.Context, name string) (uuid.UUID,
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
 			if pgErr.Code == "23505" {
 				// duplicate key
-				return uuid.Nil, model.ErrFlowTagNameDuplicate
+				return uuid.Nil, model.ErrTagNameDuplicate
 			}
 		}
 		return uuid.Nil, err
@@ -45,7 +45,7 @@ func (r *Repository) GetFlowTag(ctx context.Context, id uuid.UUID) (string, erro
 	name, err := r.queries.GetFlowTag(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return "", model.ErrFlowTagNotFound
+			return "", model.ErrTagNotFound
 		}
 		return "", err
 	}
@@ -62,7 +62,7 @@ func (r *Repository) UpdateFlowTag(ctx context.Context, id uuid.UUID, name strin
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return model.ErrFlowTagNotFound
+		return model.ErrTagNotFound
 	}
 	return nil
 }
@@ -74,7 +74,7 @@ func (r *Repository) DeleteFlowTag(ctx context.Context, id uuid.UUID) error {
 	}
 	if result.RowsAffected() == 0 {
 		// not found
-		return model.ErrFlowTagNotFound
+		return model.ErrTagNotFound
 	}
 	return nil
 }

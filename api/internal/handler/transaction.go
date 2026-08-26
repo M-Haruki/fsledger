@@ -40,7 +40,7 @@ func (h *Handler) ListTransactionTags(ctx context.Context, request openapi.ListT
 func (h *Handler) CreateTransactionTags(ctx context.Context, request openapi.CreateTransactionTagsRequestObject) (openapi.CreateTransactionTagsResponseObject, error) {
 	id, err := h.service.CreateTransactionTag(ctx, request.Body.Name)
 	if err != nil {
-		if errors.Is(err, model.ErrTransactionTagNameDuplicate) {
+		if errors.Is(err, model.ErrTagNameDuplicate) {
 			return openapi.CreateTransactionTags400JSONResponse{Message: "transaction tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "create transaction tag failed", "error", err)
@@ -52,7 +52,7 @@ func (h *Handler) CreateTransactionTags(ctx context.Context, request openapi.Cre
 func (h *Handler) GetTransactionTag(ctx context.Context, request openapi.GetTransactionTagRequestObject) (openapi.GetTransactionTagResponseObject, error) {
 	name, err := h.service.GetTransactionTag(ctx, uuid.UUID(request.Id))
 	if err != nil {
-		if errors.Is(err, model.ErrTransactionTagNotFound) {
+		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.GetTransactionTag404JSONResponse{Message: "transaction tag not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "get transaction tag failed", "error", err)
@@ -64,7 +64,7 @@ func (h *Handler) GetTransactionTag(ctx context.Context, request openapi.GetTran
 func (h *Handler) UpdateTransactionTag(ctx context.Context, request openapi.UpdateTransactionTagRequestObject) (openapi.UpdateTransactionTagResponseObject, error) {
 	err := h.service.UpdateTransactionTag(ctx, uuid.UUID(request.Id), request.Body.Name)
 	if err != nil {
-		if errors.Is(err, model.ErrTransactionTagNotFound) {
+		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.UpdateTransactionTag404JSONResponse{Message: "transaction tag not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "update transaction tag failed", "error", err)
@@ -76,7 +76,7 @@ func (h *Handler) UpdateTransactionTag(ctx context.Context, request openapi.Upda
 func (h *Handler) DeleteTransactionTag(ctx context.Context, request openapi.DeleteTransactionTagRequestObject) (openapi.DeleteTransactionTagResponseObject, error) {
 	err := h.service.DeleteTransactionTag(ctx, uuid.UUID(request.Id))
 	if err != nil {
-		if errors.Is(err, model.ErrTransactionTagNotFound) {
+		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.DeleteTransactionTag404JSONResponse{Message: "transaction tag not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "delete transaction tag failed", "error", err)
