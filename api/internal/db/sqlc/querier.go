@@ -22,7 +22,6 @@ type Querier interface {
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (pgtype.UUID, error)
 	CreateTransactionTag(ctx context.Context, name string) (pgtype.UUID, error)
 	CreateTransactionTagRelation(ctx context.Context, arg CreateTransactionTagRelationParams) error
-	DeleteFlow(ctx context.Context, id pgtype.UUID) error
 	DeleteFlowByTransaction(ctx context.Context, id pgtype.UUID) error
 	DeleteFlowTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
 	DeleteFlowTagRelation(ctx context.Context, flowID pgtype.UUID) error
@@ -45,7 +44,6 @@ type Querier interface {
 	ListTagIDsByStock(ctx context.Context, id pgtype.UUID) ([]pgtype.UUID, error)
 	ListTagIDsByTransaction(ctx context.Context, id pgtype.UUID) ([]pgtype.UUID, error)
 	ListTransactionTags(ctx context.Context) ([]TransactionTag, error)
-	UpdateFlow(ctx context.Context, arg UpdateFlowParams) error
 	UpdateFlowTag(ctx context.Context, arg UpdateFlowTagParams) (pgconn.CommandTag, error)
 	UpdateStock(ctx context.Context, arg UpdateStockParams) (pgconn.CommandTag, error)
 	UpdateStockTag(ctx context.Context, arg UpdateStockTagParams) (pgconn.CommandTag, error)

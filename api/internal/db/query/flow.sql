@@ -4,14 +4,8 @@ SELECT id, from_stock_id, to_stock_id, amount FROM flows WHERE transaction_id = 
 -- name: CreateFlow :one
 INSERT INTO flows (transaction_id, from_stock_id, to_stock_id, amount) VALUES (sqlc.arg(transactionId), sqlc.arg(fromStockId), sqlc.arg(toStockId), sqlc.arg(amount)) RETURNING id;
 
--- name: UpdateFlow :exec
-UPDATE flows SET from_stock_id = sqlc.arg(fromStockId), to_stock_id = sqlc.arg(toStockId), amount = sqlc.arg(amount) WHERE id = sqlc.arg(id);
-
 -- name: DeleteFlowByTransaction :exec
 DELETE FROM flows WHERE transaction_id = sqlc.arg(id);
-
--- name: DeleteFlow :exec
-DELETE FROM flows WHERE id = sqlc.arg(id);
 
 -- name: ListFlowTags :many
 SELECT id, name FROM flow_tags;

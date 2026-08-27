@@ -60,15 +60,6 @@ func (q *Queries) CreateFlowTagRelation(ctx context.Context, arg CreateFlowTagRe
 	return err
 }
 
-const deleteFlow = `-- name: DeleteFlow :exec
-DELETE FROM flows WHERE id = $1
-`
-
-func (q *Queries) DeleteFlow(ctx context.Context, id pgtype.UUID) error {
-	_, err := q.db.Exec(ctx, deleteFlow, id)
-	return err
-}
-
 const deleteFlowByTransaction = `-- name: DeleteFlowByTransaction :exec
 DELETE FROM flows WHERE transaction_id = $1
 `
@@ -188,27 +179,6 @@ func (q *Queries) ListTagIDsByFlow(ctx context.Context, id pgtype.UUID) ([]pgtyp
 		return nil, err
 	}
 	return items, nil
-}
-
-const updateFlow = `-- name: UpdateFlow :exec
-UPDATE flows SET from_stock_id = $1, to_stock_id = $2, amount = $3 WHERE id = $4
-`
-
-type UpdateFlowParams struct {
-	Fromstockid pgtype.UUID
-	Tostockid   pgtype.UUID
-	Amount      int64
-	ID          pgtype.UUID
-}
-
-func (q *Queries) UpdateFlow(ctx context.Context, arg UpdateFlowParams) error {
-	_, err := q.db.Exec(ctx, updateFlow,
-		arg.Fromstockid,
-		arg.Tostockid,
-		arg.Amount,
-		arg.ID,
-	)
-	return err
 }
 
 const updateFlowTag = `-- name: UpdateFlowTag :execresult
