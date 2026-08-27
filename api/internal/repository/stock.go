@@ -35,7 +35,7 @@ func (r *Repository) CreateStock(ctx context.Context, stock model.Stock) (uuid.U
 	defer tx.Rollback(ctx)
 	q := sqlc.New(tx)
 
-	id, err := q.CreateStock(ctx, sqlc.CreateStockParams{
+	pgId, err := q.CreateStock(ctx, sqlc.CreateStockParams{
 		Name:             stock.Name,
 		Hasamount:        stock.HasAmount,
 		Currency:         stock.Currency,
@@ -51,17 +51,11 @@ func (r *Repository) CreateStock(ctx context.Context, stock model.Stock) (uuid.U
 		}
 		return uuid.Nil, err
 	}
-	for _, tagId := range stock.Tags {
-		err := q.CreateStockTagRelation(ctx, sqlc.CreateStockTagRelationParams{StockID: id, TagID: pgtype.UUID{Bytes: tagId, Valid: true}})
-		if err != nil {
-			if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
-				if pgErr.Code == "23503" {
-					// tag not found
-					return uuid.Nil, model.ErrTagNotFound
-				}
-			}
-			return uuid.Nil, err
-		}
+	id := uuid.UUID(pgId.Bytes)
+
+	err = setTags(ctx, q, stockTag, id, stock.Tags)
+	if err != nil {
+		return uuid.Nil, err
 	}
 
 	err = tx.Commit(ctx)
@@ -69,7 +63,7 @@ func (r *Repository) CreateStock(ctx context.Context, stock model.Stock) (uuid.U
 		return uuid.Nil, err
 	}
 
-	return uuid.UUID(id.Bytes), nil
+	return id, nil
 }
 
 func (r *Repository) GetStock(ctx context.Context, id uuid.UUID) (model.Stock, error) {

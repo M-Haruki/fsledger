@@ -46,12 +46,35 @@ func (q *Queries) CreateFlowTag(ctx context.Context, name string) (pgtype.UUID, 
 	return id, err
 }
 
+const createFlowTagRelation = `-- name: CreateFlowTagRelation :exec
+INSERT INTO flow_tag_relations (flow_id, tag_id) VALUES ($1, $2)
+`
+
+type CreateFlowTagRelationParams struct {
+	FlowID pgtype.UUID
+	TagID  pgtype.UUID
+}
+
+func (q *Queries) CreateFlowTagRelation(ctx context.Context, arg CreateFlowTagRelationParams) error {
+	_, err := q.db.Exec(ctx, createFlowTagRelation, arg.FlowID, arg.TagID)
+	return err
+}
+
 const deleteFlow = `-- name: DeleteFlow :exec
 DELETE FROM flows WHERE id = $1
 `
 
 func (q *Queries) DeleteFlow(ctx context.Context, id pgtype.UUID) error {
 	_, err := q.db.Exec(ctx, deleteFlow, id)
+	return err
+}
+
+const deleteFlowByTransaction = `-- name: DeleteFlowByTransaction :exec
+DELETE FROM flows WHERE transaction_id = $1
+`
+
+func (q *Queries) DeleteFlowByTransaction(ctx context.Context, id pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, deleteFlowByTransaction, id)
 	return err
 }
 
@@ -127,6 +150,30 @@ func (q *Queries) ListFlowTags(ctx context.Context) ([]FlowTag, error) {
 			return nil, err
 		}
 		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listTagIDsByFlow = `-- name: ListTagIDsByFlow :many
+SELECT tag_id FROM flow_tag_relations WHERE flow_id = $1
+`
+
+func (q *Queries) ListTagIDsByFlow(ctx context.Context, id pgtype.UUID) ([]pgtype.UUID, error) {
+	rows, err := q.db.Query(ctx, listTagIDsByFlow, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []pgtype.UUID
+	for rows.Next() {
+		var tag_id pgtype.UUID
+		if err := rows.Scan(&tag_id); err != nil {
+			return nil, err
+		}
+		items = append(items, tag_id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

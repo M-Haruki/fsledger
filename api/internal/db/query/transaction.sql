@@ -4,10 +4,10 @@ SELECT description, occurred_at FROM transactions WHERE id = sqlc.arg(id);
 -- name: CreateTransaction :one
 INSERT INTO transactions (description, occurred_at) VALUES (sqlc.arg(description), sqlc.arg(occurredAt)) RETURNING id;
 
--- name: UpdateTransaction :exec
+-- name: UpdateTransaction :execresult
 UPDATE transactions SET description = sqlc.arg(description), occurred_at = sqlc.arg(occurredAt) WHERE id = sqlc.arg(id);
 
--- name: DeleteTransaction :exec
+-- name: DeleteTransaction :execresult
 DELETE FROM transactions WHERE id = sqlc.arg(id);
 
 -- name: ListTransactionTags :many
@@ -25,5 +25,11 @@ UPDATE transaction_tags SET name = sqlc.arg(name) WHERE id = sqlc.arg(id);
 -- name: DeleteTransactionTag :execresult
 DELETE FROM transaction_tags WHERE id = sqlc.arg(id);
 
--- name: ListTagsByTransaction :many
-SELECT r.tag_id AS id, t.name AS name FROM transaction_tag_relations r JOIN transaction_tags t ON r.tag_id = t.id WHERE r.transaction_id = sqlc.arg(id);
+-- name: CreateTransactionTagRelation :exec
+INSERT INTO transaction_tag_relations (transaction_id, tag_id) VALUES (sqlc.arg(transaction_id), sqlc.arg(tag_id));
+
+-- name: DeleteTransactionTagRelation :exec
+DELETE FROM transaction_tag_relations WHERE transaction_id = sqlc.arg(transaction_id);
+
+-- name: ListTagIDsByTransaction :many
+SELECT tag_id FROM transaction_tag_relations WHERE transaction_id = sqlc.arg(id);

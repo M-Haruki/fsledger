@@ -7,6 +7,18 @@ import (
 	"github.com/google/uuid"
 )
 
+func (s *Service) CreateTransaction(ctx context.Context, transaction model.Transaction) (uuid.UUID, error) {
+	return s.repo.CreateTransaction(ctx, transaction)
+}
+func (s *Service) GetTransaction(ctx context.Context, id uuid.UUID) (model.Transaction, error) {
+	return s.repo.GetTransaction(ctx, id)
+}
+func (s *Service) UpdateTransaction(ctx context.Context, id uuid.UUID, transaction model.Transaction) error {
+	return s.repo.UpdateTransaction(ctx, id, transaction)
+}
+func (s *Service) DeleteTransaction(ctx context.Context, id uuid.UUID) error {
+	return s.repo.DeleteTransaction(ctx, id)
+}
 func (s *Service) ListTransactionTags(ctx context.Context) ([]model.Tag, error) {
 	return s.repo.ListTransactionTags(ctx)
 }

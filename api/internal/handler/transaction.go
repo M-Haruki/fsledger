@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/M-Haruki/fsledger/api/internal/model"
 	"github.com/M-Haruki/fsledger/api/internal/openapi"
@@ -11,16 +12,111 @@ import (
 )
 
 func (h *Handler) CreateTransaction(ctx context.Context, request openapi.CreateTransactionRequestObject) (openapi.CreateTransactionResponseObject, error) {
-	return openapi.CreateTransaction500JSONResponse{Message: "constructing"}, nil
+	transaction := model.Transaction{
+		Description: request.Body.Description,
+		OccurredAt:  model.Date(request.Body.OccurredAt.Time),
+	}
+	transaction.Tags = make([]uuid.UUID, len(request.Body.Tags))
+	for i, tag := range request.Body.Tags {
+		transaction.Tags[i] = uuid.UUID(tag)
+	}
+	transaction.Flows = make([]model.Flow, len(request.Body.Flows))
+	for i, flow := range request.Body.Flows {
+		transaction.Flows[i] = model.Flow{
+			From:   uuid.UUID(flow.From),
+			To:     uuid.UUID(flow.To),
+			Amount: flow.Amount,
+			Tags:   make([]uuid.UUID, len(flow.Tags)),
+		}
+		for j, tag := range flow.Tags {
+			transaction.Flows[i].Tags[j] = uuid.UUID(tag)
+		}
+	}
+	id, err := h.service.CreateTransaction(ctx, transaction)
+	if err != nil {
+		if errors.Is(err, model.ErrTagNotFound) {
+			return openapi.CreateTransaction400JSONResponse{Message: "tag not found"}, nil
+		}
+		h.log.ErrorContext(ctx, "create transaction failed", "error", err)
+		return openapi.CreateTransaction500JSONResponse{Message: "create transaction failed"}, nil
+	}
+	return openapi.CreateTransaction201JSONResponse{Id: id}, nil
 }
 func (h *Handler) GetTransaction(ctx context.Context, request openapi.GetTransactionRequestObject) (openapi.GetTransactionResponseObject, error) {
-	return openapi.GetTransaction500JSONResponse{Message: "constructing"}, nil
+	transaction, err := h.service.GetTransaction(ctx, uuid.UUID(request.Id))
+	if err != nil {
+		if errors.Is(err, model.ErrTransactionNotFound) {
+			return openapi.GetTransaction404JSONResponse{Message: "transaction not found"}, nil
+		}
+		h.log.ErrorContext(ctx, "get transaction failed", "error", err)
+		return openapi.GetTransaction500JSONResponse{Message: "get transaction failed"}, nil
+	}
+	res := openapi.TransactionData{
+		Description: transaction.Description,
+		OccurredAt:  openapi_types.Date{Time: time.Time(transaction.OccurredAt)},
+		Flows:       make([]openapi.FlowData, len(transaction.Flows)),
+		Tags:        make([]openapi_types.UUID, len(transaction.Tags)),
+	}
+	for i, tag := range transaction.Tags {
+		res.Tags[i] = openapi_types.UUID(tag)
+	}
+	for i, flow := range transaction.Flows {
+		res.Flows[i] = openapi.FlowData{
+			From:   flow.From,
+			To:     flow.To,
+			Amount: flow.Amount,
+			Tags:   make([]openapi_types.UUID, len(flow.Tags)),
+		}
+		for j, tag := range flow.Tags {
+			res.Flows[i].Tags[j] = openapi_types.UUID(tag)
+		}
+	}
+	return openapi.GetTransaction200JSONResponse(res), nil
 }
 func (h *Handler) UpdateTransaction(ctx context.Context, request openapi.UpdateTransactionRequestObject) (openapi.UpdateTransactionResponseObject, error) {
-	return openapi.UpdateTransaction500JSONResponse{Message: "constructing"}, nil
+	// return openapi.UpdateTransaction500JSONResponse{Message: "constructing"}, nil
+	transaction := model.Transaction{
+		Description: request.Body.Description,
+		OccurredAt:  model.Date(request.Body.OccurredAt.Time),
+	}
+	transaction.Tags = make([]uuid.UUID, len(request.Body.Tags))
+	for i, tag := range request.Body.Tags {
+		transaction.Tags[i] = uuid.UUID(tag)
+	}
+	transaction.Flows = make([]model.Flow, len(request.Body.Flows))
+	for i, flow := range request.Body.Flows {
+		transaction.Flows[i] = model.Flow{
+			From:   uuid.UUID(flow.From),
+			To:     uuid.UUID(flow.To),
+			Amount: flow.Amount,
+			Tags:   make([]uuid.UUID, len(flow.Tags)),
+		}
+		for j, tag := range flow.Tags {
+			transaction.Flows[i].Tags[j] = uuid.UUID(tag)
+		}
+	}
+	err := h.service.UpdateTransaction(ctx, uuid.UUID(request.Id), transaction)
+	if err != nil {
+		if errors.Is(err, model.ErrTagNotFound) {
+			return openapi.UpdateTransaction400JSONResponse{Message: "tag not found"}, nil
+		} else if errors.Is(err, model.ErrTransactionNotFound) {
+			return openapi.UpdateTransaction404JSONResponse{Message: "transaction not found"}, nil
+		}
+		h.log.ErrorContext(ctx, "update transaction failed", "error", err)
+		return openapi.UpdateTransaction500JSONResponse{Message: "update transaction failed"}, nil
+	}
+	return openapi.UpdateTransaction204Response{}, nil
 }
 func (h *Handler) DeleteTransaction(ctx context.Context, request openapi.DeleteTransactionRequestObject) (openapi.DeleteTransactionResponseObject, error) {
-	return openapi.DeleteTransaction500JSONResponse{Message: "constructing"}, nil
+	err := h.service.DeleteTransaction(ctx, uuid.UUID(request.Id))
+	if err != nil {
+		if errors.Is(err, model.ErrTransactionNotFound) {
+			return openapi.DeleteTransaction404JSONResponse{Message: "transaction not found"}, nil
+		}
+		h.log.ErrorContext(ctx, "delete transaction failed", "error", err)
+		return openapi.DeleteTransaction500JSONResponse{Message: "delete transaction failed"}, nil
+	}
+	return openapi.DeleteTransaction204Response{}, nil
 }
 
 func (h *Handler) ListTransactionTags(ctx context.Context, request openapi.ListTransactionTagsRequestObject) (openapi.ListTransactionTagsResponseObject, error) {

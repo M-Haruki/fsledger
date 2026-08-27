@@ -39,13 +39,26 @@ func (q *Queries) CreateTransactionTag(ctx context.Context, name string) (pgtype
 	return id, err
 }
 
-const deleteTransaction = `-- name: DeleteTransaction :exec
+const createTransactionTagRelation = `-- name: CreateTransactionTagRelation :exec
+INSERT INTO transaction_tag_relations (transaction_id, tag_id) VALUES ($1, $2)
+`
+
+type CreateTransactionTagRelationParams struct {
+	TransactionID pgtype.UUID
+	TagID         pgtype.UUID
+}
+
+func (q *Queries) CreateTransactionTagRelation(ctx context.Context, arg CreateTransactionTagRelationParams) error {
+	_, err := q.db.Exec(ctx, createTransactionTagRelation, arg.TransactionID, arg.TagID)
+	return err
+}
+
+const deleteTransaction = `-- name: DeleteTransaction :execresult
 DELETE FROM transactions WHERE id = $1
 `
 
-func (q *Queries) DeleteTransaction(ctx context.Context, id pgtype.UUID) error {
-	_, err := q.db.Exec(ctx, deleteTransaction, id)
-	return err
+func (q *Queries) DeleteTransaction(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, deleteTransaction, id)
 }
 
 const deleteTransactionTag = `-- name: DeleteTransactionTag :execresult
@@ -54,6 +67,15 @@ DELETE FROM transaction_tags WHERE id = $1
 
 func (q *Queries) DeleteTransactionTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error) {
 	return q.db.Exec(ctx, deleteTransactionTag, id)
+}
+
+const deleteTransactionTagRelation = `-- name: DeleteTransactionTagRelation :exec
+DELETE FROM transaction_tag_relations WHERE transaction_id = $1
+`
+
+func (q *Queries) DeleteTransactionTagRelation(ctx context.Context, transactionID pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, deleteTransactionTagRelation, transactionID)
+	return err
 }
 
 const getTransaction = `-- name: GetTransaction :one
@@ -83,28 +105,23 @@ func (q *Queries) GetTransactionTag(ctx context.Context, id pgtype.UUID) (string
 	return name, err
 }
 
-const listTagsByTransaction = `-- name: ListTagsByTransaction :many
-SELECT r.tag_id AS id, t.name AS name FROM transaction_tag_relations r JOIN transaction_tags t ON r.tag_id = t.id WHERE r.transaction_id = $1
+const listTagIDsByTransaction = `-- name: ListTagIDsByTransaction :many
+SELECT tag_id FROM transaction_tag_relations WHERE transaction_id = $1
 `
 
-type ListTagsByTransactionRow struct {
-	ID   pgtype.UUID
-	Name string
-}
-
-func (q *Queries) ListTagsByTransaction(ctx context.Context, id pgtype.UUID) ([]ListTagsByTransactionRow, error) {
-	rows, err := q.db.Query(ctx, listTagsByTransaction, id)
+func (q *Queries) ListTagIDsByTransaction(ctx context.Context, id pgtype.UUID) ([]pgtype.UUID, error) {
+	rows, err := q.db.Query(ctx, listTagIDsByTransaction, id)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListTagsByTransactionRow
+	var items []pgtype.UUID
 	for rows.Next() {
-		var i ListTagsByTransactionRow
-		if err := rows.Scan(&i.ID, &i.Name); err != nil {
+		var tag_id pgtype.UUID
+		if err := rows.Scan(&tag_id); err != nil {
 			return nil, err
 		}
-		items = append(items, i)
+		items = append(items, tag_id)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -136,7 +153,7 @@ func (q *Queries) ListTransactionTags(ctx context.Context) ([]TransactionTag, er
 	return items, nil
 }
 
-const updateTransaction = `-- name: UpdateTransaction :exec
+const updateTransaction = `-- name: UpdateTransaction :execresult
 UPDATE transactions SET description = $1, occurred_at = $2 WHERE id = $3
 `
 
@@ -146,9 +163,8 @@ type UpdateTransactionParams struct {
 	ID          pgtype.UUID
 }
 
-func (q *Queries) UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) error {
-	_, err := q.db.Exec(ctx, updateTransaction, arg.Description, arg.Occurredat, arg.ID)
-	return err
+func (q *Queries) UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, updateTransaction, arg.Description, arg.Occurredat, arg.ID)
 }
 
 const updateTransactionTag = `-- name: UpdateTransactionTag :execresult

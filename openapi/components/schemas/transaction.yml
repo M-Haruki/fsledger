@@ -13,7 +13,7 @@ components:
     TransactionData:
       type: object
       properties:
-        desc:
+        description:
           type: string
         occurred_at:
           type: string
@@ -28,12 +28,12 @@ components:
           items:
             $ref: "./flows.yml#/components/schemas/FlowData"
       required:
-        - desc
+        - description
         - occurred_at
         - tags
         - flows
       example:
-        desc: Shopping at a nearby grocery store. Also I earn some points.
+        description: Shopping at a nearby grocery store. Also I earn some points.
         occurred_at: "2026-08-07"
         tags:
           - ce15fc88-deda-4c78-9f4e-a1611152cb13
