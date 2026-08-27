@@ -86,6 +86,15 @@ func (q *Queries) DeleteFlowTag(ctx context.Context, id pgtype.UUID) (pgconn.Com
 	return q.db.Exec(ctx, deleteFlowTag, id)
 }
 
+const deleteFlowTagRelation = `-- name: DeleteFlowTagRelation :exec
+DELETE FROM flow_tag_relations WHERE flow_id = $1
+`
+
+func (q *Queries) DeleteFlowTagRelation(ctx context.Context, flowID pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, deleteFlowTagRelation, flowID)
+	return err
+}
+
 const getFlowTag = `-- name: GetFlowTag :one
 SELECT name FROM flow_tags WHERE id = $1
 `

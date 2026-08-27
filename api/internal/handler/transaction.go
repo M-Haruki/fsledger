@@ -42,6 +42,7 @@ func (h *Handler) CreateTransaction(ctx context.Context, request openapi.CreateT
 	}
 	return openapi.CreateTransaction201JSONResponse{Id: id}, nil
 }
+
 func (h *Handler) GetTransaction(ctx context.Context, request openapi.GetTransactionRequestObject) (openapi.GetTransactionResponseObject, error) {
 	transaction, err := h.service.GetTransaction(ctx, uuid.UUID(request.Id))
 	if err != nil {
@@ -73,8 +74,8 @@ func (h *Handler) GetTransaction(ctx context.Context, request openapi.GetTransac
 	}
 	return openapi.GetTransaction200JSONResponse(res), nil
 }
+
 func (h *Handler) UpdateTransaction(ctx context.Context, request openapi.UpdateTransactionRequestObject) (openapi.UpdateTransactionResponseObject, error) {
-	// return openapi.UpdateTransaction500JSONResponse{Message: "constructing"}, nil
 	transaction := model.Transaction{
 		Description: request.Body.Description,
 		OccurredAt:  model.Date(request.Body.OccurredAt.Time),
@@ -97,16 +98,19 @@ func (h *Handler) UpdateTransaction(ctx context.Context, request openapi.UpdateT
 	}
 	err := h.service.UpdateTransaction(ctx, uuid.UUID(request.Id), transaction)
 	if err != nil {
-		if errors.Is(err, model.ErrTagNotFound) {
-			return openapi.UpdateTransaction400JSONResponse{Message: "tag not found"}, nil
-		} else if errors.Is(err, model.ErrTransactionNotFound) {
+		if errors.Is(err, model.ErrTransactionNotFound) {
 			return openapi.UpdateTransaction404JSONResponse{Message: "transaction not found"}, nil
+		} else if errors.Is(err, model.ErrTransactionNameDuplicate) {
+			return openapi.UpdateTransaction404JSONResponse{Message: "transaction name duplicate"}, nil
+		} else if errors.Is(err, model.ErrTagNotFound) {
+			return openapi.UpdateTransaction400JSONResponse{Message: "tag not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "update transaction failed", "error", err)
 		return openapi.UpdateTransaction500JSONResponse{Message: "update transaction failed"}, nil
 	}
 	return openapi.UpdateTransaction204Response{}, nil
 }
+
 func (h *Handler) DeleteTransaction(ctx context.Context, request openapi.DeleteTransactionRequestObject) (openapi.DeleteTransactionResponseObject, error) {
 	err := h.service.DeleteTransaction(ctx, uuid.UUID(request.Id))
 	if err != nil {
@@ -120,7 +124,7 @@ func (h *Handler) DeleteTransaction(ctx context.Context, request openapi.DeleteT
 }
 
 func (h *Handler) ListTransactionTags(ctx context.Context, request openapi.ListTransactionTagsRequestObject) (openapi.ListTransactionTagsResponseObject, error) {
-	res, err := h.service.ListTransactionTags(ctx)
+	res, err := h.service.ListTags(ctx, model.TransactionTag)
 	if err != nil {
 		h.log.ErrorContext(ctx, "list transaction tags failed", "error", err)
 		return openapi.ListTransactionTags500JSONResponse{Message: "internal server error"}, nil
@@ -134,7 +138,7 @@ func (h *Handler) ListTransactionTags(ctx context.Context, request openapi.ListT
 }
 
 func (h *Handler) CreateTransactionTags(ctx context.Context, request openapi.CreateTransactionTagsRequestObject) (openapi.CreateTransactionTagsResponseObject, error) {
-	id, err := h.service.CreateTransactionTag(ctx, request.Body.Name)
+	id, err := h.service.CreateTag(ctx, model.TransactionTag, request.Body.Name)
 	if err != nil {
 		if errors.Is(err, model.ErrTagNameDuplicate) {
 			return openapi.CreateTransactionTags400JSONResponse{Message: "transaction tag name duplicate"}, nil
@@ -146,7 +150,7 @@ func (h *Handler) CreateTransactionTags(ctx context.Context, request openapi.Cre
 }
 
 func (h *Handler) GetTransactionTag(ctx context.Context, request openapi.GetTransactionTagRequestObject) (openapi.GetTransactionTagResponseObject, error) {
-	name, err := h.service.GetTransactionTag(ctx, uuid.UUID(request.Id))
+	name, err := h.service.GetTag(ctx, model.TransactionTag, uuid.UUID(request.Id))
 	if err != nil {
 		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.GetTransactionTag404JSONResponse{Message: "transaction tag not found"}, nil
@@ -158,7 +162,7 @@ func (h *Handler) GetTransactionTag(ctx context.Context, request openapi.GetTran
 }
 
 func (h *Handler) UpdateTransactionTag(ctx context.Context, request openapi.UpdateTransactionTagRequestObject) (openapi.UpdateTransactionTagResponseObject, error) {
-	err := h.service.UpdateTransactionTag(ctx, uuid.UUID(request.Id), request.Body.Name)
+	err := h.service.UpdateTag(ctx, model.TransactionTag, uuid.UUID(request.Id), request.Body.Name)
 	if err != nil {
 		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.UpdateTransactionTag404JSONResponse{Message: "transaction tag not found"}, nil
@@ -170,7 +174,7 @@ func (h *Handler) UpdateTransactionTag(ctx context.Context, request openapi.Upda
 }
 
 func (h *Handler) DeleteTransactionTag(ctx context.Context, request openapi.DeleteTransactionTagRequestObject) (openapi.DeleteTransactionTagResponseObject, error) {
-	err := h.service.DeleteTransactionTag(ctx, uuid.UUID(request.Id))
+	err := h.service.DeleteTag(ctx, model.TransactionTag, uuid.UUID(request.Id))
 	if err != nil {
 		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.DeleteTransactionTag404JSONResponse{Message: "transaction tag not found"}, nil

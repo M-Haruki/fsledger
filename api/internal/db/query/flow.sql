@@ -31,5 +31,8 @@ DELETE FROM flow_tags WHERE id = sqlc.arg(id);
 -- name: CreateFlowTagRelation :exec
 INSERT INTO flow_tag_relations (flow_id, tag_id) VALUES (sqlc.arg(flow_id), sqlc.arg(tag_id));
 
+-- name: DeleteFlowTagRelation :exec
+DELETE FROM flow_tag_relations WHERE flow_id = sqlc.arg(flow_id);
+
 -- name: ListTagIDsByFlow :many
 SELECT tag_id FROM flow_tag_relations WHERE flow_id = sqlc.arg(id);

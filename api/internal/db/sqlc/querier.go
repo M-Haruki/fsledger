@@ -25,6 +25,7 @@ type Querier interface {
 	DeleteFlow(ctx context.Context, id pgtype.UUID) error
 	DeleteFlowByTransaction(ctx context.Context, id pgtype.UUID) error
 	DeleteFlowTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
+	DeleteFlowTagRelation(ctx context.Context, flowID pgtype.UUID) error
 	DeleteStock(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
 	DeleteStockTag(ctx context.Context, id pgtype.UUID) (pgconn.CommandTag, error)
 	DeleteStockTagRelation(ctx context.Context, stockID pgtype.UUID) error
