@@ -206,9 +206,14 @@ func (r *Repository) UpdateTag(ctx context.Context, tagT model.TagType, id uuid.
 		})
 	}
 	if err != nil {
+		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
+			if pgErr.Code == "23505" {
+				// duplicate key
+				return model.ErrTagNameDuplicate
+			}
+		}
 		return err
 	}
-
 	if result.RowsAffected() == 0 {
 		// not found
 		return model.ErrTagNotFound

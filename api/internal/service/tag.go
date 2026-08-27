@@ -19,7 +19,7 @@ func (s *Service) GetTag(ctx context.Context, tagT model.TagType, id uuid.UUID) 
 	return s.repo.GetTag(ctx, tagT, id)
 }
 
-func (s *Service) UpdateTag(ctx context.Context, tagT model.TagType, id uuid.UUID, name string) error { // error: ErrTagNotFound
+func (s *Service) UpdateTag(ctx context.Context, tagT model.TagType, id uuid.UUID, name string) error { // error: ErrTagNameDuplicate, ErrTagNotFound
 	return s.repo.UpdateTag(ctx, tagT, id, name)
 }
 

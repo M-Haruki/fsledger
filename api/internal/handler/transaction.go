@@ -164,6 +164,8 @@ func (h *Handler) UpdateTransactionTag(ctx context.Context, request openapi.Upda
 	if err != nil {
 		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.UpdateTransactionTag404JSONResponse{Message: "transaction tag not found"}, nil
+		} else if errors.Is(err, model.ErrTagNameDuplicate) {
+			return openapi.UpdateTransactionTag400JSONResponse{Message: "transaction tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "update transaction tag failed", "error", err)
 		return openapi.UpdateTransactionTag500JSONResponse{Message: "internal server error"}, nil

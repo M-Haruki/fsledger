@@ -161,6 +161,8 @@ func (h *Handler) UpdateStockTag(ctx context.Context, request openapi.UpdateStoc
 	if err != nil {
 		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.UpdateStockTag404JSONResponse{Message: "stock tag not found"}, nil
+		} else if errors.Is(err, model.ErrTagNameDuplicate) {
+			return openapi.UpdateStockTag400JSONResponse{Message: "stock tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "update stock tag failed", "error", err)
 		return openapi.UpdateStockTag500JSONResponse{Message: "internal server error"}, nil
