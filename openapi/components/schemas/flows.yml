@@ -22,6 +22,7 @@ components:
           format: int64
         tags:
           type: array
+          uniqueItems: true
           items:
             type: string
             format: uuid

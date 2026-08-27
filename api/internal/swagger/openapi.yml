@@ -85,6 +85,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Server Error
           content:
@@ -156,6 +168,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Server Error
           content:
@@ -182,6 +200,12 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: The stock not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
           content:
             application/json:
               schema:
@@ -241,6 +265,12 @@ paths:
                 $ref: '#/components/schemas/TagID'
         '400':
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
           content:
             application/json:
               schema:
@@ -316,6 +346,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Server Error
           content:
@@ -375,6 +411,12 @@ paths:
                 $ref: '#/components/schemas/TransactionID'
         '400':
           description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not found.
           content:
             application/json:
               schema:
@@ -539,6 +581,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Server Error
           content:
@@ -606,6 +654,12 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: The stock not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
           content:
             application/json:
               schema:
@@ -699,6 +753,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '500':
           description: Server Error
           content:
@@ -766,6 +826,12 @@ paths:
                 $ref: '#/components/schemas/Error'
         '404':
           description: The stock not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Conflict
           content:
             application/json:
               schema:
@@ -876,6 +942,7 @@ components:
           type: string
         tags:
           type: array
+          uniqueItems: true
           items:
             type: string
             format: uuid
@@ -957,6 +1024,7 @@ components:
           format: int64
         tags:
           type: array
+          uniqueItems: true
           items:
             type: string
             format: uuid
@@ -981,6 +1049,7 @@ components:
           format: date
         tags:
           type: array
+          uniqueItems: true
           items:
             type: string
             format: uuid

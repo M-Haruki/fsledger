@@ -25,3 +25,4 @@ type Stock struct {
 
 var ErrStockNameDuplicate = errors.New("stock name duplicate")
 var ErrStockNotFound = errors.New("stock not found")
+var ErrStockCannotDelete = errors.New("stock cannot delete")

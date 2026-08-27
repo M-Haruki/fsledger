@@ -51,6 +51,12 @@ Tags_:
           application/json:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "409":
+        description: Conflict
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
         description: Server Error
         content:
@@ -118,6 +124,12 @@ TagsID:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
         description: The stock not found.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "409":
+        description: Conflict
         content:
           application/json:
             schema:

@@ -91,6 +91,6 @@ func (s *Service) UpdateStock(ctx context.Context, id uuid.UUID, stock model.Sto
 	return nil
 }
 
-func (s *Service) DeleteStock(ctx context.Context, id uuid.UUID) error { // error: ErrStockNotFound
+func (s *Service) DeleteStock(ctx context.Context, id uuid.UUID) error { // error: ErrStockNotFound, ErrStockCannotDelete
 	return s.repo.DeleteStock(ctx, id)
 }

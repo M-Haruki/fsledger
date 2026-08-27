@@ -28,7 +28,7 @@ func (h *Handler) CreateFlowTags(ctx context.Context, request openapi.CreateFlow
 	id, err := h.service.CreateTag(ctx, model.FlowTag, request.Body.Name)
 	if err != nil {
 		if errors.Is(err, model.ErrTagNameDuplicate) {
-			return openapi.CreateFlowTags400JSONResponse{Message: "flow tag name duplicate"}, nil
+			return openapi.CreateFlowTags409JSONResponse{Message: "flow tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "create flow tag failed", "error", err)
 		return openapi.CreateFlowTags500JSONResponse{Message: "internal server error"}, nil
@@ -54,7 +54,7 @@ func (h *Handler) UpdateFlowTag(ctx context.Context, request openapi.UpdateFlowT
 		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.UpdateFlowTag404JSONResponse{Message: "flow tag not found"}, nil
 		} else if errors.Is(err, model.ErrTagNameDuplicate) {
-			return openapi.UpdateFlowTag400JSONResponse{Message: "flow tag name duplicate"}, nil
+			return openapi.UpdateFlowTag409JSONResponse{Message: "flow tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "update flow tag failed", "error", err)
 		return openapi.UpdateFlowTag500JSONResponse{Message: "internal server error"}, nil

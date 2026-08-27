@@ -2,10 +2,12 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/M-Haruki/fsledger/api/internal/db/sqlc"
 	"github.com/M-Haruki/fsledger/api/internal/model"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -17,6 +19,12 @@ func (r *Repository) CreateFlow(ctx context.Context, transactionId uuid.UUID, fl
 		Amount:        flow.Amount,
 	})
 	if err != nil {
+		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
+			if pgErr.Code == "23503" {
+				// stock not found
+				return uuid.Nil, model.ErrStockNotFound
+			}
+		}
 		return uuid.Nil, err
 	}
 	return uuid.UUID(flowId.Bytes), nil

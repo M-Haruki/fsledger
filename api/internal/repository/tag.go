@@ -64,40 +64,6 @@ func (r *Repository) SetTags(ctx context.Context, tagT model.TagType, parent uui
 	return nil
 }
 
-func setTagsOld(ctx context.Context, q *sqlc.Queries, tagT model.TagType, parent uuid.UUID, tags []uuid.UUID) error {
-	for _, tagId := range tags {
-		var err error
-		switch tagT {
-		case model.StockTag:
-			err = q.CreateStockTagRelation(ctx, sqlc.CreateStockTagRelationParams{
-				StockID: pgtype.UUID{Bytes: parent, Valid: true},
-				TagID:   pgtype.UUID{Bytes: tagId, Valid: true},
-			})
-		case model.TransactionTag:
-			err = q.CreateTransactionTagRelation(ctx, sqlc.CreateTransactionTagRelationParams{
-				TransactionID: pgtype.UUID{Bytes: parent, Valid: true},
-				TagID:         pgtype.UUID{Bytes: tagId, Valid: true},
-			})
-		case model.FlowTag:
-			err = q.CreateFlowTagRelation(ctx, sqlc.CreateFlowTagRelationParams{
-				FlowID: pgtype.UUID{Bytes: parent, Valid: true},
-				TagID:  pgtype.UUID{Bytes: tagId, Valid: true},
-			})
-		}
-		if err != nil {
-			println(err.Error())
-			if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
-				if pgErr.Code == "23503" {
-					// tag not found
-					return model.ErrTagNotFound
-				}
-			}
-			return err
-		}
-	}
-	return nil
-}
-
 func (r *Repository) ListTags(ctx context.Context, tagT model.TagType) ([]model.Tag, error) {
 	var tags []model.Tag
 	switch tagT {

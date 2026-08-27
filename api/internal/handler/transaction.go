@@ -35,7 +35,9 @@ func (h *Handler) CreateTransaction(ctx context.Context, request openapi.CreateT
 	id, err := h.service.CreateTransaction(ctx, transaction)
 	if err != nil {
 		if errors.Is(err, model.ErrTagNotFound) {
-			return openapi.CreateTransaction400JSONResponse{Message: "tag not found"}, nil
+			return openapi.CreateTransaction404JSONResponse{Message: "tag not found"}, nil
+		} else if errors.Is(err, model.ErrStockNotFound) {
+			return openapi.CreateTransaction404JSONResponse{Message: "stock not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "create transaction failed", "error", err)
 		return openapi.CreateTransaction500JSONResponse{Message: "create transaction failed"}, nil
@@ -101,7 +103,9 @@ func (h *Handler) UpdateTransaction(ctx context.Context, request openapi.UpdateT
 		if errors.Is(err, model.ErrTransactionNotFound) {
 			return openapi.UpdateTransaction404JSONResponse{Message: "transaction not found"}, nil
 		} else if errors.Is(err, model.ErrTagNotFound) {
-			return openapi.UpdateTransaction400JSONResponse{Message: "tag not found"}, nil
+			return openapi.UpdateTransaction404JSONResponse{Message: "tag not found"}, nil
+		} else if errors.Is(err, model.ErrStockNotFound) {
+			return openapi.UpdateTransaction404JSONResponse{Message: "stock not found"}, nil
 		}
 		h.log.ErrorContext(ctx, "update transaction failed", "error", err)
 		return openapi.UpdateTransaction500JSONResponse{Message: "update transaction failed"}, nil
@@ -139,7 +143,7 @@ func (h *Handler) CreateTransactionTags(ctx context.Context, request openapi.Cre
 	id, err := h.service.CreateTag(ctx, model.TransactionTag, request.Body.Name)
 	if err != nil {
 		if errors.Is(err, model.ErrTagNameDuplicate) {
-			return openapi.CreateTransactionTags400JSONResponse{Message: "transaction tag name duplicate"}, nil
+			return openapi.CreateTransactionTags409JSONResponse{Message: "transaction tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "create transaction tag failed", "error", err)
 		return openapi.CreateTransactionTags500JSONResponse{Message: "internal server error"}, nil
@@ -165,7 +169,7 @@ func (h *Handler) UpdateTransactionTag(ctx context.Context, request openapi.Upda
 		if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.UpdateTransactionTag404JSONResponse{Message: "transaction tag not found"}, nil
 		} else if errors.Is(err, model.ErrTagNameDuplicate) {
-			return openapi.UpdateTransactionTag400JSONResponse{Message: "transaction tag name duplicate"}, nil
+			return openapi.UpdateTransactionTag409JSONResponse{Message: "transaction tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "update transaction tag failed", "error", err)
 		return openapi.UpdateTransactionTag500JSONResponse{Message: "internal server error"}, nil

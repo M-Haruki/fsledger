@@ -93,6 +93,12 @@ func (r *Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock model.
 func (r *Repository) DeleteStock(ctx context.Context, id uuid.UUID) error {
 	result, err := r.queries.DeleteStock(ctx, pgtype.UUID{Bytes: id, Valid: true})
 	if err != nil {
+		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
+			if pgErr.Code == "23503" {
+				// the stock is using flow
+				return model.ErrStockCannotDelete
+			}
+		}
 		return err
 	}
 	if result.RowsAffected() == 0 {

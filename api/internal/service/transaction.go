@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *Service) CreateTransaction(ctx context.Context, transaction model.Transaction) (uuid.UUID, error) { // error: ErrTagNotFound
+func (s *Service) CreateTransaction(ctx context.Context, transaction model.Transaction) (uuid.UUID, error) { // error: ErrTagNotFound, ErrStockNotFound
 	tx, err := s.repo.BeginTx(ctx)
 	if err != nil {
 		return uuid.Nil, err
@@ -80,7 +80,7 @@ func (s *Service) GetTransaction(ctx context.Context, id uuid.UUID) (model.Trans
 	return transaction, nil
 }
 
-func (s *Service) UpdateTransaction(ctx context.Context, id uuid.UUID, transaction model.Transaction) error { // error: ErrTransactionNotFound, ErrTagNotFound
+func (s *Service) UpdateTransaction(ctx context.Context, id uuid.UUID, transaction model.Transaction) error { // error: ErrTransactionNotFound, ErrTagNotFound, ErrStockNotFound
 	tx, err := s.repo.BeginTx(ctx)
 	if err != nil {
 		return err
