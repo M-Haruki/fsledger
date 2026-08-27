@@ -80,7 +80,7 @@ func (s *Service) GetTransaction(ctx context.Context, id uuid.UUID) (model.Trans
 	return transaction, nil
 }
 
-func (s *Service) UpdateTransaction(ctx context.Context, id uuid.UUID, transaction model.Transaction) error { // error: ErrTransactionNameDuplicate, ErrTransactionNotFound, ErrTagNotFound
+func (s *Service) UpdateTransaction(ctx context.Context, id uuid.UUID, transaction model.Transaction) error { // error: ErrTransactionNotFound, ErrTagNotFound
 	tx, err := s.repo.BeginTx(ctx)
 	if err != nil {
 		return err
@@ -101,6 +101,9 @@ func (s *Service) UpdateTransaction(ctx context.Context, id uuid.UUID, transacti
 		return err
 	}
 	err = repo.DeleteFlowsByTransaction(ctx, id)
+	if err != nil {
+		return err
+	}
 	for _, flow := range transaction.Flows {
 		flowId, err := repo.CreateFlow(ctx, id, flow)
 		if err != nil {

@@ -100,8 +100,6 @@ func (h *Handler) UpdateTransaction(ctx context.Context, request openapi.UpdateT
 	if err != nil {
 		if errors.Is(err, model.ErrTransactionNotFound) {
 			return openapi.UpdateTransaction404JSONResponse{Message: "transaction not found"}, nil
-		} else if errors.Is(err, model.ErrTransactionNameDuplicate) {
-			return openapi.UpdateTransaction404JSONResponse{Message: "transaction name duplicate"}, nil
 		} else if errors.Is(err, model.ErrTagNotFound) {
 			return openapi.UpdateTransaction400JSONResponse{Message: "tag not found"}, nil
 		}

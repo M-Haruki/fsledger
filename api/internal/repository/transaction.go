@@ -9,7 +9,6 @@ import (
 	"github.com/M-Haruki/fsledger/api/internal/db/sqlc"
 	"github.com/M-Haruki/fsledger/api/internal/model"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -40,25 +39,12 @@ func (r *Repository) GetTransaction(ctx context.Context, id uuid.UUID) (model.Tr
 }
 
 func (r *Repository) UpdateTransaction(ctx context.Context, id uuid.UUID, transaction model.Transaction) error {
-	tx, err := r.db.Begin(ctx)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback(ctx)
-	q := sqlc.New(tx)
-
-	result, err := q.UpdateTransaction(ctx, sqlc.UpdateTransactionParams{
+	result, err := r.queries.UpdateTransaction(ctx, sqlc.UpdateTransactionParams{
 		Description: transaction.Description,
 		Occurredat:  pgtype.Date{Time: time.Time(transaction.OccurredAt), InfinityModifier: pgtype.Finite, Valid: true},
 		ID:          pgtype.UUID{Bytes: id, Valid: true},
 	})
 	if err != nil {
-		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
-			if pgErr.Code == "23505" {
-				// duplicate key
-				return model.ErrTransactionNameDuplicate
-			}
-		}
 		return err
 	}
 	if result.RowsAffected() == 0 {

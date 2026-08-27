@@ -208,6 +208,7 @@ func (r *Repository) UpdateTag(ctx context.Context, tagT model.TagType, id uuid.
 	if err != nil {
 		return err
 	}
+
 	if result.RowsAffected() == 0 {
 		// not found
 		return model.ErrTagNotFound

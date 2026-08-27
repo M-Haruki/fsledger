@@ -16,5 +16,4 @@ type Transaction struct {
 	Flows       []Flow
 }
 
-var ErrTransactionNameDuplicate = errors.New("transaction name duplicate")
 var ErrTransactionNotFound = errors.New("transaction not found")
