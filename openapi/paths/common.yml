@@ -8,9 +8,9 @@ Health:
     security: []
     responses:
       "204":
-        description: Healthy.
+        description: Healthy
       "503":
-        description: Unhealthy.
+        description: Unhealthy
         content:
           application/json:
             schema:

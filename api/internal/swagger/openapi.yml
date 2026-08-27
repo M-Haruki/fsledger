@@ -31,9 +31,9 @@ paths:
       security: []
       responses:
         '204':
-          description: Healthy.
+          description: Healthy
         '503':
-          description: Unhealthy.
+          description: Unhealthy
           content:
             application/json:
               schema:
@@ -48,13 +48,13 @@ paths:
       security: []
       responses:
         '200':
-          description: ''
+          description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Stocks'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -74,7 +74,7 @@ paths:
               $ref: '#/components/schemas/StockData'
       responses:
         '201':
-          description: Created.
+          description: Created
           content:
             application/json:
               schema:
@@ -86,7 +86,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: Not found.
+          description: Not Found.
           content:
             application/json:
               schema:
@@ -98,7 +98,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -115,7 +115,7 @@ paths:
         - $ref: '#/components/parameters/StockIDParam'
       responses:
         '200':
-          description: ''
+          description: OK
           content:
             application/json:
               schema:
@@ -127,13 +127,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -155,7 +155,7 @@ paths:
               $ref: '#/components/schemas/StockData'
       responses:
         '204':
-          description: Changed.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -163,7 +163,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
@@ -175,7 +175,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -191,7 +191,7 @@ paths:
         - $ref: '#/components/parameters/StockIDParam'
       responses:
         '204':
-          description: Deleted.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -199,7 +199,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
@@ -211,7 +211,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -226,7 +226,7 @@ paths:
       security: []
       responses:
         '200':
-          description: ''
+          description: OK
           content:
             application/json:
               schema:
@@ -238,7 +238,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -258,7 +258,7 @@ paths:
               $ref: '#/components/schemas/TagData'
       responses:
         '201':
-          description: Created.
+          description: Created
           content:
             application/json:
               schema:
@@ -276,7 +276,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -293,7 +293,7 @@ paths:
         - $ref: '#/components/parameters/TagIDParam'
       responses:
         '200':
-          description: ''
+          description: OK
           content:
             application/json:
               schema:
@@ -305,13 +305,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -333,7 +333,7 @@ paths:
               $ref: '#/components/schemas/TagData'
       responses:
         '204':
-          description: Changed.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -341,7 +341,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
@@ -353,7 +353,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -369,7 +369,7 @@ paths:
         - $ref: '#/components/parameters/TagIDParam'
       responses:
         '204':
-          description: Deleted.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -377,13 +377,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -404,7 +404,7 @@ paths:
               $ref: '#/components/schemas/TransactionData'
       responses:
         '201':
-          description: Created.
+          description: Created
           content:
             application/json:
               schema:
@@ -416,13 +416,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: Not found.
+          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Internal Server Error
           content:
             application/json:
               schema:
@@ -439,7 +439,7 @@ paths:
         - $ref: '#/components/parameters/TransactionIDParam'
       responses:
         '200':
-          description: ''
+          description: OK
           content:
             application/json:
               schema:
@@ -451,13 +451,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The transaction not found.
+          description: Not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Internal Server Error
           content:
             application/json:
               schema:
@@ -479,7 +479,7 @@ paths:
               $ref: '#/components/schemas/TransactionData'
       responses:
         '204':
-          description: Changed.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -487,13 +487,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The transaction not found.
+          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Internal Server Error
           content:
             application/json:
               schema:
@@ -509,7 +509,7 @@ paths:
         - $ref: '#/components/parameters/TransactionIDParam'
       responses:
         '204':
-          description: Deleted.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -517,13 +517,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The transaction not found.
+          description: Not found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Internal Server Error
           content:
             application/json:
               schema:
@@ -538,7 +538,7 @@ paths:
       security: []
       responses:
         '200':
-          description: ''
+          description: OK
           content:
             application/json:
               schema:
@@ -550,7 +550,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -570,7 +570,7 @@ paths:
               $ref: '#/components/schemas/TagData'
       responses:
         '201':
-          description: Created.
+          description: Created
           content:
             application/json:
               schema:
@@ -588,7 +588,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -605,7 +605,7 @@ paths:
         - $ref: '#/components/parameters/TagIDParam'
       responses:
         '200':
-          description: ''
+          description: OK
           content:
             application/json:
               schema:
@@ -617,13 +617,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -645,7 +645,7 @@ paths:
               $ref: '#/components/schemas/TagData'
       responses:
         '204':
-          description: Changed.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -653,7 +653,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
@@ -665,7 +665,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -681,7 +681,7 @@ paths:
         - $ref: '#/components/parameters/TagIDParam'
       responses:
         '204':
-          description: Deleted.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -689,13 +689,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -710,7 +710,7 @@ paths:
       security: []
       responses:
         '200':
-          description: ''
+          description: OK
           content:
             application/json:
               schema:
@@ -722,7 +722,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -742,7 +742,7 @@ paths:
               $ref: '#/components/schemas/TagData'
       responses:
         '201':
-          description: Created.
+          description: Created
           content:
             application/json:
               schema:
@@ -760,7 +760,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -777,7 +777,7 @@ paths:
         - $ref: '#/components/parameters/TagIDParam'
       responses:
         '200':
-          description: ''
+          description: OK
           content:
             application/json:
               schema:
@@ -789,13 +789,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -817,7 +817,7 @@ paths:
               $ref: '#/components/schemas/TagData'
       responses:
         '204':
-          description: Changed.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -825,7 +825,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
@@ -837,7 +837,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:
@@ -853,7 +853,7 @@ paths:
         - $ref: '#/components/parameters/TagIDParam'
       responses:
         '204':
-          description: Deleted.
+          description: No Content
         '400':
           description: Bad Request
           content:
@@ -861,13 +861,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '404':
-          description: The stock not found.
+          description: Not Found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '500':
-          description: Server Error
+          description: Internal Server Error
           content:
             application/json:
               schema:

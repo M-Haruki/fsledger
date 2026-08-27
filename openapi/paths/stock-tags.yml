@@ -8,7 +8,7 @@ Tags_:
     security: []
     responses:
       "200":
-        description: ""
+        description: OK
         content:
           application/json:
             schema:
@@ -20,7 +20,7 @@ Tags_:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
-        description: Server Error
+        description: Internal Server Error
         content:
           application/json:
             schema:
@@ -40,7 +40,7 @@ Tags_:
             $ref: "../components/schemas/tags.yml#/components/schemas/TagData"
     responses:
       "201":
-        description: Created.
+        description: Created
         content:
           application/json:
             schema:
@@ -58,7 +58,7 @@ Tags_:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
-        description: Server Error
+        description: Internal Server Error
         content:
           application/json:
             schema:
@@ -75,7 +75,7 @@ TagsID:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
     responses:
       "200":
-        description: ""
+        description: OK
         content:
           application/json:
             schema:
@@ -87,13 +87,13 @@ TagsID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: The stock not found.
+        description: Not Found
         content:
           application/json:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
-        description: Server Error
+        description: Internal Server Error
         content:
           application/json:
             schema:
@@ -115,7 +115,7 @@ TagsID:
             $ref: "../components/schemas/tags.yml#/components/schemas/TagData"
     responses:
       "204":
-        description: "Changed."
+        description: No Content
       "400":
         description: Bad Request
         content:
@@ -123,7 +123,7 @@ TagsID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: The stock not found.
+        description: Not Found
         content:
           application/json:
             schema:
@@ -135,7 +135,7 @@ TagsID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
-        description: Server Error
+        description: Internal Server Error
         content:
           application/json:
             schema:
@@ -151,7 +151,7 @@ TagsID:
       - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
     responses:
       "204":
-        description: "Deleted."
+        description: No Content
       "400":
         description: Bad Request
         content:
@@ -159,13 +159,13 @@ TagsID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: The stock not found.
+        description: Not Found
         content:
           application/json:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
-        description: Server Error
+        description: Internal Server Error
         content:
           application/json:
             schema:

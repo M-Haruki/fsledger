@@ -8,13 +8,13 @@ Stocks:
     security: []
     responses:
       "200":
-        description: ""
+        description: OK
         content:
           application/json:
             schema:
               $ref: "../components/schemas/stocks.yml#/components/schemas/Stocks"
       "500":
-        description: Server Error
+        description: Internal Server Error
         content:
           application/json:
             schema:
@@ -34,7 +34,7 @@ Stocks:
             $ref: "../components/schemas/stocks.yml#/components/schemas/StockData"
     responses:
       "201":
-        description: Created.
+        description: Created
         content:
           application/json:
             schema:
@@ -46,7 +46,7 @@ Stocks:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: Not found.
+        description: Not Found.
         content:
           application/json:
             schema:
@@ -58,7 +58,7 @@ Stocks:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
-        description: "Server Error"
+        description: Internal Server Error
         content:
           application/json:
             schema:
@@ -75,7 +75,7 @@ StocksID:
       - $ref: "../components/parameters/stock.yml#/components/parameters/StockIDParam"
     responses:
       "200":
-        description: ""
+        description: OK
         content:
           application/json:
             schema:
@@ -87,13 +87,13 @@ StocksID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: The stock not found.
+        description: Not Found
         content:
           application/json:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
-        description: "Server Error"
+        description: Internal Server Error
         content:
           application/json:
             schema:
@@ -115,7 +115,7 @@ StocksID:
             $ref: "../components/schemas/stocks.yml#/components/schemas/StockData"
     responses:
       "204":
-        description: Changed.
+        description: No Content
       "400":
         description: Bad Request
         content:
@@ -123,7 +123,7 @@ StocksID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: The stock not found.
+        description: Not Found
         content:
           application/json:
             schema:
@@ -135,7 +135,7 @@ StocksID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
-        description: "Server Error"
+        description: Internal Server Error
         content:
           application/json:
             schema:
@@ -151,7 +151,7 @@ StocksID:
       - $ref: "../components/parameters/stock.yml#/components/parameters/StockIDParam"
     responses:
       "204":
-        description: Deleted.
+        description: No Content
       "400":
         description: Bad Request
         content:
@@ -159,7 +159,7 @@ StocksID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "404":
-        description: The stock not found.
+        description: Not Found
         content:
           application/json:
             schema:
@@ -171,7 +171,7 @@ StocksID:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
       "500":
-        description: "Server Error"
+        description: Internal Server Error
         content:
           application/json:
             schema:
