@@ -2,5 +2,8 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.oxc": "always"
   },
-  "oxc.path.node": "/usr/local/node/bin/node"
+  "oxc.path.node": "/usr/local/node/bin/node",
+  "editor.quickSuggestions": {
+    "strings": true // enable Tailwind CSS IntelliSense suggests
+  }
 }

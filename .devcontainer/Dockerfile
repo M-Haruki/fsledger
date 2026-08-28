@@ -20,7 +20,7 @@ RUN curl -LO https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linu
   rm node-v${NODE_VERSION}-linux-x64.tar.xz
 
 # pnpm
-ENV PNPM_VERSION=11.20.0
+ENV PNPM_VERSION=11.24.0
 ENV PNPM_HOME="/root/.local/share/pnpm"
 ENV PATH="${PNPM_HOME}/bin:${PATH}"
 RUN curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=${PNPM_VERSION} SHELL=/bin/bash sh -

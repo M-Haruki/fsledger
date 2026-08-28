@@ -21,7 +21,9 @@
         "golang.go",
         "42Crunch.vscode-openapi",
         "oderwat.indent-rainbow",
-        "oxc.oxc-vscode"
+        "oxc.oxc-vscode",
+        "bradlc.vscode-tailwindcss",
+        "clinyong.vscode-css-modules"
       ]
     }
   }
