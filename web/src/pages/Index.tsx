@@ -1,4 +1,3 @@
-import { useHealthCheck } from "../api/api";
 export default function Index() {
   return (
     <>
