@@ -10,7 +10,7 @@ function App() {
       <SideBar className="w-3xs h-full p-3" />
       {/* API Status:{" "}
       {isPending ? "Loading" : isError || data.status != 204 ? "Error" : "OK"} */}
-      <div className="w-full h-full p-3">
+      <div className="flex-1 h-full p-3">
         <Outlet />
       </div>
     </div>
