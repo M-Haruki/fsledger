@@ -12,7 +12,7 @@ export default defineConfig({
     },
     output: {
       target: "./src/api/api.ts",
-      schemas: "./src/api/model.ts",
+      schemas: "./src/api/model",
       client: "react-query",
       httpClient: "fetch",
       baseUrl: "/api",

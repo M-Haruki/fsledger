@@ -34,7 +34,7 @@ import type {
   Tags,
   TransactionData,
   TransactionID
-} from './.';
+} from './model';
 
 const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
   const result = { queryKey } as T & { queryKey: K };
