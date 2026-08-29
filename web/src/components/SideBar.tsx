@@ -4,9 +4,7 @@ import { Link, NavLink } from "react-router";
 
 export default function SideBar({ className }: { className: string }) {
   return (
-    <div
-      className={"flex flex-col p-3 gap-y-3 bg-primary-lightest " + className}
-    >
+    <div className={"flex flex-col gap-y-3 bg-primary-lightest " + className}>
       <Link to="/" className="font-extrabold text-3xl mb-5 flex items-center">
         <img src="/favicon.ico" className="h-8 mr-2" />
         FSLedger

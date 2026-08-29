@@ -1,17 +1,18 @@
 import { Outlet } from "react-router";
-import { useHealthCheck } from "./api/api";
+// import { useHealthCheck } from "./api/api";
 import SideBar from "./components/SideBar";
 
 function App() {
-  const { data, isPending, isError } = useHealthCheck();
+  // const { data, isPending, isError } = useHealthCheck();
 
   return (
-    <div className="flex bg-background">
-      <SideBar className="w-3xs h-screen" />
-      <h1>FSLedger</h1>
-      API Status:{" "}
-      {isPending ? "Loading" : isError || data.status != 204 ? "Error" : "OK"}
-      <Outlet />
+    <div className="flex bg-background w-screen h-screen">
+      <SideBar className="w-3xs h-full p-3" />
+      {/* API Status:{" "}
+      {isPending ? "Loading" : isError || data.status != 204 ? "Error" : "OK"} */}
+      <div className="w-full h-full p-3">
+        <Outlet />
+      </div>
     </div>
   );
 }
