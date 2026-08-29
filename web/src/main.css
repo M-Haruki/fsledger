@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+@theme {
+  --color-primary-lightest: hsl(135 60 90);
+  --color-primary-lighter: hsl(135 60 80);
+  --color-primary-light: hsl(135 60 60);
+  --color-primary-main: hsl(135 60 40);
+  --color-background: hsl(210 50 98);
+}
+
+body {
+  @apply text-gray-900;
+}
