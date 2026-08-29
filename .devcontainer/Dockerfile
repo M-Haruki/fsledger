@@ -24,6 +24,6 @@ ENV PNPM_VERSION=11.24.0
 ENV PNPM_HOME="/root/.local/share/pnpm"
 ENV PATH="${PNPM_HOME}/bin:${PATH}"
 RUN curl -fsSL https://get.pnpm.io/install.sh | env PNPM_VERSION=${PNPM_VERSION} SHELL=/bin/bash sh -
-RUN pnpm config set store-dir /root/.local/share/pnpm/store --global
+RUN pnpm config set store-dir /pnpm/store --global
 
 WORKDIR /workspace
