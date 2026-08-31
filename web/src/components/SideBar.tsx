@@ -1,3 +1,4 @@
+import { Layers, TableOfContents, Tag, Wrench } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { Link, NavLink } from "react-router";
@@ -10,32 +11,50 @@ export default function SideBar({ className }: { className: string }) {
         FSLedger
       </Link>
       <MenuLink
-        name="New Transaction"
         url="/transaction/new"
         className="font-semibold border-primary-light border-2"
-      ></MenuLink>
-      <Menu name="View">
+      >
+        New Transaction
+      </MenuLink>
+      <Menu
+        label={
+          <>
+            <TableOfContents className="inline align-sub" /> View
+          </>
+        }
+      >
         <></>
       </Menu>
-      <Menu name="Preference">
-        <MenuLink name="Stocks" url="/preference/stocks"></MenuLink>
-        <MenuLink name="Stock Tags" url="/preference/tags/stock"></MenuLink>
-        <MenuLink
-          name="Transaction Tags"
-          url="/preference/tags/transaction"
-        ></MenuLink>
-        <MenuLink name="Flow Tags" url="/preference/tags/flow"></MenuLink>
+      <Menu
+        label={
+          <>
+            <Wrench className="inline align-sub" /> Preference
+          </>
+        }
+      >
+        <MenuLink url="/preference/stocks">
+          <Layers className="inline align-sub" size={22} /> Stocks
+        </MenuLink>
+        <MenuLink url="/preference/tags/stock">
+          <Tag className="inline align-sub" size={22} /> Stock Tags
+        </MenuLink>
+        <MenuLink url="/preference/tags/transaction">
+          <Tag className="inline align-sub" size={22} /> Transaction Tags
+        </MenuLink>
+        <MenuLink url="/preference/tags/flow">
+          <Tag className="inline align-sub" size={22} /> Flow Tags
+        </MenuLink>
       </Menu>
     </div>
   );
 }
 
 function MenuLink({
-  name,
+  children,
   url,
   className = "",
 }: {
-  name: string;
+  children: React.ReactNode;
   url: string;
   className?: string;
 }) {
@@ -46,12 +65,18 @@ function MenuLink({
         `block rounded-lg p-2 text-lg ${className} ${isActive ? "bg-primary-light" : "hover:bg-primary-lighter"}`
       }
     >
-      {name}
+      {children}
     </NavLink>
   );
 }
 
-function Menu({ name, children }: { name: string; children: React.ReactNode }) {
+function Menu({
+  label,
+  children,
+}: {
+  label: React.ReactNode;
+  children: React.ReactNode;
+}) {
   const [isOpen, setIsOpen] = useState(true);
   return (
     <div className="flex flex-col">
@@ -59,7 +84,7 @@ function Menu({ name, children }: { name: string; children: React.ReactNode }) {
         className="block rounded-lg p-2 font-semibold hover:bg-primary-lighter text-lg cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {name}
+        {label}
       </div>
       <div className={`w-9/10 ml-auto + ${isOpen ? "block" : "hidden"}`}>
         {children}

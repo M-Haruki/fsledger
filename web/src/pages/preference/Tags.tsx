@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Plus, Trash2 } from "lucide-react";
 import {
   useListTags,
   useUpdateTag,
@@ -27,10 +28,10 @@ export default function PreferenceTags({ tagType }: { tagType: TagType }) {
       {isShowAdder && (
         <TagAdder tagType={tagType} onClose={() => setIsShowAdder(false)} />
       )}
-      <PageTitle className="flex place-content-between">
-        {getPageTitle(tagType)}
-        <AddBtn onAdd={() => setIsShowAdder(true)} />
-      </PageTitle>
+      <div className="flex place-content-between">
+        <PageTitle title={getPageTitle(tagType)}></PageTitle>
+        <AddBtn className="mb-5 " onAdd={() => setIsShowAdder(true)} />
+      </div>
       <TagList
         tagType={tagType}
         onTagSelect={(tag) => {
@@ -150,7 +151,7 @@ function TagEditer({
             onClick={deleteTag}
             className="cursor-pointer rounded-md p-1 border-2 border-primary-light hover:bg-primary-light"
           >
-            🗑️
+            <Trash2 />
           </button>
         </div>
       </form>
@@ -229,13 +230,19 @@ function getPageTitle(tagType: TagType) {
   }
 }
 
-function AddBtn({ onAdd }: { onAdd: () => void }) {
+function AddBtn({
+  className = "",
+  onAdd,
+}: {
+  className: string;
+  onAdd: () => void;
+}) {
   return (
     <button
       onClick={onAdd}
-      className="text-xl font-medium rounded-xl p-1 boder bg-primary-lighter hover:bg-primary-light"
+      className={`rounded-xl p-1 boder bg-primary-lighter hover:bg-primary-light ${className}`}
     >
-      +
+      <Plus size={30} strokeWidth={3} />
     </button>
   );
 }
