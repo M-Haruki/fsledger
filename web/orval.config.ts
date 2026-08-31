@@ -14,7 +14,7 @@ export default defineConfig({
       target: "./src/api/api.ts",
       schemas: "./src/api/model",
       client: "react-query",
-      httpClient: "fetch",
+      httpClient: "axios",
       baseUrl: "/api",
     },
   },

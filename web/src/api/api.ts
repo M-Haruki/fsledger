@@ -24,6 +24,13 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
+import * as axios from 'axios';
+import type {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosResponse
+} from 'axios';
+
 import type {
   Error,
   StockData,
@@ -51,55 +58,19 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
-export type healthCheckResponse204 = {
-  data: void
-  status: 204
-}
-
-export type healthCheckResponse503 = {
-  data: Error
-  status: 503
-}
-
-export type healthCheckResponseSuccess = (healthCheckResponse204) & {
-  headers: Headers;
-};
-export type healthCheckResponseError = (healthCheckResponse503) & {
-  headers: Headers;
-};
-
-export type healthCheckResponse = (healthCheckResponseSuccess | healthCheckResponseError)
-
-export const getHealthCheckUrl = () => {
-
-
-
-
-  return `/api/health`
-}
-
 /**
  * A health check endpoint for docker.
  * @summary Health Check
  */
-export const healthCheck = async ( options?: RequestInit): Promise<healthCheckResponse> => {
-
-  const res = await fetch(getHealthCheckUrl(),
-  {
-    ...options,
-    method: 'GET'
+export const healthCheck = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
 
+    return axios.default.get(
+      `/api/health`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: healthCheckResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as healthCheckResponse
-}
-
 
 
 
@@ -111,16 +82,16 @@ export const getHealthCheckQueryKey = () => {
     }
 
 
-export const getHealthCheckQueryOptions = <TData = Awaited<ReturnType<typeof healthCheck>>, TError = Error>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, fetch?: RequestInit}
+export const getHealthCheckQueryOptions = <TData = Awaited<ReturnType<typeof healthCheck>>, TError = AxiosError<Error>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getHealthCheckQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof healthCheck>>> = ({ signal }) => healthCheck({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof healthCheck>>> = ({ signal }) => healthCheck({ signal, ...axiosOptions });
 
 
 
@@ -130,39 +101,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type HealthCheckQueryResult = NonNullable<Awaited<ReturnType<typeof healthCheck>>>
-export type HealthCheckQueryError = Error
+export type HealthCheckQueryError = AxiosError<Error>
 
 
-export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = Error>(
+export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = AxiosError<Error>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof healthCheck>>,
           TError,
           Awaited<ReturnType<typeof healthCheck>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = Error>(
+export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = AxiosError<Error>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof healthCheck>>,
           TError,
           Awaited<ReturnType<typeof healthCheck>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, fetch?: RequestInit}
+export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Health Check
  */
 
-export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, fetch?: RequestInit}
+export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof healthCheck>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -179,55 +150,19 @@ export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, 
 
 
 
-export type listStocksResponse200 = {
-  data: Stocks
-  status: 200
-}
-
-export type listStocksResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type listStocksResponseSuccess = (listStocksResponse200) & {
-  headers: Headers;
-};
-export type listStocksResponseError = (listStocksResponse500) & {
-  headers: Headers;
-};
-
-export type listStocksResponse = (listStocksResponseSuccess | listStocksResponseError)
-
-export const getListStocksUrl = () => {
-
-
-
-
-  return `/api/stocks`
-}
-
 /**
  * Get all stocks' id and name.
  * @summary List
  */
-export const listStocks = async ( options?: RequestInit): Promise<listStocksResponse> => {
-
-  const res = await fetch(getListStocksUrl(),
-  {
-    ...options,
-    method: 'GET'
+export const listStocks = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Stocks>> => {
 
 
+    return axios.default.get(
+      `/api/stocks`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: listStocksResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as listStocksResponse
-}
-
 
 
 
@@ -239,16 +174,16 @@ export const getListStocksQueryKey = () => {
     }
 
 
-export const getListStocksQueryOptions = <TData = Awaited<ReturnType<typeof listStocks>>, TError = Error>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStocks>>, TError, TData>>, fetch?: RequestInit}
+export const getListStocksQueryOptions = <TData = Awaited<ReturnType<typeof listStocks>>, TError = AxiosError<Error>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStocks>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getListStocksQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listStocks>>> = ({ signal }) => listStocks({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listStocks>>> = ({ signal }) => listStocks({ signal, ...axiosOptions });
 
 
 
@@ -258,39 +193,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type ListStocksQueryResult = NonNullable<Awaited<ReturnType<typeof listStocks>>>
-export type ListStocksQueryError = Error
+export type ListStocksQueryError = AxiosError<Error>
 
 
-export function useListStocks<TData = Awaited<ReturnType<typeof listStocks>>, TError = Error>(
+export function useListStocks<TData = Awaited<ReturnType<typeof listStocks>>, TError = AxiosError<Error>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStocks>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listStocks>>,
           TError,
           Awaited<ReturnType<typeof listStocks>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListStocks<TData = Awaited<ReturnType<typeof listStocks>>, TError = Error>(
+export function useListStocks<TData = Awaited<ReturnType<typeof listStocks>>, TError = AxiosError<Error>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStocks>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listStocks>>,
           TError,
           Awaited<ReturnType<typeof listStocks>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListStocks<TData = Awaited<ReturnType<typeof listStocks>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStocks>>, TError, TData>>, fetch?: RequestInit}
+export function useListStocks<TData = Awaited<ReturnType<typeof listStocks>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStocks>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary List
  */
 
-export function useListStocks<TData = Awaited<ReturnType<typeof listStocks>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStocks>>, TError, TData>>, fetch?: RequestInit}
+export function useListStocks<TData = Awaited<ReturnType<typeof listStocks>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStocks>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -307,90 +242,34 @@ export function useListStocks<TData = Awaited<ReturnType<typeof listStocks>>, TE
 
 
 
-export type createStockResponse201 = {
-  data: StockID
-  status: 201
-}
-
-export type createStockResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type createStockResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type createStockResponse409 = {
-  data: Error
-  status: 409
-}
-
-export type createStockResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type createStockResponseSuccess = (createStockResponse201) & {
-  headers: Headers;
-};
-export type createStockResponseError = (createStockResponse400 | createStockResponse404 | createStockResponse409 | createStockResponse500) & {
-  headers: Headers;
-};
-
-export type createStockResponse = (createStockResponseSuccess | createStockResponseError)
-
-export const getCreateStockUrl = () => {
-
-
-
-
-  return `/api/stocks`
-}
-
 /**
  * Create new stock then get created stock id.
  * @summary Create
  */
-export const createStock = async (stockData: StockData, options?: RequestInit): Promise<createStockResponse> => {
+export const createStock = (
+    stockData: StockData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<StockID>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getCreateStockUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(stockData)
+
+    return axios.default.post(
+      `/api/stocks`,
+      stockData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createStockResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createStockResponse
-}
 
 
 
 
-
-export const getCreateStockMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStock>>, TError,CreateStockMutationVariables, TContext>, fetch?: RequestInit}
+export const getCreateStockMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStock>>, TError,CreateStockMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof createStock>>, TError,CreateStockMutationVariables, TContext> => {
 
 const mutationKey = ['createStock'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -398,7 +277,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof createStock>>, CreateStockMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  createStock(data,fetchOptions)
+          return  createStock(data,axiosOptions)
         }
 
 
@@ -410,14 +289,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type CreateStockMutationResult = NonNullable<Awaited<ReturnType<typeof createStock>>>
     export type CreateStockMutationBody = StockData
-    export type CreateStockMutationError = Error
+    export type CreateStockMutationError = AxiosError<Error>
     export type CreateStockMutationVariables = {data: StockData}
 
     /**
  * @summary Create
  */
-export const useCreateStock = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStock>>, TError,CreateStockMutationVariables, TContext>, fetch?: RequestInit}
+export const useCreateStock = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStock>>, TError,CreateStockMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createStock>>,
         TError,
@@ -427,65 +306,19 @@ export const useCreateStock = <TError = Error,
       return useMutation(getCreateStockMutationOptions(options), queryClient);
     }
 
-export type getStockResponse200 = {
-  data: StockData
-  status: 200
-}
-
-export type getStockResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type getStockResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type getStockResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type getStockResponseSuccess = (getStockResponse200) & {
-  headers: Headers;
-};
-export type getStockResponseError = (getStockResponse400 | getStockResponse404 | getStockResponse500) & {
-  headers: Headers;
-};
-
-export type getStockResponse = (getStockResponseSuccess | getStockResponseError)
-
-export const getGetStockUrl = (id: string,) => {
-
-
-
-
-  return `/api/stocks/${id}`
-}
-
 /**
  * Get stock details.
  * @summary Get
  */
-export const getStock = async (id: string, options?: RequestInit): Promise<getStockResponse> => {
-
-  const res = await fetch(getGetStockUrl(id),
-  {
-    ...options,
-    method: 'GET'
+export const getStock = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<StockData>> => {
 
 
+    return axios.default.get(
+      `/api/stocks/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getStockResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getStockResponse
-}
-
 
 
 
@@ -497,16 +330,16 @@ export const getGetStockQueryKey = (id: string,) => {
     }
 
 
-export const getGetStockQueryOptions = <TData = Awaited<ReturnType<typeof getStock>>, TError = Error>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStock>>, TError, TData>>, fetch?: RequestInit}
+export const getGetStockQueryOptions = <TData = Awaited<ReturnType<typeof getStock>>, TError = AxiosError<Error>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStock>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetStockQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStock>>> = ({ signal }) => getStock(id, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStock>>> = ({ signal }) => getStock(id, { signal, ...axiosOptions });
 
 
 
@@ -516,39 +349,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetStockQueryResult = NonNullable<Awaited<ReturnType<typeof getStock>>>
-export type GetStockQueryError = Error
+export type GetStockQueryError = AxiosError<Error>
 
 
-export function useGetStock<TData = Awaited<ReturnType<typeof getStock>>, TError = Error>(
+export function useGetStock<TData = Awaited<ReturnType<typeof getStock>>, TError = AxiosError<Error>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStock>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getStock>>,
           TError,
           Awaited<ReturnType<typeof getStock>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetStock<TData = Awaited<ReturnType<typeof getStock>>, TError = Error>(
+export function useGetStock<TData = Awaited<ReturnType<typeof getStock>>, TError = AxiosError<Error>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStock>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getStock>>,
           TError,
           Awaited<ReturnType<typeof getStock>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetStock<TData = Awaited<ReturnType<typeof getStock>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStock>>, TError, TData>>, fetch?: RequestInit}
+export function useGetStock<TData = Awaited<ReturnType<typeof getStock>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStock>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get
  */
 
-export function useGetStock<TData = Awaited<ReturnType<typeof getStock>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStock>>, TError, TData>>, fetch?: RequestInit}
+export function useGetStock<TData = Awaited<ReturnType<typeof getStock>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStock>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -565,91 +398,35 @@ export function useGetStock<TData = Awaited<ReturnType<typeof getStock>>, TError
 
 
 
-export type updateStockResponse204 = {
-  data: void
-  status: 204
-}
-
-export type updateStockResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type updateStockResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type updateStockResponse409 = {
-  data: Error
-  status: 409
-}
-
-export type updateStockResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type updateStockResponseSuccess = (updateStockResponse204) & {
-  headers: Headers;
-};
-export type updateStockResponseError = (updateStockResponse400 | updateStockResponse404 | updateStockResponse409 | updateStockResponse500) & {
-  headers: Headers;
-};
-
-export type updateStockResponse = (updateStockResponseSuccess | updateStockResponseError)
-
-export const getUpdateStockUrl = (id: string,) => {
-
-
-
-
-  return `/api/stocks/${id}`
-}
-
 /**
  * Change a stock.
  * @summary Update
  */
-export const updateStock = async (id: string,
-    stockData: StockData, options?: RequestInit): Promise<updateStockResponse> => {
+export const updateStock = (
+    id: string,
+    stockData: StockData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getUpdateStockUrl(id),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(stockData)
+
+    return axios.default.put(
+      `/api/stocks/${id}`,
+      stockData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: updateStockResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as updateStockResponse
-}
 
 
 
 
-
-export const getUpdateStockMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStock>>, TError,UpdateStockMutationVariables, TContext>, fetch?: RequestInit}
+export const getUpdateStockMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStock>>, TError,UpdateStockMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateStock>>, TError,UpdateStockMutationVariables, TContext> => {
 
 const mutationKey = ['updateStock'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -657,7 +434,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateStock>>, UpdateStockMutationVariables> = (props) => {
           const {id,data} = props ?? {};
 
-          return  updateStock(id,data,fetchOptions)
+          return  updateStock(id,data,axiosOptions)
         }
 
 
@@ -669,14 +446,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type UpdateStockMutationResult = NonNullable<Awaited<ReturnType<typeof updateStock>>>
     export type UpdateStockMutationBody = StockData
-    export type UpdateStockMutationError = Error
+    export type UpdateStockMutationError = AxiosError<Error>
     export type UpdateStockMutationVariables = {id: string;data: StockData}
 
     /**
  * @summary Update
  */
-export const useUpdateStock = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStock>>, TError,UpdateStockMutationVariables, TContext>, fetch?: RequestInit}
+export const useUpdateStock = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStock>>, TError,UpdateStockMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateStock>>,
         TError,
@@ -686,84 +463,33 @@ export const useUpdateStock = <TError = Error,
       return useMutation(getUpdateStockMutationOptions(options), queryClient);
     }
 
-export type deleteStockResponse204 = {
-  data: void
-  status: 204
-}
-
-export type deleteStockResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type deleteStockResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type deleteStockResponse409 = {
-  data: Error
-  status: 409
-}
-
-export type deleteStockResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type deleteStockResponseSuccess = (deleteStockResponse204) & {
-  headers: Headers;
-};
-export type deleteStockResponseError = (deleteStockResponse400 | deleteStockResponse404 | deleteStockResponse409 | deleteStockResponse500) & {
-  headers: Headers;
-};
-
-export type deleteStockResponse = (deleteStockResponseSuccess | deleteStockResponseError)
-
-export const getDeleteStockUrl = (id: string,) => {
-
-
-
-
-  return `/api/stocks/${id}`
-}
-
 /**
  * Delete a stock.
  * @summary Delete
  */
-export const deleteStock = async (id: string, options?: RequestInit): Promise<deleteStockResponse> => {
-
-  const res = await fetch(getDeleteStockUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export const deleteStock = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
 
+    return axios.default.delete(
+      `/api/stocks/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: deleteStockResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as deleteStockResponse
-}
 
 
 
 
-
-export const getDeleteStockMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStock>>, TError,DeleteStockMutationVariables, TContext>, fetch?: RequestInit}
+export const getDeleteStockMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStock>>, TError,DeleteStockMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteStock>>, TError,DeleteStockMutationVariables, TContext> => {
 
 const mutationKey = ['deleteStock'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -771,7 +497,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteStock>>, DeleteStockMutationVariables> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteStock(id,fetchOptions)
+          return  deleteStock(id,axiosOptions)
         }
 
 
@@ -783,14 +509,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type DeleteStockMutationResult = NonNullable<Awaited<ReturnType<typeof deleteStock>>>
 
-    export type DeleteStockMutationError = Error
+    export type DeleteStockMutationError = AxiosError<Error>
     export type DeleteStockMutationVariables = {id: string}
 
     /**
  * @summary Delete
  */
-export const useDeleteStock = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStock>>, TError,DeleteStockMutationVariables, TContext>, fetch?: RequestInit}
+export const useDeleteStock = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStock>>, TError,DeleteStockMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteStock>>,
         TError,
@@ -800,60 +526,19 @@ export const useDeleteStock = <TError = Error,
       return useMutation(getDeleteStockMutationOptions(options), queryClient);
     }
 
-export type listStockTagsResponse200 = {
-  data: Tags
-  status: 200
-}
-
-export type listStockTagsResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type listStockTagsResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type listStockTagsResponseSuccess = (listStockTagsResponse200) & {
-  headers: Headers;
-};
-export type listStockTagsResponseError = (listStockTagsResponse400 | listStockTagsResponse500) & {
-  headers: Headers;
-};
-
-export type listStockTagsResponse = (listStockTagsResponseSuccess | listStockTagsResponseError)
-
-export const getListStockTagsUrl = () => {
-
-
-
-
-  return `/api/stocks/tags`
-}
-
 /**
  * Get all tags.
  * @summary List
  */
-export const listStockTags = async ( options?: RequestInit): Promise<listStockTagsResponse> => {
-
-  const res = await fetch(getListStockTagsUrl(),
-  {
-    ...options,
-    method: 'GET'
+export const listStockTags = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Tags>> => {
 
 
+    return axios.default.get(
+      `/api/stocks/tags`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: listStockTagsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as listStockTagsResponse
-}
-
 
 
 
@@ -865,16 +550,16 @@ export const getListStockTagsQueryKey = () => {
     }
 
 
-export const getListStockTagsQueryOptions = <TData = Awaited<ReturnType<typeof listStockTags>>, TError = Error>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStockTags>>, TError, TData>>, fetch?: RequestInit}
+export const getListStockTagsQueryOptions = <TData = Awaited<ReturnType<typeof listStockTags>>, TError = AxiosError<Error>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStockTags>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getListStockTagsQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listStockTags>>> = ({ signal }) => listStockTags({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listStockTags>>> = ({ signal }) => listStockTags({ signal, ...axiosOptions });
 
 
 
@@ -884,39 +569,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type ListStockTagsQueryResult = NonNullable<Awaited<ReturnType<typeof listStockTags>>>
-export type ListStockTagsQueryError = Error
+export type ListStockTagsQueryError = AxiosError<Error>
 
 
-export function useListStockTags<TData = Awaited<ReturnType<typeof listStockTags>>, TError = Error>(
+export function useListStockTags<TData = Awaited<ReturnType<typeof listStockTags>>, TError = AxiosError<Error>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStockTags>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listStockTags>>,
           TError,
           Awaited<ReturnType<typeof listStockTags>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListStockTags<TData = Awaited<ReturnType<typeof listStockTags>>, TError = Error>(
+export function useListStockTags<TData = Awaited<ReturnType<typeof listStockTags>>, TError = AxiosError<Error>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStockTags>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listStockTags>>,
           TError,
           Awaited<ReturnType<typeof listStockTags>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListStockTags<TData = Awaited<ReturnType<typeof listStockTags>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStockTags>>, TError, TData>>, fetch?: RequestInit}
+export function useListStockTags<TData = Awaited<ReturnType<typeof listStockTags>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStockTags>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary List
  */
 
-export function useListStockTags<TData = Awaited<ReturnType<typeof listStockTags>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStockTags>>, TError, TData>>, fetch?: RequestInit}
+export function useListStockTags<TData = Awaited<ReturnType<typeof listStockTags>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listStockTags>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -933,93 +618,42 @@ export function useListStockTags<TData = Awaited<ReturnType<typeof listStockTags
 
 
 
-export type createStockTagsResponse201 = {
-  data: TagID
-  status: 201
-}
-
-export type createStockTagsResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type createStockTagsResponse409 = {
-  data: Error
-  status: 409
-}
-
-export type createStockTagsResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type createStockTagsResponseSuccess = (createStockTagsResponse201) & {
-  headers: Headers;
-};
-export type createStockTagsResponseError = (createStockTagsResponse400 | createStockTagsResponse409 | createStockTagsResponse500) & {
-  headers: Headers;
-};
-
-export type createStockTagsResponse = (createStockTagsResponseSuccess | createStockTagsResponseError)
-
-export const getCreateStockTagsUrl = () => {
-
-
-
-
-  return `/api/stocks/tags`
-}
-
 /**
  * Create a new tag.
  * @summary Create
  */
-export const createStockTags = async (tagData: TagData, options?: RequestInit): Promise<createStockTagsResponse> => {
+export const createStockTag = (
+    tagData: TagData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TagID>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getCreateStockTagsUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(tagData)
+
+    return axios.default.post(
+      `/api/stocks/tags`,
+      tagData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createStockTagsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createStockTagsResponse
-}
 
 
 
 
+export const getCreateStockTagMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStockTag>>, TError,CreateStockTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof createStockTag>>, TError,CreateStockTagMutationVariables, TContext> => {
 
-export const getCreateStockTagsMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStockTags>>, TError,CreateStockTagsMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof createStockTags>>, TError,CreateStockTagsMutationVariables, TContext> => {
-
-const mutationKey = ['createStockTags'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const mutationKey = ['createStockTag'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createStockTags>>, CreateStockTagsMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createStockTag>>, CreateStockTagMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  createStockTags(data,fetchOptions)
+          return  createStockTag(data,axiosOptions)
         }
 
 
@@ -1029,84 +663,38 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type CreateStockTagsMutationResult = NonNullable<Awaited<ReturnType<typeof createStockTags>>>
-    export type CreateStockTagsMutationBody = TagData
-    export type CreateStockTagsMutationError = Error
-    export type CreateStockTagsMutationVariables = {data: TagData}
+    export type CreateStockTagMutationResult = NonNullable<Awaited<ReturnType<typeof createStockTag>>>
+    export type CreateStockTagMutationBody = TagData
+    export type CreateStockTagMutationError = AxiosError<Error>
+    export type CreateStockTagMutationVariables = {data: TagData}
 
     /**
  * @summary Create
  */
-export const useCreateStockTags = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStockTags>>, TError,CreateStockTagsMutationVariables, TContext>, fetch?: RequestInit}
+export const useCreateStockTag = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createStockTag>>, TError,CreateStockTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createStockTags>>,
+        Awaited<ReturnType<typeof createStockTag>>,
         TError,
-        CreateStockTagsMutationVariables,
+        CreateStockTagMutationVariables,
         TContext
       > => {
-      return useMutation(getCreateStockTagsMutationOptions(options), queryClient);
+      return useMutation(getCreateStockTagMutationOptions(options), queryClient);
     }
-
-export type getStockTagResponse200 = {
-  data: TagData
-  status: 200
-}
-
-export type getStockTagResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type getStockTagResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type getStockTagResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type getStockTagResponseSuccess = (getStockTagResponse200) & {
-  headers: Headers;
-};
-export type getStockTagResponseError = (getStockTagResponse400 | getStockTagResponse404 | getStockTagResponse500) & {
-  headers: Headers;
-};
-
-export type getStockTagResponse = (getStockTagResponseSuccess | getStockTagResponseError)
-
-export const getGetStockTagUrl = (id: string,) => {
-
-
-
-
-  return `/api/stocks/tags/${id}`
-}
 
 /**
  * Get a tag.
  * @summary Get
  */
-export const getStockTag = async (id: string, options?: RequestInit): Promise<getStockTagResponse> => {
-
-  const res = await fetch(getGetStockTagUrl(id),
-  {
-    ...options,
-    method: 'GET'
+export const getStockTag = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TagData>> => {
 
 
+    return axios.default.get(
+      `/api/stocks/tags/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getStockTagResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getStockTagResponse
-}
-
 
 
 
@@ -1118,16 +706,16 @@ export const getGetStockTagQueryKey = (id: string,) => {
     }
 
 
-export const getGetStockTagQueryOptions = <TData = Awaited<ReturnType<typeof getStockTag>>, TError = Error>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockTag>>, TError, TData>>, fetch?: RequestInit}
+export const getGetStockTagQueryOptions = <TData = Awaited<ReturnType<typeof getStockTag>>, TError = AxiosError<Error>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockTag>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetStockTagQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStockTag>>> = ({ signal }) => getStockTag(id, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getStockTag>>> = ({ signal }) => getStockTag(id, { signal, ...axiosOptions });
 
 
 
@@ -1137,39 +725,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetStockTagQueryResult = NonNullable<Awaited<ReturnType<typeof getStockTag>>>
-export type GetStockTagQueryError = Error
+export type GetStockTagQueryError = AxiosError<Error>
 
 
-export function useGetStockTag<TData = Awaited<ReturnType<typeof getStockTag>>, TError = Error>(
+export function useGetStockTag<TData = Awaited<ReturnType<typeof getStockTag>>, TError = AxiosError<Error>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockTag>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getStockTag>>,
           TError,
           Awaited<ReturnType<typeof getStockTag>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetStockTag<TData = Awaited<ReturnType<typeof getStockTag>>, TError = Error>(
+export function useGetStockTag<TData = Awaited<ReturnType<typeof getStockTag>>, TError = AxiosError<Error>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockTag>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getStockTag>>,
           TError,
           Awaited<ReturnType<typeof getStockTag>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetStockTag<TData = Awaited<ReturnType<typeof getStockTag>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockTag>>, TError, TData>>, fetch?: RequestInit}
+export function useGetStockTag<TData = Awaited<ReturnType<typeof getStockTag>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockTag>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get
  */
 
-export function useGetStockTag<TData = Awaited<ReturnType<typeof getStockTag>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockTag>>, TError, TData>>, fetch?: RequestInit}
+export function useGetStockTag<TData = Awaited<ReturnType<typeof getStockTag>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getStockTag>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1186,91 +774,35 @@ export function useGetStockTag<TData = Awaited<ReturnType<typeof getStockTag>>, 
 
 
 
-export type updateStockTagResponse204 = {
-  data: void
-  status: 204
-}
-
-export type updateStockTagResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type updateStockTagResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type updateStockTagResponse409 = {
-  data: Error
-  status: 409
-}
-
-export type updateStockTagResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type updateStockTagResponseSuccess = (updateStockTagResponse204) & {
-  headers: Headers;
-};
-export type updateStockTagResponseError = (updateStockTagResponse400 | updateStockTagResponse404 | updateStockTagResponse409 | updateStockTagResponse500) & {
-  headers: Headers;
-};
-
-export type updateStockTagResponse = (updateStockTagResponseSuccess | updateStockTagResponseError)
-
-export const getUpdateStockTagUrl = (id: string,) => {
-
-
-
-
-  return `/api/stocks/tags/${id}`
-}
-
 /**
  * Change a tag.
  * @summary Update
  */
-export const updateStockTag = async (id: string,
-    tagData: TagData, options?: RequestInit): Promise<updateStockTagResponse> => {
+export const updateStockTag = (
+    id: string,
+    tagData: TagData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getUpdateStockTagUrl(id),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(tagData)
+
+    return axios.default.put(
+      `/api/stocks/tags/${id}`,
+      tagData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: updateStockTagResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as updateStockTagResponse
-}
 
 
 
 
-
-export const getUpdateStockTagMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStockTag>>, TError,UpdateStockTagMutationVariables, TContext>, fetch?: RequestInit}
+export const getUpdateStockTagMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStockTag>>, TError,UpdateStockTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateStockTag>>, TError,UpdateStockTagMutationVariables, TContext> => {
 
 const mutationKey = ['updateStockTag'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -1278,7 +810,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateStockTag>>, UpdateStockTagMutationVariables> = (props) => {
           const {id,data} = props ?? {};
 
-          return  updateStockTag(id,data,fetchOptions)
+          return  updateStockTag(id,data,axiosOptions)
         }
 
 
@@ -1290,14 +822,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type UpdateStockTagMutationResult = NonNullable<Awaited<ReturnType<typeof updateStockTag>>>
     export type UpdateStockTagMutationBody = TagData
-    export type UpdateStockTagMutationError = Error
+    export type UpdateStockTagMutationError = AxiosError<Error>
     export type UpdateStockTagMutationVariables = {id: string;data: TagData}
 
     /**
  * @summary Update
  */
-export const useUpdateStockTag = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStockTag>>, TError,UpdateStockTagMutationVariables, TContext>, fetch?: RequestInit}
+export const useUpdateStockTag = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateStockTag>>, TError,UpdateStockTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateStockTag>>,
         TError,
@@ -1307,79 +839,33 @@ export const useUpdateStockTag = <TError = Error,
       return useMutation(getUpdateStockTagMutationOptions(options), queryClient);
     }
 
-export type deleteStockTagResponse204 = {
-  data: void
-  status: 204
-}
-
-export type deleteStockTagResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type deleteStockTagResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type deleteStockTagResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type deleteStockTagResponseSuccess = (deleteStockTagResponse204) & {
-  headers: Headers;
-};
-export type deleteStockTagResponseError = (deleteStockTagResponse400 | deleteStockTagResponse404 | deleteStockTagResponse500) & {
-  headers: Headers;
-};
-
-export type deleteStockTagResponse = (deleteStockTagResponseSuccess | deleteStockTagResponseError)
-
-export const getDeleteStockTagUrl = (id: string,) => {
-
-
-
-
-  return `/api/stocks/tags/${id}`
-}
-
 /**
  * Delete a tag.
  * @summary Delete
  */
-export const deleteStockTag = async (id: string, options?: RequestInit): Promise<deleteStockTagResponse> => {
-
-  const res = await fetch(getDeleteStockTagUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export const deleteStockTag = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
 
+    return axios.default.delete(
+      `/api/stocks/tags/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: deleteStockTagResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as deleteStockTagResponse
-}
 
 
 
 
-
-export const getDeleteStockTagMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStockTag>>, TError,DeleteStockTagMutationVariables, TContext>, fetch?: RequestInit}
+export const getDeleteStockTagMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStockTag>>, TError,DeleteStockTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteStockTag>>, TError,DeleteStockTagMutationVariables, TContext> => {
 
 const mutationKey = ['deleteStockTag'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -1387,7 +873,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteStockTag>>, DeleteStockTagMutationVariables> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteStockTag(id,fetchOptions)
+          return  deleteStockTag(id,axiosOptions)
         }
 
 
@@ -1399,14 +885,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type DeleteStockTagMutationResult = NonNullable<Awaited<ReturnType<typeof deleteStockTag>>>
 
-    export type DeleteStockTagMutationError = Error
+    export type DeleteStockTagMutationError = AxiosError<Error>
     export type DeleteStockTagMutationVariables = {id: string}
 
     /**
  * @summary Delete
  */
-export const useDeleteStockTag = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStockTag>>, TError,DeleteStockTagMutationVariables, TContext>, fetch?: RequestInit}
+export const useDeleteStockTag = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteStockTag>>, TError,DeleteStockTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteStockTag>>,
         TError,
@@ -1416,85 +902,34 @@ export const useDeleteStockTag = <TError = Error,
       return useMutation(getDeleteStockTagMutationOptions(options), queryClient);
     }
 
-export type createTransactionResponse201 = {
-  data: TransactionID
-  status: 201
-}
-
-export type createTransactionResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type createTransactionResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type createTransactionResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type createTransactionResponseSuccess = (createTransactionResponse201) & {
-  headers: Headers;
-};
-export type createTransactionResponseError = (createTransactionResponse400 | createTransactionResponse404 | createTransactionResponse500) & {
-  headers: Headers;
-};
-
-export type createTransactionResponse = (createTransactionResponseSuccess | createTransactionResponseError)
-
-export const getCreateTransactionUrl = () => {
-
-
-
-
-  return `/api/transactions`
-}
-
 /**
  * Create new transaction with flows.
  * @summary Create
  */
-export const createTransaction = async (transactionData: TransactionData, options?: RequestInit): Promise<createTransactionResponse> => {
+export const createTransaction = (
+    transactionData: TransactionData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TransactionID>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getCreateTransactionUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(transactionData)
+
+    return axios.default.post(
+      `/api/transactions`,
+      transactionData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createTransactionResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createTransactionResponse
-}
 
 
 
 
-
-export const getCreateTransactionMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTransaction>>, TError,CreateTransactionMutationVariables, TContext>, fetch?: RequestInit}
+export const getCreateTransactionMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTransaction>>, TError,CreateTransactionMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof createTransaction>>, TError,CreateTransactionMutationVariables, TContext> => {
 
 const mutationKey = ['createTransaction'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -1502,7 +937,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTransaction>>, CreateTransactionMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  createTransaction(data,fetchOptions)
+          return  createTransaction(data,axiosOptions)
         }
 
 
@@ -1514,14 +949,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type CreateTransactionMutationResult = NonNullable<Awaited<ReturnType<typeof createTransaction>>>
     export type CreateTransactionMutationBody = TransactionData
-    export type CreateTransactionMutationError = Error
+    export type CreateTransactionMutationError = AxiosError<Error>
     export type CreateTransactionMutationVariables = {data: TransactionData}
 
     /**
  * @summary Create
  */
-export const useCreateTransaction = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTransaction>>, TError,CreateTransactionMutationVariables, TContext>, fetch?: RequestInit}
+export const useCreateTransaction = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTransaction>>, TError,CreateTransactionMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof createTransaction>>,
         TError,
@@ -1531,65 +966,19 @@ export const useCreateTransaction = <TError = Error,
       return useMutation(getCreateTransactionMutationOptions(options), queryClient);
     }
 
-export type getTransactionResponse200 = {
-  data: TransactionData
-  status: 200
-}
-
-export type getTransactionResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type getTransactionResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type getTransactionResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type getTransactionResponseSuccess = (getTransactionResponse200) & {
-  headers: Headers;
-};
-export type getTransactionResponseError = (getTransactionResponse400 | getTransactionResponse404 | getTransactionResponse500) & {
-  headers: Headers;
-};
-
-export type getTransactionResponse = (getTransactionResponseSuccess | getTransactionResponseError)
-
-export const getGetTransactionUrl = (id: string,) => {
-
-
-
-
-  return `/api/transactions/${id}`
-}
-
 /**
  * Get a transaction and its flows.
  * @summary Get
  */
-export const getTransaction = async (id: string, options?: RequestInit): Promise<getTransactionResponse> => {
-
-  const res = await fetch(getGetTransactionUrl(id),
-  {
-    ...options,
-    method: 'GET'
+export const getTransaction = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TransactionData>> => {
 
 
+    return axios.default.get(
+      `/api/transactions/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getTransactionResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getTransactionResponse
-}
-
 
 
 
@@ -1601,16 +990,16 @@ export const getGetTransactionQueryKey = (id: string,) => {
     }
 
 
-export const getGetTransactionQueryOptions = <TData = Awaited<ReturnType<typeof getTransaction>>, TError = Error>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransaction>>, TError, TData>>, fetch?: RequestInit}
+export const getGetTransactionQueryOptions = <TData = Awaited<ReturnType<typeof getTransaction>>, TError = AxiosError<Error>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransaction>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetTransactionQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTransaction>>> = ({ signal }) => getTransaction(id, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTransaction>>> = ({ signal }) => getTransaction(id, { signal, ...axiosOptions });
 
 
 
@@ -1620,39 +1009,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetTransactionQueryResult = NonNullable<Awaited<ReturnType<typeof getTransaction>>>
-export type GetTransactionQueryError = Error
+export type GetTransactionQueryError = AxiosError<Error>
 
 
-export function useGetTransaction<TData = Awaited<ReturnType<typeof getTransaction>>, TError = Error>(
+export function useGetTransaction<TData = Awaited<ReturnType<typeof getTransaction>>, TError = AxiosError<Error>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransaction>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getTransaction>>,
           TError,
           Awaited<ReturnType<typeof getTransaction>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetTransaction<TData = Awaited<ReturnType<typeof getTransaction>>, TError = Error>(
+export function useGetTransaction<TData = Awaited<ReturnType<typeof getTransaction>>, TError = AxiosError<Error>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransaction>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getTransaction>>,
           TError,
           Awaited<ReturnType<typeof getTransaction>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetTransaction<TData = Awaited<ReturnType<typeof getTransaction>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransaction>>, TError, TData>>, fetch?: RequestInit}
+export function useGetTransaction<TData = Awaited<ReturnType<typeof getTransaction>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransaction>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get
  */
 
-export function useGetTransaction<TData = Awaited<ReturnType<typeof getTransaction>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransaction>>, TError, TData>>, fetch?: RequestInit}
+export function useGetTransaction<TData = Awaited<ReturnType<typeof getTransaction>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransaction>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1669,86 +1058,35 @@ export function useGetTransaction<TData = Awaited<ReturnType<typeof getTransacti
 
 
 
-export type updateTransactionResponse204 = {
-  data: void
-  status: 204
-}
-
-export type updateTransactionResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type updateTransactionResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type updateTransactionResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type updateTransactionResponseSuccess = (updateTransactionResponse204) & {
-  headers: Headers;
-};
-export type updateTransactionResponseError = (updateTransactionResponse400 | updateTransactionResponse404 | updateTransactionResponse500) & {
-  headers: Headers;
-};
-
-export type updateTransactionResponse = (updateTransactionResponseSuccess | updateTransactionResponseError)
-
-export const getUpdateTransactionUrl = (id: string,) => {
-
-
-
-
-  return `/api/transactions/${id}`
-}
-
 /**
  * Change a transaction and its flows.
  * @summary Update
  */
-export const updateTransaction = async (id: string,
-    transactionData: TransactionData, options?: RequestInit): Promise<updateTransactionResponse> => {
+export const updateTransaction = (
+    id: string,
+    transactionData: TransactionData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getUpdateTransactionUrl(id),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(transactionData)
+
+    return axios.default.put(
+      `/api/transactions/${id}`,
+      transactionData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: updateTransactionResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as updateTransactionResponse
-}
 
 
 
 
-
-export const getUpdateTransactionMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTransaction>>, TError,UpdateTransactionMutationVariables, TContext>, fetch?: RequestInit}
+export const getUpdateTransactionMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTransaction>>, TError,UpdateTransactionMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateTransaction>>, TError,UpdateTransactionMutationVariables, TContext> => {
 
 const mutationKey = ['updateTransaction'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -1756,7 +1094,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTransaction>>, UpdateTransactionMutationVariables> = (props) => {
           const {id,data} = props ?? {};
 
-          return  updateTransaction(id,data,fetchOptions)
+          return  updateTransaction(id,data,axiosOptions)
         }
 
 
@@ -1768,14 +1106,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type UpdateTransactionMutationResult = NonNullable<Awaited<ReturnType<typeof updateTransaction>>>
     export type UpdateTransactionMutationBody = TransactionData
-    export type UpdateTransactionMutationError = Error
+    export type UpdateTransactionMutationError = AxiosError<Error>
     export type UpdateTransactionMutationVariables = {id: string;data: TransactionData}
 
     /**
  * @summary Update
  */
-export const useUpdateTransaction = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTransaction>>, TError,UpdateTransactionMutationVariables, TContext>, fetch?: RequestInit}
+export const useUpdateTransaction = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTransaction>>, TError,UpdateTransactionMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateTransaction>>,
         TError,
@@ -1785,79 +1123,33 @@ export const useUpdateTransaction = <TError = Error,
       return useMutation(getUpdateTransactionMutationOptions(options), queryClient);
     }
 
-export type deleteTransactionResponse204 = {
-  data: void
-  status: 204
-}
-
-export type deleteTransactionResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type deleteTransactionResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type deleteTransactionResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type deleteTransactionResponseSuccess = (deleteTransactionResponse204) & {
-  headers: Headers;
-};
-export type deleteTransactionResponseError = (deleteTransactionResponse400 | deleteTransactionResponse404 | deleteTransactionResponse500) & {
-  headers: Headers;
-};
-
-export type deleteTransactionResponse = (deleteTransactionResponseSuccess | deleteTransactionResponseError)
-
-export const getDeleteTransactionUrl = (id: string,) => {
-
-
-
-
-  return `/api/transactions/${id}`
-}
-
 /**
  * Delete a transaction and its flows.
  * @summary Delete
  */
-export const deleteTransaction = async (id: string, options?: RequestInit): Promise<deleteTransactionResponse> => {
-
-  const res = await fetch(getDeleteTransactionUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export const deleteTransaction = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
 
+    return axios.default.delete(
+      `/api/transactions/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: deleteTransactionResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as deleteTransactionResponse
-}
 
 
 
 
-
-export const getDeleteTransactionMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTransaction>>, TError,DeleteTransactionMutationVariables, TContext>, fetch?: RequestInit}
+export const getDeleteTransactionMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTransaction>>, TError,DeleteTransactionMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteTransaction>>, TError,DeleteTransactionMutationVariables, TContext> => {
 
 const mutationKey = ['deleteTransaction'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -1865,7 +1157,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTransaction>>, DeleteTransactionMutationVariables> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteTransaction(id,fetchOptions)
+          return  deleteTransaction(id,axiosOptions)
         }
 
 
@@ -1877,14 +1169,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type DeleteTransactionMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTransaction>>>
 
-    export type DeleteTransactionMutationError = Error
+    export type DeleteTransactionMutationError = AxiosError<Error>
     export type DeleteTransactionMutationVariables = {id: string}
 
     /**
  * @summary Delete
  */
-export const useDeleteTransaction = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTransaction>>, TError,DeleteTransactionMutationVariables, TContext>, fetch?: RequestInit}
+export const useDeleteTransaction = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTransaction>>, TError,DeleteTransactionMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteTransaction>>,
         TError,
@@ -1894,60 +1186,19 @@ export const useDeleteTransaction = <TError = Error,
       return useMutation(getDeleteTransactionMutationOptions(options), queryClient);
     }
 
-export type listTransactionTagsResponse200 = {
-  data: Tags
-  status: 200
-}
-
-export type listTransactionTagsResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type listTransactionTagsResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type listTransactionTagsResponseSuccess = (listTransactionTagsResponse200) & {
-  headers: Headers;
-};
-export type listTransactionTagsResponseError = (listTransactionTagsResponse400 | listTransactionTagsResponse500) & {
-  headers: Headers;
-};
-
-export type listTransactionTagsResponse = (listTransactionTagsResponseSuccess | listTransactionTagsResponseError)
-
-export const getListTransactionTagsUrl = () => {
-
-
-
-
-  return `/api/transactions/tags`
-}
-
 /**
  * Get all tags.
  * @summary List
  */
-export const listTransactionTags = async ( options?: RequestInit): Promise<listTransactionTagsResponse> => {
-
-  const res = await fetch(getListTransactionTagsUrl(),
-  {
-    ...options,
-    method: 'GET'
+export const listTransactionTags = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Tags>> => {
 
 
+    return axios.default.get(
+      `/api/transactions/tags`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: listTransactionTagsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as listTransactionTagsResponse
-}
-
 
 
 
@@ -1959,16 +1210,16 @@ export const getListTransactionTagsQueryKey = () => {
     }
 
 
-export const getListTransactionTagsQueryOptions = <TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = Error>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTransactionTags>>, TError, TData>>, fetch?: RequestInit}
+export const getListTransactionTagsQueryOptions = <TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = AxiosError<Error>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTransactionTags>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getListTransactionTagsQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTransactionTags>>> = ({ signal }) => listTransactionTags({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listTransactionTags>>> = ({ signal }) => listTransactionTags({ signal, ...axiosOptions });
 
 
 
@@ -1978,39 +1229,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type ListTransactionTagsQueryResult = NonNullable<Awaited<ReturnType<typeof listTransactionTags>>>
-export type ListTransactionTagsQueryError = Error
+export type ListTransactionTagsQueryError = AxiosError<Error>
 
 
-export function useListTransactionTags<TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = Error>(
+export function useListTransactionTags<TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = AxiosError<Error>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTransactionTags>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listTransactionTags>>,
           TError,
           Awaited<ReturnType<typeof listTransactionTags>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListTransactionTags<TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = Error>(
+export function useListTransactionTags<TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = AxiosError<Error>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTransactionTags>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listTransactionTags>>,
           TError,
           Awaited<ReturnType<typeof listTransactionTags>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListTransactionTags<TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTransactionTags>>, TError, TData>>, fetch?: RequestInit}
+export function useListTransactionTags<TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTransactionTags>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary List
  */
 
-export function useListTransactionTags<TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTransactionTags>>, TError, TData>>, fetch?: RequestInit}
+export function useListTransactionTags<TData = Awaited<ReturnType<typeof listTransactionTags>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listTransactionTags>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -2027,93 +1278,42 @@ export function useListTransactionTags<TData = Awaited<ReturnType<typeof listTra
 
 
 
-export type createTransactionTagsResponse201 = {
-  data: TagID
-  status: 201
-}
-
-export type createTransactionTagsResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type createTransactionTagsResponse409 = {
-  data: Error
-  status: 409
-}
-
-export type createTransactionTagsResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type createTransactionTagsResponseSuccess = (createTransactionTagsResponse201) & {
-  headers: Headers;
-};
-export type createTransactionTagsResponseError = (createTransactionTagsResponse400 | createTransactionTagsResponse409 | createTransactionTagsResponse500) & {
-  headers: Headers;
-};
-
-export type createTransactionTagsResponse = (createTransactionTagsResponseSuccess | createTransactionTagsResponseError)
-
-export const getCreateTransactionTagsUrl = () => {
-
-
-
-
-  return `/api/transactions/tags`
-}
-
 /**
  * Create a new tag.
  * @summary Create
  */
-export const createTransactionTags = async (tagData: TagData, options?: RequestInit): Promise<createTransactionTagsResponse> => {
+export const createTransactionTag = (
+    tagData: TagData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TagID>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getCreateTransactionTagsUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(tagData)
+
+    return axios.default.post(
+      `/api/transactions/tags`,
+      tagData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createTransactionTagsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createTransactionTagsResponse
-}
 
 
 
 
+export const getCreateTransactionTagMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTransactionTag>>, TError,CreateTransactionTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof createTransactionTag>>, TError,CreateTransactionTagMutationVariables, TContext> => {
 
-export const getCreateTransactionTagsMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTransactionTags>>, TError,CreateTransactionTagsMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof createTransactionTags>>, TError,CreateTransactionTagsMutationVariables, TContext> => {
-
-const mutationKey = ['createTransactionTags'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const mutationKey = ['createTransactionTag'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTransactionTags>>, CreateTransactionTagsMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createTransactionTag>>, CreateTransactionTagMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  createTransactionTags(data,fetchOptions)
+          return  createTransactionTag(data,axiosOptions)
         }
 
 
@@ -2123,84 +1323,38 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type CreateTransactionTagsMutationResult = NonNullable<Awaited<ReturnType<typeof createTransactionTags>>>
-    export type CreateTransactionTagsMutationBody = TagData
-    export type CreateTransactionTagsMutationError = Error
-    export type CreateTransactionTagsMutationVariables = {data: TagData}
+    export type CreateTransactionTagMutationResult = NonNullable<Awaited<ReturnType<typeof createTransactionTag>>>
+    export type CreateTransactionTagMutationBody = TagData
+    export type CreateTransactionTagMutationError = AxiosError<Error>
+    export type CreateTransactionTagMutationVariables = {data: TagData}
 
     /**
  * @summary Create
  */
-export const useCreateTransactionTags = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTransactionTags>>, TError,CreateTransactionTagsMutationVariables, TContext>, fetch?: RequestInit}
+export const useCreateTransactionTag = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createTransactionTag>>, TError,CreateTransactionTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createTransactionTags>>,
+        Awaited<ReturnType<typeof createTransactionTag>>,
         TError,
-        CreateTransactionTagsMutationVariables,
+        CreateTransactionTagMutationVariables,
         TContext
       > => {
-      return useMutation(getCreateTransactionTagsMutationOptions(options), queryClient);
+      return useMutation(getCreateTransactionTagMutationOptions(options), queryClient);
     }
-
-export type getTransactionTagResponse200 = {
-  data: TagData
-  status: 200
-}
-
-export type getTransactionTagResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type getTransactionTagResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type getTransactionTagResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type getTransactionTagResponseSuccess = (getTransactionTagResponse200) & {
-  headers: Headers;
-};
-export type getTransactionTagResponseError = (getTransactionTagResponse400 | getTransactionTagResponse404 | getTransactionTagResponse500) & {
-  headers: Headers;
-};
-
-export type getTransactionTagResponse = (getTransactionTagResponseSuccess | getTransactionTagResponseError)
-
-export const getGetTransactionTagUrl = (id: string,) => {
-
-
-
-
-  return `/api/transactions/tags/${id}`
-}
 
 /**
  * Get a tag.
  * @summary Get
  */
-export const getTransactionTag = async (id: string, options?: RequestInit): Promise<getTransactionTagResponse> => {
-
-  const res = await fetch(getGetTransactionTagUrl(id),
-  {
-    ...options,
-    method: 'GET'
+export const getTransactionTag = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TagData>> => {
 
 
+    return axios.default.get(
+      `/api/transactions/tags/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getTransactionTagResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getTransactionTagResponse
-}
-
 
 
 
@@ -2212,16 +1366,16 @@ export const getGetTransactionTagQueryKey = (id: string,) => {
     }
 
 
-export const getGetTransactionTagQueryOptions = <TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = Error>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransactionTag>>, TError, TData>>, fetch?: RequestInit}
+export const getGetTransactionTagQueryOptions = <TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = AxiosError<Error>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransactionTag>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetTransactionTagQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTransactionTag>>> = ({ signal }) => getTransactionTag(id, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTransactionTag>>> = ({ signal }) => getTransactionTag(id, { signal, ...axiosOptions });
 
 
 
@@ -2231,39 +1385,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetTransactionTagQueryResult = NonNullable<Awaited<ReturnType<typeof getTransactionTag>>>
-export type GetTransactionTagQueryError = Error
+export type GetTransactionTagQueryError = AxiosError<Error>
 
 
-export function useGetTransactionTag<TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = Error>(
+export function useGetTransactionTag<TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = AxiosError<Error>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransactionTag>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getTransactionTag>>,
           TError,
           Awaited<ReturnType<typeof getTransactionTag>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetTransactionTag<TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = Error>(
+export function useGetTransactionTag<TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = AxiosError<Error>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransactionTag>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getTransactionTag>>,
           TError,
           Awaited<ReturnType<typeof getTransactionTag>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetTransactionTag<TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransactionTag>>, TError, TData>>, fetch?: RequestInit}
+export function useGetTransactionTag<TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransactionTag>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get
  */
 
-export function useGetTransactionTag<TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransactionTag>>, TError, TData>>, fetch?: RequestInit}
+export function useGetTransactionTag<TData = Awaited<ReturnType<typeof getTransactionTag>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTransactionTag>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -2280,91 +1434,35 @@ export function useGetTransactionTag<TData = Awaited<ReturnType<typeof getTransa
 
 
 
-export type updateTransactionTagResponse204 = {
-  data: void
-  status: 204
-}
-
-export type updateTransactionTagResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type updateTransactionTagResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type updateTransactionTagResponse409 = {
-  data: Error
-  status: 409
-}
-
-export type updateTransactionTagResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type updateTransactionTagResponseSuccess = (updateTransactionTagResponse204) & {
-  headers: Headers;
-};
-export type updateTransactionTagResponseError = (updateTransactionTagResponse400 | updateTransactionTagResponse404 | updateTransactionTagResponse409 | updateTransactionTagResponse500) & {
-  headers: Headers;
-};
-
-export type updateTransactionTagResponse = (updateTransactionTagResponseSuccess | updateTransactionTagResponseError)
-
-export const getUpdateTransactionTagUrl = (id: string,) => {
-
-
-
-
-  return `/api/transactions/tags/${id}`
-}
-
 /**
  * Change a tag.
  * @summary Update
  */
-export const updateTransactionTag = async (id: string,
-    tagData: TagData, options?: RequestInit): Promise<updateTransactionTagResponse> => {
+export const updateTransactionTag = (
+    id: string,
+    tagData: TagData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getUpdateTransactionTagUrl(id),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(tagData)
+
+    return axios.default.put(
+      `/api/transactions/tags/${id}`,
+      tagData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: updateTransactionTagResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as updateTransactionTagResponse
-}
 
 
 
 
-
-export const getUpdateTransactionTagMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTransactionTag>>, TError,UpdateTransactionTagMutationVariables, TContext>, fetch?: RequestInit}
+export const getUpdateTransactionTagMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTransactionTag>>, TError,UpdateTransactionTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateTransactionTag>>, TError,UpdateTransactionTagMutationVariables, TContext> => {
 
 const mutationKey = ['updateTransactionTag'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -2372,7 +1470,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateTransactionTag>>, UpdateTransactionTagMutationVariables> = (props) => {
           const {id,data} = props ?? {};
 
-          return  updateTransactionTag(id,data,fetchOptions)
+          return  updateTransactionTag(id,data,axiosOptions)
         }
 
 
@@ -2384,14 +1482,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type UpdateTransactionTagMutationResult = NonNullable<Awaited<ReturnType<typeof updateTransactionTag>>>
     export type UpdateTransactionTagMutationBody = TagData
-    export type UpdateTransactionTagMutationError = Error
+    export type UpdateTransactionTagMutationError = AxiosError<Error>
     export type UpdateTransactionTagMutationVariables = {id: string;data: TagData}
 
     /**
  * @summary Update
  */
-export const useUpdateTransactionTag = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTransactionTag>>, TError,UpdateTransactionTagMutationVariables, TContext>, fetch?: RequestInit}
+export const useUpdateTransactionTag = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateTransactionTag>>, TError,UpdateTransactionTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateTransactionTag>>,
         TError,
@@ -2401,79 +1499,33 @@ export const useUpdateTransactionTag = <TError = Error,
       return useMutation(getUpdateTransactionTagMutationOptions(options), queryClient);
     }
 
-export type deleteTransactionTagResponse204 = {
-  data: void
-  status: 204
-}
-
-export type deleteTransactionTagResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type deleteTransactionTagResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type deleteTransactionTagResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type deleteTransactionTagResponseSuccess = (deleteTransactionTagResponse204) & {
-  headers: Headers;
-};
-export type deleteTransactionTagResponseError = (deleteTransactionTagResponse400 | deleteTransactionTagResponse404 | deleteTransactionTagResponse500) & {
-  headers: Headers;
-};
-
-export type deleteTransactionTagResponse = (deleteTransactionTagResponseSuccess | deleteTransactionTagResponseError)
-
-export const getDeleteTransactionTagUrl = (id: string,) => {
-
-
-
-
-  return `/api/transactions/tags/${id}`
-}
-
 /**
  * Delete a tag.
  * @summary Delete
  */
-export const deleteTransactionTag = async (id: string, options?: RequestInit): Promise<deleteTransactionTagResponse> => {
-
-  const res = await fetch(getDeleteTransactionTagUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export const deleteTransactionTag = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
 
+    return axios.default.delete(
+      `/api/transactions/tags/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: deleteTransactionTagResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as deleteTransactionTagResponse
-}
 
 
 
 
-
-export const getDeleteTransactionTagMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTransactionTag>>, TError,DeleteTransactionTagMutationVariables, TContext>, fetch?: RequestInit}
+export const getDeleteTransactionTagMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTransactionTag>>, TError,DeleteTransactionTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteTransactionTag>>, TError,DeleteTransactionTagMutationVariables, TContext> => {
 
 const mutationKey = ['deleteTransactionTag'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -2481,7 +1533,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTransactionTag>>, DeleteTransactionTagMutationVariables> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteTransactionTag(id,fetchOptions)
+          return  deleteTransactionTag(id,axiosOptions)
         }
 
 
@@ -2493,14 +1545,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type DeleteTransactionTagMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTransactionTag>>>
 
-    export type DeleteTransactionTagMutationError = Error
+    export type DeleteTransactionTagMutationError = AxiosError<Error>
     export type DeleteTransactionTagMutationVariables = {id: string}
 
     /**
  * @summary Delete
  */
-export const useDeleteTransactionTag = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTransactionTag>>, TError,DeleteTransactionTagMutationVariables, TContext>, fetch?: RequestInit}
+export const useDeleteTransactionTag = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTransactionTag>>, TError,DeleteTransactionTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteTransactionTag>>,
         TError,
@@ -2510,60 +1562,19 @@ export const useDeleteTransactionTag = <TError = Error,
       return useMutation(getDeleteTransactionTagMutationOptions(options), queryClient);
     }
 
-export type listFlowTagsResponse200 = {
-  data: Tags
-  status: 200
-}
-
-export type listFlowTagsResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type listFlowTagsResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type listFlowTagsResponseSuccess = (listFlowTagsResponse200) & {
-  headers: Headers;
-};
-export type listFlowTagsResponseError = (listFlowTagsResponse400 | listFlowTagsResponse500) & {
-  headers: Headers;
-};
-
-export type listFlowTagsResponse = (listFlowTagsResponseSuccess | listFlowTagsResponseError)
-
-export const getListFlowTagsUrl = () => {
-
-
-
-
-  return `/api/flows/tags`
-}
-
 /**
  * Get all tags.
  * @summary List
  */
-export const listFlowTags = async ( options?: RequestInit): Promise<listFlowTagsResponse> => {
-
-  const res = await fetch(getListFlowTagsUrl(),
-  {
-    ...options,
-    method: 'GET'
+export const listFlowTags = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Tags>> => {
 
 
+    return axios.default.get(
+      `/api/flows/tags`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: listFlowTagsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as listFlowTagsResponse
-}
-
 
 
 
@@ -2575,16 +1586,16 @@ export const getListFlowTagsQueryKey = () => {
     }
 
 
-export const getListFlowTagsQueryOptions = <TData = Awaited<ReturnType<typeof listFlowTags>>, TError = Error>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listFlowTags>>, TError, TData>>, fetch?: RequestInit}
+export const getListFlowTagsQueryOptions = <TData = Awaited<ReturnType<typeof listFlowTags>>, TError = AxiosError<Error>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listFlowTags>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getListFlowTagsQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listFlowTags>>> = ({ signal }) => listFlowTags({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listFlowTags>>> = ({ signal }) => listFlowTags({ signal, ...axiosOptions });
 
 
 
@@ -2594,39 +1605,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type ListFlowTagsQueryResult = NonNullable<Awaited<ReturnType<typeof listFlowTags>>>
-export type ListFlowTagsQueryError = Error
+export type ListFlowTagsQueryError = AxiosError<Error>
 
 
-export function useListFlowTags<TData = Awaited<ReturnType<typeof listFlowTags>>, TError = Error>(
+export function useListFlowTags<TData = Awaited<ReturnType<typeof listFlowTags>>, TError = AxiosError<Error>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listFlowTags>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof listFlowTags>>,
           TError,
           Awaited<ReturnType<typeof listFlowTags>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListFlowTags<TData = Awaited<ReturnType<typeof listFlowTags>>, TError = Error>(
+export function useListFlowTags<TData = Awaited<ReturnType<typeof listFlowTags>>, TError = AxiosError<Error>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listFlowTags>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof listFlowTags>>,
           TError,
           Awaited<ReturnType<typeof listFlowTags>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useListFlowTags<TData = Awaited<ReturnType<typeof listFlowTags>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listFlowTags>>, TError, TData>>, fetch?: RequestInit}
+export function useListFlowTags<TData = Awaited<ReturnType<typeof listFlowTags>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listFlowTags>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary List
  */
 
-export function useListFlowTags<TData = Awaited<ReturnType<typeof listFlowTags>>, TError = Error>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listFlowTags>>, TError, TData>>, fetch?: RequestInit}
+export function useListFlowTags<TData = Awaited<ReturnType<typeof listFlowTags>>, TError = AxiosError<Error>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listFlowTags>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -2643,93 +1654,42 @@ export function useListFlowTags<TData = Awaited<ReturnType<typeof listFlowTags>>
 
 
 
-export type createFlowTagsResponse201 = {
-  data: TagID
-  status: 201
-}
-
-export type createFlowTagsResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type createFlowTagsResponse409 = {
-  data: Error
-  status: 409
-}
-
-export type createFlowTagsResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type createFlowTagsResponseSuccess = (createFlowTagsResponse201) & {
-  headers: Headers;
-};
-export type createFlowTagsResponseError = (createFlowTagsResponse400 | createFlowTagsResponse409 | createFlowTagsResponse500) & {
-  headers: Headers;
-};
-
-export type createFlowTagsResponse = (createFlowTagsResponseSuccess | createFlowTagsResponseError)
-
-export const getCreateFlowTagsUrl = () => {
-
-
-
-
-  return `/api/flows/tags`
-}
-
 /**
  * Create a new tag.
  * @summary Create
  */
-export const createFlowTags = async (tagData: TagData, options?: RequestInit): Promise<createFlowTagsResponse> => {
+export const createFlowTag = (
+    tagData: TagData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TagID>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getCreateFlowTagsUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(tagData)
+
+    return axios.default.post(
+      `/api/flows/tags`,
+      tagData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: createFlowTagsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as createFlowTagsResponse
-}
 
 
 
 
+export const getCreateFlowTagMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createFlowTag>>, TError,CreateFlowTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof createFlowTag>>, TError,CreateFlowTagMutationVariables, TContext> => {
 
-export const getCreateFlowTagsMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createFlowTags>>, TError,CreateFlowTagsMutationVariables, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof createFlowTags>>, TError,CreateFlowTagsMutationVariables, TContext> => {
-
-const mutationKey = ['createFlowTags'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const mutationKey = ['createFlowTag'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createFlowTags>>, CreateFlowTagsMutationVariables> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createFlowTag>>, CreateFlowTagMutationVariables> = (props) => {
           const {data} = props ?? {};
 
-          return  createFlowTags(data,fetchOptions)
+          return  createFlowTag(data,axiosOptions)
         }
 
 
@@ -2739,84 +1699,38 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type CreateFlowTagsMutationResult = NonNullable<Awaited<ReturnType<typeof createFlowTags>>>
-    export type CreateFlowTagsMutationBody = TagData
-    export type CreateFlowTagsMutationError = Error
-    export type CreateFlowTagsMutationVariables = {data: TagData}
+    export type CreateFlowTagMutationResult = NonNullable<Awaited<ReturnType<typeof createFlowTag>>>
+    export type CreateFlowTagMutationBody = TagData
+    export type CreateFlowTagMutationError = AxiosError<Error>
+    export type CreateFlowTagMutationVariables = {data: TagData}
 
     /**
  * @summary Create
  */
-export const useCreateFlowTags = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createFlowTags>>, TError,CreateFlowTagsMutationVariables, TContext>, fetch?: RequestInit}
+export const useCreateFlowTag = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createFlowTag>>, TError,CreateFlowTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof createFlowTags>>,
+        Awaited<ReturnType<typeof createFlowTag>>,
         TError,
-        CreateFlowTagsMutationVariables,
+        CreateFlowTagMutationVariables,
         TContext
       > => {
-      return useMutation(getCreateFlowTagsMutationOptions(options), queryClient);
+      return useMutation(getCreateFlowTagMutationOptions(options), queryClient);
     }
-
-export type getFlowTagResponse200 = {
-  data: TagData
-  status: 200
-}
-
-export type getFlowTagResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type getFlowTagResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type getFlowTagResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type getFlowTagResponseSuccess = (getFlowTagResponse200) & {
-  headers: Headers;
-};
-export type getFlowTagResponseError = (getFlowTagResponse400 | getFlowTagResponse404 | getFlowTagResponse500) & {
-  headers: Headers;
-};
-
-export type getFlowTagResponse = (getFlowTagResponseSuccess | getFlowTagResponseError)
-
-export const getGetFlowTagUrl = (id: string,) => {
-
-
-
-
-  return `/api/flows/tags/${id}`
-}
 
 /**
  * Get a tag.
  * @summary Get
  */
-export const getFlowTag = async (id: string, options?: RequestInit): Promise<getFlowTagResponse> => {
-
-  const res = await fetch(getGetFlowTagUrl(id),
-  {
-    ...options,
-    method: 'GET'
+export const getFlowTag = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TagData>> => {
 
 
+    return axios.default.get(
+      `/api/flows/tags/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: getFlowTagResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as getFlowTagResponse
-}
-
 
 
 
@@ -2828,16 +1742,16 @@ export const getGetFlowTagQueryKey = (id: string,) => {
     }
 
 
-export const getGetFlowTagQueryOptions = <TData = Awaited<ReturnType<typeof getFlowTag>>, TError = Error>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFlowTag>>, TError, TData>>, fetch?: RequestInit}
+export const getGetFlowTagQueryOptions = <TData = Awaited<ReturnType<typeof getFlowTag>>, TError = AxiosError<Error>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFlowTag>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getGetFlowTagQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getFlowTag>>> = ({ signal }) => getFlowTag(id, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getFlowTag>>> = ({ signal }) => getFlowTag(id, { signal, ...axiosOptions });
 
 
 
@@ -2847,39 +1761,39 @@ const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 }
 
 export type GetFlowTagQueryResult = NonNullable<Awaited<ReturnType<typeof getFlowTag>>>
-export type GetFlowTagQueryError = Error
+export type GetFlowTagQueryError = AxiosError<Error>
 
 
-export function useGetFlowTag<TData = Awaited<ReturnType<typeof getFlowTag>>, TError = Error>(
+export function useGetFlowTag<TData = Awaited<ReturnType<typeof getFlowTag>>, TError = AxiosError<Error>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFlowTag>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getFlowTag>>,
           TError,
           Awaited<ReturnType<typeof getFlowTag>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetFlowTag<TData = Awaited<ReturnType<typeof getFlowTag>>, TError = Error>(
+export function useGetFlowTag<TData = Awaited<ReturnType<typeof getFlowTag>>, TError = AxiosError<Error>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFlowTag>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getFlowTag>>,
           TError,
           Awaited<ReturnType<typeof getFlowTag>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetFlowTag<TData = Awaited<ReturnType<typeof getFlowTag>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFlowTag>>, TError, TData>>, fetch?: RequestInit}
+export function useGetFlowTag<TData = Awaited<ReturnType<typeof getFlowTag>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFlowTag>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get
  */
 
-export function useGetFlowTag<TData = Awaited<ReturnType<typeof getFlowTag>>, TError = Error>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFlowTag>>, TError, TData>>, fetch?: RequestInit}
+export function useGetFlowTag<TData = Awaited<ReturnType<typeof getFlowTag>>, TError = AxiosError<Error>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getFlowTag>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -2896,91 +1810,35 @@ export function useGetFlowTag<TData = Awaited<ReturnType<typeof getFlowTag>>, TE
 
 
 
-export type updateFlowTagResponse204 = {
-  data: void
-  status: 204
-}
-
-export type updateFlowTagResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type updateFlowTagResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type updateFlowTagResponse409 = {
-  data: Error
-  status: 409
-}
-
-export type updateFlowTagResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type updateFlowTagResponseSuccess = (updateFlowTagResponse204) & {
-  headers: Headers;
-};
-export type updateFlowTagResponseError = (updateFlowTagResponse400 | updateFlowTagResponse404 | updateFlowTagResponse409 | updateFlowTagResponse500) & {
-  headers: Headers;
-};
-
-export type updateFlowTagResponse = (updateFlowTagResponseSuccess | updateFlowTagResponseError)
-
-export const getUpdateFlowTagUrl = (id: string,) => {
-
-
-
-
-  return `/api/flows/tags/${id}`
-}
-
 /**
  * Change a tag.
  * @summary Update
  */
-export const updateFlowTag = async (id: string,
-    tagData: TagData, options?: RequestInit): Promise<updateFlowTagResponse> => {
+export const updateFlowTag = (
+    id: string,
+    tagData: TagData, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-const res = await fetch(getUpdateFlowTagUrl(id),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(tagData)
+
+    return axios.default.put(
+      `/api/flows/tags/${id}`,
+      tagData,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: updateFlowTagResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as updateFlowTagResponse
-}
 
 
 
 
-
-export const getUpdateFlowTagMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateFlowTag>>, TError,UpdateFlowTagMutationVariables, TContext>, fetch?: RequestInit}
+export const getUpdateFlowTagMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateFlowTag>>, TError,UpdateFlowTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof updateFlowTag>>, TError,UpdateFlowTagMutationVariables, TContext> => {
 
 const mutationKey = ['updateFlowTag'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -2988,7 +1846,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateFlowTag>>, UpdateFlowTagMutationVariables> = (props) => {
           const {id,data} = props ?? {};
 
-          return  updateFlowTag(id,data,fetchOptions)
+          return  updateFlowTag(id,data,axiosOptions)
         }
 
 
@@ -3000,14 +1858,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type UpdateFlowTagMutationResult = NonNullable<Awaited<ReturnType<typeof updateFlowTag>>>
     export type UpdateFlowTagMutationBody = TagData
-    export type UpdateFlowTagMutationError = Error
+    export type UpdateFlowTagMutationError = AxiosError<Error>
     export type UpdateFlowTagMutationVariables = {id: string;data: TagData}
 
     /**
  * @summary Update
  */
-export const useUpdateFlowTag = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateFlowTag>>, TError,UpdateFlowTagMutationVariables, TContext>, fetch?: RequestInit}
+export const useUpdateFlowTag = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateFlowTag>>, TError,UpdateFlowTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof updateFlowTag>>,
         TError,
@@ -3017,79 +1875,33 @@ export const useUpdateFlowTag = <TError = Error,
       return useMutation(getUpdateFlowTagMutationOptions(options), queryClient);
     }
 
-export type deleteFlowTagResponse204 = {
-  data: void
-  status: 204
-}
-
-export type deleteFlowTagResponse400 = {
-  data: Error
-  status: 400
-}
-
-export type deleteFlowTagResponse404 = {
-  data: Error
-  status: 404
-}
-
-export type deleteFlowTagResponse500 = {
-  data: Error
-  status: 500
-}
-
-export type deleteFlowTagResponseSuccess = (deleteFlowTagResponse204) & {
-  headers: Headers;
-};
-export type deleteFlowTagResponseError = (deleteFlowTagResponse400 | deleteFlowTagResponse404 | deleteFlowTagResponse500) & {
-  headers: Headers;
-};
-
-export type deleteFlowTagResponse = (deleteFlowTagResponseSuccess | deleteFlowTagResponseError)
-
-export const getDeleteFlowTagUrl = (id: string,) => {
-
-
-
-
-  return `/api/flows/tags/${id}`
-}
-
 /**
  * Delete a tag.
  * @summary Delete
  */
-export const deleteFlowTag = async (id: string, options?: RequestInit): Promise<deleteFlowTagResponse> => {
-
-  const res = await fetch(getDeleteFlowTagUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export const deleteFlowTag = (
+    id: string, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
 
 
+    return axios.default.delete(
+      `/api/flows/tags/${id}`,options
+    );
   }
-)
-
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: deleteFlowTagResponse['data'] = body ? JSON.parse(body) : undefined
-  return { data, status: res.status, headers: res.headers } as deleteFlowTagResponse
-}
 
 
 
 
-
-export const getDeleteFlowTagMutationOptions = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFlowTag>>, TError,DeleteFlowTagMutationVariables, TContext>, fetch?: RequestInit}
+export const getDeleteFlowTagMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFlowTag>>, TError,DeleteFlowTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof deleteFlowTag>>, TError,DeleteFlowTagMutationVariables, TContext> => {
 
 const mutationKey = ['deleteFlowTag'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, axios: undefined};
 
 
 
@@ -3097,7 +1909,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteFlowTag>>, DeleteFlowTagMutationVariables> = (props) => {
           const {id} = props ?? {};
 
-          return  deleteFlowTag(id,fetchOptions)
+          return  deleteFlowTag(id,axiosOptions)
         }
 
 
@@ -3109,14 +1921,14 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
 
     export type DeleteFlowTagMutationResult = NonNullable<Awaited<ReturnType<typeof deleteFlowTag>>>
 
-    export type DeleteFlowTagMutationError = Error
+    export type DeleteFlowTagMutationError = AxiosError<Error>
     export type DeleteFlowTagMutationVariables = {id: string}
 
     /**
  * @summary Delete
  */
-export const useDeleteFlowTag = <TError = Error,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFlowTag>>, TError,DeleteFlowTagMutationVariables, TContext>, fetch?: RequestInit}
+export const useDeleteFlowTag = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteFlowTag>>, TError,DeleteFlowTagMutationVariables, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof deleteFlowTag>>,
         TError,
