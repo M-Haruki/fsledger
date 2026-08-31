@@ -139,16 +139,16 @@ func (h *Handler) ListTransactionTags(ctx context.Context, request openapi.ListT
 	return openapi.ListTransactionTags200JSONResponse(response), nil
 }
 
-func (h *Handler) CreateTransactionTags(ctx context.Context, request openapi.CreateTransactionTagsRequestObject) (openapi.CreateTransactionTagsResponseObject, error) {
+func (h *Handler) CreateTransactionTag(ctx context.Context, request openapi.CreateTransactionTagRequestObject) (openapi.CreateTransactionTagResponseObject, error) {
 	id, err := h.service.CreateTag(ctx, model.TransactionTag, request.Body.Name)
 	if err != nil {
 		if errors.Is(err, model.ErrTagNameDuplicate) {
-			return openapi.CreateTransactionTags409JSONResponse{Message: "transaction tag name duplicate"}, nil
+			return openapi.CreateTransactionTag409JSONResponse{Message: "transaction tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "create transaction tag failed", "error", err)
-		return openapi.CreateTransactionTags500JSONResponse{Message: "internal server error"}, nil
+		return openapi.CreateTransactionTag500JSONResponse{Message: "internal server error"}, nil
 	}
-	return openapi.CreateTransactionTags201JSONResponse{Id: openapi_types.UUID(id)}, nil
+	return openapi.CreateTransactionTag201JSONResponse{Id: openapi_types.UUID(id)}, nil
 }
 
 func (h *Handler) GetTransactionTag(ctx context.Context, request openapi.GetTransactionTagRequestObject) (openapi.GetTransactionTagResponseObject, error) {

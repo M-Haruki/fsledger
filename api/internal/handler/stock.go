@@ -134,16 +134,16 @@ func (h *Handler) ListStockTags(ctx context.Context, request openapi.ListStockTa
 	return openapi.ListStockTags200JSONResponse(response), nil
 }
 
-func (h *Handler) CreateStockTags(ctx context.Context, request openapi.CreateStockTagsRequestObject) (openapi.CreateStockTagsResponseObject, error) {
+func (h *Handler) CreateStockTag(ctx context.Context, request openapi.CreateStockTagRequestObject) (openapi.CreateStockTagResponseObject, error) {
 	id, err := h.service.CreateTag(ctx, model.StockTag, request.Body.Name)
 	if err != nil {
 		if errors.Is(err, model.ErrTagNameDuplicate) {
-			return openapi.CreateStockTags409JSONResponse{Message: "stock tag name duplicate"}, nil
+			return openapi.CreateStockTag409JSONResponse{Message: "stock tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "create stock tag failed", "error", err)
-		return openapi.CreateStockTags500JSONResponse{Message: "internal server error"}, nil
+		return openapi.CreateStockTag500JSONResponse{Message: "internal server error"}, nil
 	}
-	return openapi.CreateStockTags201JSONResponse{Id: openapi_types.UUID(id)}, nil
+	return openapi.CreateStockTag201JSONResponse{Id: openapi_types.UUID(id)}, nil
 }
 
 func (h *Handler) GetStockTag(ctx context.Context, request openapi.GetStockTagRequestObject) (openapi.GetStockTagResponseObject, error) {

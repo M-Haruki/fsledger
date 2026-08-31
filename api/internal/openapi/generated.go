@@ -96,8 +96,8 @@ type TagIDParam = openapi_types.UUID
 // TransactionIDParam defines model for TransactionIDParam.
 type TransactionIDParam = openapi_types.UUID
 
-// CreateFlowTagsJSONRequestBody defines body for CreateFlowTags for application/json ContentType.
-type CreateFlowTagsJSONRequestBody = TagData
+// CreateFlowTagJSONRequestBody defines body for CreateFlowTag for application/json ContentType.
+type CreateFlowTagJSONRequestBody = TagData
 
 // UpdateFlowTagJSONRequestBody defines body for UpdateFlowTag for application/json ContentType.
 type UpdateFlowTagJSONRequestBody = TagData
@@ -105,8 +105,8 @@ type UpdateFlowTagJSONRequestBody = TagData
 // CreateStockJSONRequestBody defines body for CreateStock for application/json ContentType.
 type CreateStockJSONRequestBody = StockData
 
-// CreateStockTagsJSONRequestBody defines body for CreateStockTags for application/json ContentType.
-type CreateStockTagsJSONRequestBody = TagData
+// CreateStockTagJSONRequestBody defines body for CreateStockTag for application/json ContentType.
+type CreateStockTagJSONRequestBody = TagData
 
 // UpdateStockTagJSONRequestBody defines body for UpdateStockTag for application/json ContentType.
 type UpdateStockTagJSONRequestBody = TagData
@@ -117,8 +117,8 @@ type UpdateStockJSONRequestBody = StockData
 // CreateTransactionJSONRequestBody defines body for CreateTransaction for application/json ContentType.
 type CreateTransactionJSONRequestBody = TransactionData
 
-// CreateTransactionTagsJSONRequestBody defines body for CreateTransactionTags for application/json ContentType.
-type CreateTransactionTagsJSONRequestBody = TagData
+// CreateTransactionTagJSONRequestBody defines body for CreateTransactionTag for application/json ContentType.
+type CreateTransactionTagJSONRequestBody = TagData
 
 // UpdateTransactionTagJSONRequestBody defines body for UpdateTransactionTag for application/json ContentType.
 type UpdateTransactionTagJSONRequestBody = TagData
@@ -131,9 +131,9 @@ type ServerInterface interface {
 	// ListFlowTags List
 	// (GET /flows/tags)
 	ListFlowTags(ctx *echo.Context) error
-	// CreateFlowTags Create
+	// CreateFlowTag Create
 	// (POST /flows/tags)
-	CreateFlowTags(ctx *echo.Context) error
+	CreateFlowTag(ctx *echo.Context) error
 	// DeleteFlowTag Delete
 	// (DELETE /flows/tags/{id})
 	DeleteFlowTag(ctx *echo.Context, id TagIDParam) error
@@ -155,9 +155,9 @@ type ServerInterface interface {
 	// ListStockTags List
 	// (GET /stocks/tags)
 	ListStockTags(ctx *echo.Context) error
-	// CreateStockTags Create
+	// CreateStockTag Create
 	// (POST /stocks/tags)
-	CreateStockTags(ctx *echo.Context) error
+	CreateStockTag(ctx *echo.Context) error
 	// DeleteStockTag Delete
 	// (DELETE /stocks/tags/{id})
 	DeleteStockTag(ctx *echo.Context, id TagIDParam) error
@@ -182,9 +182,9 @@ type ServerInterface interface {
 	// ListTransactionTags List
 	// (GET /transactions/tags)
 	ListTransactionTags(ctx *echo.Context) error
-	// CreateTransactionTags Create
+	// CreateTransactionTag Create
 	// (POST /transactions/tags)
-	CreateTransactionTags(ctx *echo.Context) error
+	CreateTransactionTag(ctx *echo.Context) error
 	// DeleteTransactionTag Delete
 	// (DELETE /transactions/tags/{id})
 	DeleteTransactionTag(ctx *echo.Context, id TagIDParam) error
@@ -219,12 +219,12 @@ func (w *ServerInterfaceWrapper) ListFlowTags(ctx *echo.Context) error {
 	return err
 }
 
-// CreateFlowTags converts echo context to params.
-func (w *ServerInterfaceWrapper) CreateFlowTags(ctx *echo.Context) error {
+// CreateFlowTag converts echo context to params.
+func (w *ServerInterfaceWrapper) CreateFlowTag(ctx *echo.Context) error {
 	var err error
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.CreateFlowTags(ctx)
+	err = w.Handler.CreateFlowTag(ctx)
 	return err
 }
 
@@ -312,12 +312,12 @@ func (w *ServerInterfaceWrapper) ListStockTags(ctx *echo.Context) error {
 	return err
 }
 
-// CreateStockTags converts echo context to params.
-func (w *ServerInterfaceWrapper) CreateStockTags(ctx *echo.Context) error {
+// CreateStockTag converts echo context to params.
+func (w *ServerInterfaceWrapper) CreateStockTag(ctx *echo.Context) error {
 	var err error
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.CreateStockTags(ctx)
+	err = w.Handler.CreateStockTag(ctx)
 	return err
 }
 
@@ -435,12 +435,12 @@ func (w *ServerInterfaceWrapper) ListTransactionTags(ctx *echo.Context) error {
 	return err
 }
 
-// CreateTransactionTags converts echo context to params.
-func (w *ServerInterfaceWrapper) CreateTransactionTags(ctx *echo.Context) error {
+// CreateTransactionTag converts echo context to params.
+func (w *ServerInterfaceWrapper) CreateTransactionTag(ctx *echo.Context) error {
 	var err error
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.CreateTransactionTags(ctx)
+	err = w.Handler.CreateTransactionTag(ctx)
 	return err
 }
 
@@ -594,7 +594,7 @@ func RegisterHandlersWithOptions(router EchoRouter, si ServerInterface, options 
 	router.GET(options.BaseURL+"/stocks/:id", wrapper.GetStock, options.OperationMiddlewares["getStock"]...)
 	router.PUT(options.BaseURL+"/stocks/:id", wrapper.UpdateStock, options.OperationMiddlewares["updateStock"]...)
 	router.GET(options.BaseURL+"/stocks/tags", wrapper.ListStockTags, options.OperationMiddlewares["listStockTags"]...)
-	router.POST(options.BaseURL+"/stocks/tags", wrapper.CreateStockTags, options.OperationMiddlewares["createStockTags"]...)
+	router.POST(options.BaseURL+"/stocks/tags", wrapper.CreateStockTag, options.OperationMiddlewares["createStockTag"]...)
 	router.DELETE(options.BaseURL+"/stocks/tags/:id", wrapper.DeleteStockTag, options.OperationMiddlewares["deleteStockTag"]...)
 	router.GET(options.BaseURL+"/stocks/tags/:id", wrapper.GetStockTag, options.OperationMiddlewares["getStockTag"]...)
 	router.PUT(options.BaseURL+"/stocks/tags/:id", wrapper.UpdateStockTag, options.OperationMiddlewares["updateStockTag"]...)
@@ -603,12 +603,12 @@ func RegisterHandlersWithOptions(router EchoRouter, si ServerInterface, options 
 	router.GET(options.BaseURL+"/transactions/:id", wrapper.GetTransaction, options.OperationMiddlewares["getTransaction"]...)
 	router.PUT(options.BaseURL+"/transactions/:id", wrapper.UpdateTransaction, options.OperationMiddlewares["updateTransaction"]...)
 	router.GET(options.BaseURL+"/transactions/tags", wrapper.ListTransactionTags, options.OperationMiddlewares["listTransactionTags"]...)
-	router.POST(options.BaseURL+"/transactions/tags", wrapper.CreateTransactionTags, options.OperationMiddlewares["createTransactionTags"]...)
+	router.POST(options.BaseURL+"/transactions/tags", wrapper.CreateTransactionTag, options.OperationMiddlewares["createTransactionTag"]...)
 	router.DELETE(options.BaseURL+"/transactions/tags/:id", wrapper.DeleteTransactionTag, options.OperationMiddlewares["deleteTransactionTag"]...)
 	router.GET(options.BaseURL+"/transactions/tags/:id", wrapper.GetTransactionTag, options.OperationMiddlewares["getTransactionTag"]...)
 	router.PUT(options.BaseURL+"/transactions/tags/:id", wrapper.UpdateTransactionTag, options.OperationMiddlewares["updateTransactionTag"]...)
 	router.GET(options.BaseURL+"/flows/tags", wrapper.ListFlowTags, options.OperationMiddlewares["listFlowTags"]...)
-	router.POST(options.BaseURL+"/flows/tags", wrapper.CreateFlowTags, options.OperationMiddlewares["createFlowTags"]...)
+	router.POST(options.BaseURL+"/flows/tags", wrapper.CreateFlowTag, options.OperationMiddlewares["createFlowTag"]...)
 	router.DELETE(options.BaseURL+"/flows/tags/:id", wrapper.DeleteFlowTag, options.OperationMiddlewares["deleteFlowTag"]...)
 	router.GET(options.BaseURL+"/flows/tags/:id", wrapper.GetFlowTag, options.OperationMiddlewares["getFlowTag"]...)
 	router.PUT(options.BaseURL+"/flows/tags/:id", wrapper.UpdateFlowTag, options.OperationMiddlewares["updateFlowTag"]...)
@@ -664,17 +664,17 @@ func (response ListFlowTags500JSONResponse) VisitListFlowTagsResponse(w http.Res
 	return err
 }
 
-type CreateFlowTagsRequestObject struct {
-	Body *CreateFlowTagsJSONRequestBody
+type CreateFlowTagRequestObject struct {
+	Body *CreateFlowTagJSONRequestBody
 }
 
-type CreateFlowTagsResponseObject interface {
-	VisitCreateFlowTagsResponse(w http.ResponseWriter) error
+type CreateFlowTagResponseObject interface {
+	VisitCreateFlowTagResponse(w http.ResponseWriter) error
 }
 
-type CreateFlowTags201JSONResponse TagID
+type CreateFlowTag201JSONResponse TagID
 
-func (response CreateFlowTags201JSONResponse) VisitCreateFlowTagsResponse(w http.ResponseWriter) error {
+func (response CreateFlowTag201JSONResponse) VisitCreateFlowTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -686,9 +686,9 @@ func (response CreateFlowTags201JSONResponse) VisitCreateFlowTagsResponse(w http
 	return err
 }
 
-type CreateFlowTags400JSONResponse Error
+type CreateFlowTag400JSONResponse Error
 
-func (response CreateFlowTags400JSONResponse) VisitCreateFlowTagsResponse(w http.ResponseWriter) error {
+func (response CreateFlowTag400JSONResponse) VisitCreateFlowTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -700,9 +700,9 @@ func (response CreateFlowTags400JSONResponse) VisitCreateFlowTagsResponse(w http
 	return err
 }
 
-type CreateFlowTags409JSONResponse Error
+type CreateFlowTag409JSONResponse Error
 
-func (response CreateFlowTags409JSONResponse) VisitCreateFlowTagsResponse(w http.ResponseWriter) error {
+func (response CreateFlowTag409JSONResponse) VisitCreateFlowTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -714,9 +714,9 @@ func (response CreateFlowTags409JSONResponse) VisitCreateFlowTagsResponse(w http
 	return err
 }
 
-type CreateFlowTags500JSONResponse Error
+type CreateFlowTag500JSONResponse Error
 
-func (response CreateFlowTags500JSONResponse) VisitCreateFlowTagsResponse(w http.ResponseWriter) error {
+func (response CreateFlowTag500JSONResponse) VisitCreateFlowTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -1114,17 +1114,17 @@ func (response ListStockTags500JSONResponse) VisitListStockTagsResponse(w http.R
 	return err
 }
 
-type CreateStockTagsRequestObject struct {
-	Body *CreateStockTagsJSONRequestBody
+type CreateStockTagRequestObject struct {
+	Body *CreateStockTagJSONRequestBody
 }
 
-type CreateStockTagsResponseObject interface {
-	VisitCreateStockTagsResponse(w http.ResponseWriter) error
+type CreateStockTagResponseObject interface {
+	VisitCreateStockTagResponse(w http.ResponseWriter) error
 }
 
-type CreateStockTags201JSONResponse TagID
+type CreateStockTag201JSONResponse TagID
 
-func (response CreateStockTags201JSONResponse) VisitCreateStockTagsResponse(w http.ResponseWriter) error {
+func (response CreateStockTag201JSONResponse) VisitCreateStockTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -1136,9 +1136,9 @@ func (response CreateStockTags201JSONResponse) VisitCreateStockTagsResponse(w ht
 	return err
 }
 
-type CreateStockTags400JSONResponse Error
+type CreateStockTag400JSONResponse Error
 
-func (response CreateStockTags400JSONResponse) VisitCreateStockTagsResponse(w http.ResponseWriter) error {
+func (response CreateStockTag400JSONResponse) VisitCreateStockTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -1150,9 +1150,9 @@ func (response CreateStockTags400JSONResponse) VisitCreateStockTagsResponse(w ht
 	return err
 }
 
-type CreateStockTags409JSONResponse Error
+type CreateStockTag409JSONResponse Error
 
-func (response CreateStockTags409JSONResponse) VisitCreateStockTagsResponse(w http.ResponseWriter) error {
+func (response CreateStockTag409JSONResponse) VisitCreateStockTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -1164,9 +1164,9 @@ func (response CreateStockTags409JSONResponse) VisitCreateStockTagsResponse(w ht
 	return err
 }
 
-type CreateStockTags500JSONResponse Error
+type CreateStockTag500JSONResponse Error
 
-func (response CreateStockTags500JSONResponse) VisitCreateStockTagsResponse(w http.ResponseWriter) error {
+func (response CreateStockTag500JSONResponse) VisitCreateStockTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -1695,17 +1695,17 @@ func (response ListTransactionTags500JSONResponse) VisitListTransactionTagsRespo
 	return err
 }
 
-type CreateTransactionTagsRequestObject struct {
-	Body *CreateTransactionTagsJSONRequestBody
+type CreateTransactionTagRequestObject struct {
+	Body *CreateTransactionTagJSONRequestBody
 }
 
-type CreateTransactionTagsResponseObject interface {
-	VisitCreateTransactionTagsResponse(w http.ResponseWriter) error
+type CreateTransactionTagResponseObject interface {
+	VisitCreateTransactionTagResponse(w http.ResponseWriter) error
 }
 
-type CreateTransactionTags201JSONResponse TagID
+type CreateTransactionTag201JSONResponse TagID
 
-func (response CreateTransactionTags201JSONResponse) VisitCreateTransactionTagsResponse(w http.ResponseWriter) error {
+func (response CreateTransactionTag201JSONResponse) VisitCreateTransactionTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -1717,9 +1717,9 @@ func (response CreateTransactionTags201JSONResponse) VisitCreateTransactionTagsR
 	return err
 }
 
-type CreateTransactionTags400JSONResponse Error
+type CreateTransactionTag400JSONResponse Error
 
-func (response CreateTransactionTags400JSONResponse) VisitCreateTransactionTagsResponse(w http.ResponseWriter) error {
+func (response CreateTransactionTag400JSONResponse) VisitCreateTransactionTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -1731,9 +1731,9 @@ func (response CreateTransactionTags400JSONResponse) VisitCreateTransactionTagsR
 	return err
 }
 
-type CreateTransactionTags409JSONResponse Error
+type CreateTransactionTag409JSONResponse Error
 
-func (response CreateTransactionTags409JSONResponse) VisitCreateTransactionTagsResponse(w http.ResponseWriter) error {
+func (response CreateTransactionTag409JSONResponse) VisitCreateTransactionTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -1745,9 +1745,9 @@ func (response CreateTransactionTags409JSONResponse) VisitCreateTransactionTagsR
 	return err
 }
 
-type CreateTransactionTags500JSONResponse Error
+type CreateTransactionTag500JSONResponse Error
 
-func (response CreateTransactionTags500JSONResponse) VisitCreateTransactionTagsResponse(w http.ResponseWriter) error {
+func (response CreateTransactionTag500JSONResponse) VisitCreateTransactionTagResponse(w http.ResponseWriter) error {
 
 	var buf bytes.Buffer
 	if err := json.NewEncoder(&buf).Encode(response); err != nil {
@@ -2140,9 +2140,9 @@ type StrictServerInterface interface {
 	// ListFlowTags List
 	// (GET /flows/tags)
 	ListFlowTags(ctx context.Context, request ListFlowTagsRequestObject) (ListFlowTagsResponseObject, error)
-	// CreateFlowTags Create
+	// CreateFlowTag Create
 	// (POST /flows/tags)
-	CreateFlowTags(ctx context.Context, request CreateFlowTagsRequestObject) (CreateFlowTagsResponseObject, error)
+	CreateFlowTag(ctx context.Context, request CreateFlowTagRequestObject) (CreateFlowTagResponseObject, error)
 	// DeleteFlowTag Delete
 	// (DELETE /flows/tags/{id})
 	DeleteFlowTag(ctx context.Context, request DeleteFlowTagRequestObject) (DeleteFlowTagResponseObject, error)
@@ -2164,9 +2164,9 @@ type StrictServerInterface interface {
 	// ListStockTags List
 	// (GET /stocks/tags)
 	ListStockTags(ctx context.Context, request ListStockTagsRequestObject) (ListStockTagsResponseObject, error)
-	// CreateStockTags Create
+	// CreateStockTag Create
 	// (POST /stocks/tags)
-	CreateStockTags(ctx context.Context, request CreateStockTagsRequestObject) (CreateStockTagsResponseObject, error)
+	CreateStockTag(ctx context.Context, request CreateStockTagRequestObject) (CreateStockTagResponseObject, error)
 	// DeleteStockTag Delete
 	// (DELETE /stocks/tags/{id})
 	DeleteStockTag(ctx context.Context, request DeleteStockTagRequestObject) (DeleteStockTagResponseObject, error)
@@ -2191,9 +2191,9 @@ type StrictServerInterface interface {
 	// ListTransactionTags List
 	// (GET /transactions/tags)
 	ListTransactionTags(ctx context.Context, request ListTransactionTagsRequestObject) (ListTransactionTagsResponseObject, error)
-	// CreateTransactionTags Create
+	// CreateTransactionTag Create
 	// (POST /transactions/tags)
-	CreateTransactionTags(ctx context.Context, request CreateTransactionTagsRequestObject) (CreateTransactionTagsResponseObject, error)
+	CreateTransactionTag(ctx context.Context, request CreateTransactionTagRequestObject) (CreateTransactionTagResponseObject, error)
 	// DeleteTransactionTag Delete
 	// (DELETE /transactions/tags/{id})
 	DeleteTransactionTag(ctx context.Context, request DeleteTransactionTagRequestObject) (DeleteTransactionTagResponseObject, error)
@@ -2249,11 +2249,11 @@ func (sh *strictHandler) ListFlowTags(ctx *echo.Context) error {
 	return nil
 }
 
-// CreateFlowTags operation middleware
-func (sh *strictHandler) CreateFlowTags(ctx *echo.Context) error {
-	var request CreateFlowTagsRequestObject
+// CreateFlowTag operation middleware
+func (sh *strictHandler) CreateFlowTag(ctx *echo.Context) error {
+	var request CreateFlowTagRequestObject
 
-	var body CreateFlowTagsJSONRequestBody
+	var body CreateFlowTagJSONRequestBody
 	var err error
 	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
 		// Bind only the request body, so that path and query parameters
@@ -2270,18 +2270,18 @@ func (sh *strictHandler) CreateFlowTags(ctx *echo.Context) error {
 	request.Body = &body
 
 	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateFlowTags(ctx.Request().Context(), request.(CreateFlowTagsRequestObject))
+		return sh.ssi.CreateFlowTag(ctx.Request().Context(), request.(CreateFlowTagRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateFlowTags")
+		handler = middleware(handler, "CreateFlowTag")
 	}
 
 	response, err := handler(ctx, request)
 
 	if err != nil {
 		return err
-	} else if validResponse, ok := response.(CreateFlowTagsResponseObject); ok {
-		return validResponse.VisitCreateFlowTagsResponse(ctx.Response())
+	} else if validResponse, ok := response.(CreateFlowTagResponseObject); ok {
+		return validResponse.VisitCreateFlowTagResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}
@@ -2487,11 +2487,11 @@ func (sh *strictHandler) ListStockTags(ctx *echo.Context) error {
 	return nil
 }
 
-// CreateStockTags operation middleware
-func (sh *strictHandler) CreateStockTags(ctx *echo.Context) error {
-	var request CreateStockTagsRequestObject
+// CreateStockTag operation middleware
+func (sh *strictHandler) CreateStockTag(ctx *echo.Context) error {
+	var request CreateStockTagRequestObject
 
-	var body CreateStockTagsJSONRequestBody
+	var body CreateStockTagJSONRequestBody
 	var err error
 	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
 		// Bind only the request body, so that path and query parameters
@@ -2508,18 +2508,18 @@ func (sh *strictHandler) CreateStockTags(ctx *echo.Context) error {
 	request.Body = &body
 
 	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateStockTags(ctx.Request().Context(), request.(CreateStockTagsRequestObject))
+		return sh.ssi.CreateStockTag(ctx.Request().Context(), request.(CreateStockTagRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateStockTags")
+		handler = middleware(handler, "CreateStockTag")
 	}
 
 	response, err := handler(ctx, request)
 
 	if err != nil {
 		return err
-	} else if validResponse, ok := response.(CreateStockTagsResponseObject); ok {
-		return validResponse.VisitCreateStockTagsResponse(ctx.Response())
+	} else if validResponse, ok := response.(CreateStockTagResponseObject); ok {
+		return validResponse.VisitCreateStockTagResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}
@@ -2770,11 +2770,11 @@ func (sh *strictHandler) ListTransactionTags(ctx *echo.Context) error {
 	return nil
 }
 
-// CreateTransactionTags operation middleware
-func (sh *strictHandler) CreateTransactionTags(ctx *echo.Context) error {
-	var request CreateTransactionTagsRequestObject
+// CreateTransactionTag operation middleware
+func (sh *strictHandler) CreateTransactionTag(ctx *echo.Context) error {
+	var request CreateTransactionTagRequestObject
 
-	var body CreateTransactionTagsJSONRequestBody
+	var body CreateTransactionTagJSONRequestBody
 	var err error
 	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
 		// Bind only the request body, so that path and query parameters
@@ -2791,18 +2791,18 @@ func (sh *strictHandler) CreateTransactionTags(ctx *echo.Context) error {
 	request.Body = &body
 
 	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.CreateTransactionTags(ctx.Request().Context(), request.(CreateTransactionTagsRequestObject))
+		return sh.ssi.CreateTransactionTag(ctx.Request().Context(), request.(CreateTransactionTagRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "CreateTransactionTags")
+		handler = middleware(handler, "CreateTransactionTag")
 	}
 
 	response, err := handler(ctx, request)
 
 	if err != nil {
 		return err
-	} else if validResponse, ok := response.(CreateTransactionTagsResponseObject); ok {
-		return validResponse.VisitCreateTransactionTagsResponse(ctx.Response())
+	} else if validResponse, ok := response.(CreateTransactionTagResponseObject); ok {
+		return validResponse.VisitCreateTransactionTagResponse(ctx.Response())
 	} else if response != nil {
 		return fmt.Errorf("unexpected response type: %T", response)
 	}
@@ -3020,20 +3020,20 @@ var swaggerSpec = []string{
 	"ExnO6gpp9vbixat3719poMRKNxZev3/bmGrgSyjKxkp6Rs90/SpzyFge11fMmanl5kyttJdmGhezLUSX",
 	"oA6z6htQiCUJqhfV9tZeZhouNTrexqWqD+dDg7MCylxmZYMBi9Kt11pWxfI8ibnePfuzbEJ138a45TYp",
 	"GzD0tfv9H7WJzhElNe2RAVHXOiPuQ8i8yBQUNSjfQ3EJBdouNHAJvCpitcaLT58NXFZpyop165BO1q0d",
-	"3KRLWQ4490UBTIG+Lb/VHj50cLOi52J9BL9KsT6md5t0208JbR/jGqjMY4qticzhsTdGi8eClkOD08t8",
-	"IbMoiflTxnLjhkM0b4xu5ppdxWLTQDsBNcALX+rXERsGePNuC3CdHPe97xuI8H7JrNOGbohuD6rOoTLv",
-	"JHrRHvOjocs5vcx3UqHXssrEE4ZX4/mhZHnzRTiMoTegTgMgepoU+1Tu0AmKLRTfwPClXQ3d2SuWLW9M",
-	"Zx9zwY6Yzh75rp8SqJgIwT5MGnAPE4IVsEStbixjzlGzAPEV8C8IMqE7PyiSBRKSf4HiMJZ+0zte1Bvw",
-	"GGg269fNAdqnP8CP2Wor8TuH1miFtmbs+jEyTWXWHl65m1J8twZslv0dxQKxTKC63h0uCdupxwnvs1bC",
-	"jdfZz1Ge6QO9vT6rqzO9FKkVZGgJCvGmRGlfjsVNlZs+pxOVbfvx7wMXbtuB31Ms3R7ybjibLofvVIvb",
-	"4NonuPt2ujTuplbXT51Lb+119Z08NbumZteTSl9HaXdtMT71u55zv2ufMe/Q8DoRhKaO13PseHXu7ru2",
-	"vI6Hx6nnNfW8nnDPa4AXjKYEev13ScEPh0/v1yETJ5jgfHwS0vS4BCgWJ+XNZOTo0KWn6pRNbOT/go3c",
-	"kE07fOQYkHz0vu2UwacMPpaQqP3XSZufYdw21uhsQN9itUL6iz039eY631Y9VXfu2hfOH7pL1/s67nOf",
-	"bzx8FByhb9dB9EBQ3HcE0QHINIh4moOIPgDuO44Ycvg0lJiGEo8zlBiR3I4yoOijfhpTPOcxxfV8eodh",
-	"xUnhNI0snmOT4OCWv+vg4tjYnMYXU7fgCXcLbmEQ48lDp3HAMoFiVd7UOzigFD8eZId/7TTximvQj36W",
-	"iv1eBGM86vq040SQo6dtfD07DvLTgPheZGQ8iA8oyvFw/ER6txNf+SnwfhuP0Fvrz2pA2Zcr4BISmSPI",
-	"LuNCZmnz72L7v19YzGaJ5CxZyVItTNuyZyyPNUxbadc/sGyHe9s/09GPG+P6MtWLm3Zx98XDLfoXTbu1",
-	"+ulwUfvbnd2y9nnzefO/AAAA//8=",
+	"3KRLWQ4490UBTIG+Lb/VHj50cLOidXHbhYJS/SrF+pjObbJtPyO0bYxrmDKPKbbmMYen3tgsHgtZDg1O",
+	"L/OFzKIk5k8Zyo0bDsG8MbqJa3YVi02D7ATUAC18qV9HbBjfzbt7fHdb3zfw4P2SWacL3fDcHlSdQ2Xe",
+	"SfSiPeZHQ5dzepnvpEKvZZWJJwyvxvNDufLme3AYQ29AnQZA9DQp9qlcoRMUWyi+geE7uxq6slcsW96Y",
+	"zj7mgh0xnT3yXT8lUDERgn2YNOAeJgQrYIla3VjFnKNmAeIr4F8QZEI3flAkCyQk/wLFYSz9pne8qDfg",
+	"MdBs1q+bA7RPf4Afs9VW4ncOrdEKbc3YtWNkmsqsPbxyN6T4bgnYLPs7igVimUB1uTtcEbZDjxPeZ62E",
+	"G6+zn6M60wd6e3lWF2d6KVIryNASFOJNidK+HIubCjd9Ticq2/bT3wcu3LbzvqdYuj3k3XA2XQ7fqRa3",
+	"wbVPcPdtdGncTZ2unzqX3trq2jp56nVNva6nl72O0u3qQHxqdz3bdtc+Yd6h33UiCE0Nr+fY8Opc3Xft",
+	"eB0Pj1PLa2p5PeGW1wAvGE0J9PrvkoIfDp/eb0MmTjDB+fgkpGlxCVAsTsqbycjRoUtP1Sib2Mj/BRu5",
+	"IZt2+MgxIPnobdspg08ZfCwhUfsvkzY/wrhtqtHZgL7FaoX093puas11vqt6qu7cta+bP3SXrvdl3Oc+",
+	"3nj4KDhC366D6IGguO8EogOQaQ7xNOcQfQDcdxrRd/g0k5hmEo84kxiR244ynzgA/TSleLZTiuvp9A6z",
+	"ipPCaZpYPMcewcElf9e5xbGxOU0vpmbBE24W3MIgxpOHTt+AZQLFqrypdXBAKX48yA7/12niFdegH/0s",
+	"Bfu9CMZ41PVpx4kgR0/b93p2HOSnAfG9yMh4EB9QlOPh+Im0bie+8lPg/TYeobfWn9WAsi9XwCUkMkeQ",
+	"XcaFzNLmr8X2/72wmM0SyVmykqVamLZlz1gea5i20q5/YNnO9rb/pKMfN8b1ZaoXN+3i7ouHW/TvmXZr",
+	"9dPhovaXO7tl7fPm8+Z/AQAA//8=",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,

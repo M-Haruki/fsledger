@@ -24,16 +24,16 @@ func (h *Handler) ListFlowTags(ctx context.Context, request openapi.ListFlowTags
 	return openapi.ListFlowTags200JSONResponse(response), nil
 }
 
-func (h *Handler) CreateFlowTags(ctx context.Context, request openapi.CreateFlowTagsRequestObject) (openapi.CreateFlowTagsResponseObject, error) {
+func (h *Handler) CreateFlowTag(ctx context.Context, request openapi.CreateFlowTagRequestObject) (openapi.CreateFlowTagResponseObject, error) {
 	id, err := h.service.CreateTag(ctx, model.FlowTag, request.Body.Name)
 	if err != nil {
 		if errors.Is(err, model.ErrTagNameDuplicate) {
-			return openapi.CreateFlowTags409JSONResponse{Message: "flow tag name duplicate"}, nil
+			return openapi.CreateFlowTag409JSONResponse{Message: "flow tag name duplicate"}, nil
 		}
 		h.log.ErrorContext(ctx, "create flow tag failed", "error", err)
-		return openapi.CreateFlowTags500JSONResponse{Message: "internal server error"}, nil
+		return openapi.CreateFlowTag500JSONResponse{Message: "internal server error"}, nil
 	}
-	return openapi.CreateFlowTags201JSONResponse{Id: openapi_types.UUID(id)}, nil
+	return openapi.CreateFlowTag201JSONResponse{Id: openapi_types.UUID(id)}, nil
 }
 
 func (h *Handler) GetFlowTag(ctx context.Context, request openapi.GetFlowTagRequestObject) (openapi.GetFlowTagResponseObject, error) {

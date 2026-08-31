@@ -26,7 +26,7 @@ Tags_:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
   post:
-    operationId: createFlowTags
+    operationId: createFlowTag
     summary: Create
     description: Create a new tag.
     tags:
