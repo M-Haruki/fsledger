@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import {
   useListTags,
   useUpdateTag,
@@ -11,6 +11,7 @@ import PageTitle from "@/components/PageTitle";
 import { type TagType, type Tag, NullTag } from "@/types/tag";
 import { Overlay, OverlayLoading } from "@/components/Overlay";
 import { useQueryClient } from "@tanstack/react-query";
+import { AddBtn } from "@/components/Preference";
 
 export default function PreferenceTags({ tagType }: { tagType: TagType }) {
   const [editTag, setEditTag] = useState<Tag>(NullTag);
@@ -30,7 +31,7 @@ export default function PreferenceTags({ tagType }: { tagType: TagType }) {
       )}
       <div className="flex place-content-between">
         <PageTitle title={getPageTitle(tagType)}></PageTitle>
-        <AddBtn className="mb-5 " onAdd={() => setIsShowAdder(true)} />
+        <AddBtn className="mb-5" onAdd={() => setIsShowAdder(true)} />
       </div>
       <TagList
         tagType={tagType}
@@ -56,10 +57,11 @@ function TagList({
   }
   if (isError || data?.status != 200) {
     alert("Failed to fetch tags data.");
+    return;
   }
   return (
     <div className="flex gap-2 flex-wrap">
-      {data?.data.map((tag) => (
+      {data.data.map((tag) => (
         <div
           key={tag.id}
           onClick={() => onTagSelect({ id: tag.id, name: tag.name })}
@@ -130,19 +132,20 @@ function TagEditer({
           e.preventDefault();
           changeTagName();
         }}
-        className="m-auto rounded-xl bg-primary-lighter p-4 flex flex-col"
+        className="m-auto rounded-xl bg-primary-lighter p-4 flex flex-col  w-md"
       >
         <input
           type="text"
+          placeholder="Tag Name"
           value={tagName}
           onChange={(e) => setTagName(e.target.value)}
           required
           className="bg-primary-lightest p-2 text-xl rounded-md mb-3"
         />
-        <div className="flex place-content-between">
+        <div className="flex">
           <button
             type="submit"
-            className="cursor-pointer rounded-md p-1 border-2 border-primary-light hover:bg-primary-light"
+            className="cursor-pointer rounded-md p-1 border-2 border-primary-light hover:bg-primary-light flex-1 mr-3 font-bold"
           >
             Change
           </button>
@@ -197,10 +200,11 @@ function TagAdder({
           e.preventDefault();
           createTag();
         }}
-        className="m-auto rounded-xl bg-primary-lighter p-4 flex flex-col"
+        className="m-auto rounded-xl bg-primary-lighter p-4 flex flex-col w-md"
       >
         <input
           type="text"
+          placeholder="Tag Name"
           value={tagName}
           onChange={(e) => setTagName(e.target.value)}
           required
@@ -209,7 +213,7 @@ function TagAdder({
         <div className="flex place-content-between">
           <button
             type="submit"
-            className="cursor-pointer rounded-md p-1 border-2 border-primary-light hover:bg-primary-light"
+            className="cursor-pointer rounded-md p-1 border-2 border-primary-light hover:bg-primary-light flex-1 font-bold"
           >
             Add
           </button>
@@ -228,21 +232,4 @@ function getPageTitle(tagType: TagType) {
     case "flow":
       return "Preference-FlowTags";
   }
-}
-
-function AddBtn({
-  className = "",
-  onAdd,
-}: {
-  className: string;
-  onAdd: () => void;
-}) {
-  return (
-    <button
-      onClick={onAdd}
-      className={`rounded-xl p-1 boder bg-primary-lighter hover:bg-primary-light ${className}`}
-    >
-      <Plus size={30} strokeWidth={3} />
-    </button>
-  );
 }
