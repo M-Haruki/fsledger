@@ -8,66 +8,65 @@ import {
 } from "@/utils/tagWrapper.ts";
 import PageTitle from "@/components/PageTitle";
 import { type TagType, type Tag, NullTag } from "@/types/tag";
-import Overlay from "@/components/Overlay";
+import { Overlay, OverlayLoading } from "@/components/Overlay";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function PreferenceTags({ tagType }: { tagType: TagType }) {
-  const { data, isPending, isError } = useListTags(tagType);
   const [editTag, setEditTag] = useState<Tag>(NullTag);
   const [isShowEditer, setIsShowEditer] = useState(false);
   const [isShowAdder, setIsShowAdder] = useState(false);
   return (
     <>
-      <TagEditer
-        tag={editTag}
-        tagType={tagType}
-        onClose={() => setIsShowEditer(false)}
-        enable={isShowEditer}
-      />
-      <TagAdder
-        tagType={tagType}
-        onClose={() => setIsShowAdder(false)}
-        enable={isShowAdder}
-      />
+      {isShowEditer && (
+        <TagEditer
+          tag={editTag}
+          tagType={tagType}
+          onClose={() => setIsShowEditer(false)}
+        />
+      )}
+      {isShowAdder && (
+        <TagAdder tagType={tagType} onClose={() => setIsShowAdder(false)} />
+      )}
       <PageTitle className="flex place-content-between">
         {getPageTitle(tagType)}
         <AddBtn onAdd={() => setIsShowAdder(true)} />
       </PageTitle>
-      {isPending ? (
-        <p>Loading</p>
-      ) : isError || data?.status != 200 ? (
-        <p>Error</p>
-      ) : (
-        <div className="flex gap-2 flex-wrap">
-          {data?.data.map((tag) => (
-            <ATag
-              tag={{ id: tag.id, name: tag.name }}
-              key={tag.id}
-              onTagSelect={(tag) => {
-                setEditTag(tag);
-                setIsShowEditer(true);
-              }}
-            />
-          ))}
-        </div>
-      )}
+      <TagList
+        tagType={tagType}
+        onTagSelect={(tag) => {
+          setEditTag(tag);
+          setIsShowEditer(true);
+        }}
+      />
     </>
   );
 }
 
-function ATag({
-  tag,
+function TagList({
+  tagType,
   onTagSelect,
 }: {
-  tag: Tag;
+  tagType: TagType;
   onTagSelect: (tag: Tag) => void;
 }) {
+  const { data, isPending, isError } = useListTags(tagType);
+  if (isPending) {
+    return <OverlayLoading />;
+  }
+  if (isError || data?.status != 200) {
+    alert("Failed to fetch tags data.");
+  }
   return (
-    <div
-      onClick={() => onTagSelect(tag)}
-      className="border w-xs border-primary-light rounded-xl p-2 flex gap-x-2 text-xl cursor-pointer hover:bg-primary-lighter"
-    >
-      {tag.name}
+    <div className="flex gap-2 flex-wrap">
+      {data?.data.map((tag) => (
+        <div
+          key={tag.id}
+          onClick={() => onTagSelect({ id: tag.id, name: tag.name })}
+          className="border w-xs border-primary-light rounded-xl p-2 flex gap-x-2 text-xl cursor-pointer hover:bg-primary-lighter"
+        >
+          {tag.name}
+        </div>
+      ))}
     </div>
   );
 }
@@ -76,12 +75,10 @@ function TagEditer({
   tag,
   tagType,
   onClose,
-  enable = true,
 }: {
   tag: Tag;
   tagType: TagType;
   onClose: () => void;
-  enable: boolean;
 }) {
   const [tagName, setTagName] = useState("");
   const changeTagMutation = useUpdateTag(tagType);
@@ -90,9 +87,6 @@ function TagEditer({
   useEffect(() => {
     setTagName(tag.name);
   }, [tag]);
-  if (!enable) {
-    return;
-  }
   function changeTagName() {
     changeTagMutation.mutate(
       {
@@ -107,7 +101,7 @@ function TagEditer({
           onClose();
         },
         onError: () => {
-          alert("Failed to change the tag name");
+          alert("Failed to change the tag name.");
         },
       },
     );
@@ -123,7 +117,7 @@ function TagEditer({
           onClose();
         },
         onError: () => {
-          alert("Failed to delete the tag name");
+          alert("Failed to delete the tag name.");
         },
       },
     );
@@ -167,19 +161,14 @@ function TagEditer({
 function TagAdder({
   tagType,
   onClose,
-  enable = true,
 }: {
   tagType: TagType;
   onClose: () => void;
-  enable: boolean;
 }) {
   const [tagName, setTagName] = useState("");
   const createTagMutation = useCreateTag(tagType);
   const queryClient = useQueryClient();
 
-  if (!enable) {
-    return;
-  }
   function createTag() {
     createTagMutation.mutate(
       {
@@ -195,7 +184,7 @@ function TagAdder({
           onClose();
         },
         onError: () => {
-          alert("Failed to create a tag");
+          alert("Failed to create a tag.");
         },
       },
     );
