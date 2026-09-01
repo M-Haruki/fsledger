@@ -1,6 +1,7 @@
 export interface Flow {
   from: string;
   to: string;
-  amount: number;
+  fromAmount: bigint;
+  toAmount: bigint;
   tags: string[];
 }

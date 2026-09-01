@@ -36,13 +36,15 @@ export default function TransactionNew() {
           {
             from: "6bd471ea-37ad-4967-abe6-d84810c5c3bc",
             to: "7debab7d-d3d4-41f0-932c-d7ea8965d7b2",
-            amount: 5000,
+            fromAmount: BigInt(5000),
+            toAmount: BigInt(5000),
             tags: ["a8296388-39e1-4ce1-850c-dcee77d995e1"],
           },
           {
             from: "7debab7d-d3d4-41f0-932c-d7ea8965d7b2",
             to: "6bd471ea-37ad-4967-abe6-d84810c5c3bc",
-            amount: 25,
+            fromAmount: BigInt(25),
+            toAmount: BigInt(25),
             tags: ["a8296388-39e1-4ce1-850c-dcee77d995e1"],
           },
         ]}

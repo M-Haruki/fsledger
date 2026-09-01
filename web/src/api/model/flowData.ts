@@ -9,7 +9,7 @@
 export interface FlowData {
   from: string;
   to: string;
-  from_amount: number;
-  to_amount: number;
+  from_amount: bigint;
+  to_amount: bigint;
   tags: string[];
 }
