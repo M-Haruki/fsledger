@@ -1,8 +1,8 @@
 -- name: ListFlowByTransaction :many
-SELECT id, from_stock_id, to_stock_id, amount FROM flows WHERE transaction_id = sqlc.arg(id);
+SELECT id, from_stock_id, to_stock_id, from_amount, to_amount FROM flows WHERE transaction_id = sqlc.arg(id);
 
 -- name: CreateFlow :one
-INSERT INTO flows (transaction_id, from_stock_id, to_stock_id, amount) VALUES (sqlc.arg(transactionId), sqlc.arg(fromStockId), sqlc.arg(toStockId), sqlc.arg(amount)) RETURNING id;
+INSERT INTO flows (transaction_id, from_stock_id, to_stock_id, from_amount, to_amount) VALUES (sqlc.arg(transactionId), sqlc.arg(fromStockId), sqlc.arg(toStockId), sqlc.arg(from_amount), sqlc.arg(to_amount)) RETURNING id;
 
 -- name: DeleteFlowByTransaction :exec
 DELETE FROM flows WHERE transaction_id = sqlc.arg(id);

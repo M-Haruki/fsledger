@@ -13,7 +13,8 @@ type Flow struct {
 	TransactionID pgtype.UUID
 	FromStockID   pgtype.UUID
 	ToStockID     pgtype.UUID
-	Amount        int64
+	FromAmount    int64
+	ToAmount      int64
 }
 
 type FlowTag struct {

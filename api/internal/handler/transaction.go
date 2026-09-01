@@ -23,10 +23,11 @@ func (h *Handler) CreateTransaction(ctx context.Context, request openapi.CreateT
 	transaction.Flows = make([]model.Flow, len(request.Body.Flows))
 	for i, flow := range request.Body.Flows {
 		transaction.Flows[i] = model.Flow{
-			From:   uuid.UUID(flow.From),
-			To:     uuid.UUID(flow.To),
-			Amount: flow.Amount,
-			Tags:   make([]uuid.UUID, len(flow.Tags)),
+			From:       uuid.UUID(flow.From),
+			To:         uuid.UUID(flow.To),
+			FromAmount: flow.FromAmount,
+			ToAmount:   flow.ToAmount,
+			Tags:       make([]uuid.UUID, len(flow.Tags)),
 		}
 		for j, tag := range flow.Tags {
 			transaction.Flows[i].Tags[j] = uuid.UUID(tag)
@@ -65,10 +66,11 @@ func (h *Handler) GetTransaction(ctx context.Context, request openapi.GetTransac
 	}
 	for i, flow := range transaction.Flows {
 		res.Flows[i] = openapi.FlowData{
-			From:   flow.From,
-			To:     flow.To,
-			Amount: flow.Amount,
-			Tags:   make([]openapi_types.UUID, len(flow.Tags)),
+			From:       flow.From,
+			To:         flow.To,
+			FromAmount: flow.FromAmount,
+			ToAmount:   flow.ToAmount,
+			Tags:       make([]openapi_types.UUID, len(flow.Tags)),
 		}
 		for j, tag := range flow.Tags {
 			res.Flows[i].Tags[j] = openapi_types.UUID(tag)
@@ -89,10 +91,11 @@ func (h *Handler) UpdateTransaction(ctx context.Context, request openapi.UpdateT
 	transaction.Flows = make([]model.Flow, len(request.Body.Flows))
 	for i, flow := range request.Body.Flows {
 		transaction.Flows[i] = model.Flow{
-			From:   uuid.UUID(flow.From),
-			To:     uuid.UUID(flow.To),
-			Amount: flow.Amount,
-			Tags:   make([]uuid.UUID, len(flow.Tags)),
+			From:       uuid.UUID(flow.From),
+			To:         uuid.UUID(flow.To),
+			FromAmount: flow.FromAmount,
+			ToAmount:   flow.ToAmount,
+			Tags:       make([]uuid.UUID, len(flow.Tags)),
 		}
 		for j, tag := range flow.Tags {
 			transaction.Flows[i].Tags[j] = uuid.UUID(tag)

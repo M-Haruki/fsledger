@@ -16,7 +16,8 @@ func (r *Repository) CreateFlow(ctx context.Context, transactionId uuid.UUID, fl
 		Transactionid: pgtype.UUID{Bytes: transactionId, Valid: true},
 		Fromstockid:   pgtype.UUID{Bytes: flow.From, Valid: true},
 		Tostockid:     pgtype.UUID{Bytes: flow.To, Valid: true},
-		Amount:        flow.Amount,
+		FromAmount:    flow.FromAmount,
+		ToAmount:      flow.ToAmount,
 	})
 	if err != nil {
 		if pgErr, ok := errors.AsType[*pgconn.PgError](err); ok {
@@ -39,9 +40,10 @@ func (r *Repository) ListFlowsByTransaction(ctx context.Context, id uuid.UUID) (
 	flowIds := make([]uuid.UUID, len(flows))
 	for i, flow := range flows {
 		formattedFlows[i] = model.Flow{
-			From:   uuid.UUID(flow.FromStockID.Bytes),
-			To:     uuid.UUID(flow.ToStockID.Bytes),
-			Amount: flow.Amount,
+			From:       uuid.UUID(flow.FromStockID.Bytes),
+			To:         uuid.UUID(flow.ToStockID.Bytes),
+			FromAmount: flow.FromAmount,
+			ToAmount:   flow.ToAmount,
 		}
 		flowIds[i] = uuid.UUID(flow.ID.Bytes)
 	}

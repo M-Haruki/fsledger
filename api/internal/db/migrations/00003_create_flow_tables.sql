@@ -4,7 +4,8 @@ CREATE TABLE flows (
   transaction_id uuid NOT NULL REFERENCES transactions (id) ON DELETE CASCADE,
   from_stock_id uuid NOT NULL REFERENCES stocks (id) ON DELETE NO ACTION,
   to_stock_id uuid NOT NULL REFERENCES stocks (id) ON DELETE NO ACTION,
-  amount bigint NOT NULL, -- bigint = int64
+  from_amount bigint NOT NULL, -- bigint = int64
+  to_amount bigint NOT NULL, -- bigint = int64
   PRIMARY KEY (id)
 );
 

@@ -13,14 +13,15 @@ import (
 )
 
 const createFlow = `-- name: CreateFlow :one
-INSERT INTO flows (transaction_id, from_stock_id, to_stock_id, amount) VALUES ($1, $2, $3, $4) RETURNING id
+INSERT INTO flows (transaction_id, from_stock_id, to_stock_id, from_amount, to_amount) VALUES ($1, $2, $3, $4, $5) RETURNING id
 `
 
 type CreateFlowParams struct {
 	Transactionid pgtype.UUID
 	Fromstockid   pgtype.UUID
 	Tostockid     pgtype.UUID
-	Amount        int64
+	FromAmount    int64
+	ToAmount      int64
 }
 
 func (q *Queries) CreateFlow(ctx context.Context, arg CreateFlowParams) (pgtype.UUID, error) {
@@ -28,7 +29,8 @@ func (q *Queries) CreateFlow(ctx context.Context, arg CreateFlowParams) (pgtype.
 		arg.Transactionid,
 		arg.Fromstockid,
 		arg.Tostockid,
-		arg.Amount,
+		arg.FromAmount,
+		arg.ToAmount,
 	)
 	var id pgtype.UUID
 	err := row.Scan(&id)
@@ -98,14 +100,15 @@ func (q *Queries) GetFlowTag(ctx context.Context, id pgtype.UUID) (string, error
 }
 
 const listFlowByTransaction = `-- name: ListFlowByTransaction :many
-SELECT id, from_stock_id, to_stock_id, amount FROM flows WHERE transaction_id = $1
+SELECT id, from_stock_id, to_stock_id, from_amount, to_amount FROM flows WHERE transaction_id = $1
 `
 
 type ListFlowByTransactionRow struct {
 	ID          pgtype.UUID
 	FromStockID pgtype.UUID
 	ToStockID   pgtype.UUID
-	Amount      int64
+	FromAmount  int64
+	ToAmount    int64
 }
 
 func (q *Queries) ListFlowByTransaction(ctx context.Context, id pgtype.UUID) ([]ListFlowByTransactionRow, error) {
@@ -121,7 +124,8 @@ func (q *Queries) ListFlowByTransaction(ctx context.Context, id pgtype.UUID) ([]
 			&i.ID,
 			&i.FromStockID,
 			&i.ToStockID,
-			&i.Amount,
+			&i.FromAmount,
+			&i.ToAmount,
 		); err != nil {
 			return nil, err
 		}

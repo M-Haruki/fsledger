@@ -9,6 +9,7 @@
 export interface FlowData {
   from: string;
   to: string;
-  amount: number;
+  from_amount: number;
+  to_amount: number;
   tags: string[];
 }
