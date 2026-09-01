@@ -2,6 +2,9 @@ import { useListFlowTags, useListStocks } from "@/api/api";
 import { Flows } from "@/components/Flow";
 import { OverlayLoading } from "@/components/Overlay";
 import PageTitle from "@/components/PageTitle";
+import type { Transaction } from "@/types/transaction";
+import { nowDate } from "@/utils/date";
+import { useState } from "react";
 
 export default function TransactionNew() {
   const {
@@ -14,6 +17,13 @@ export default function TransactionNew() {
     isPending: allFlowTagsIsPending,
     isError: allFlowTagsIsError,
   } = useListFlowTags();
+
+  const [transaction, setTransaction] = useState<Transaction>({
+    description: "",
+    occurredAt: nowDate(),
+    tags: [],
+    flows: [],
+  });
 
   if (allStocksIsPending || allFlowTagsIsPending) {
     return <OverlayLoading />;
@@ -31,6 +41,8 @@ export default function TransactionNew() {
   return (
     <>
       <PageTitle title="New Transaction" />
+      <div>{transaction.description}</div>
+      <div>{transaction.occurredAt}</div>
       <Flows
         flows={[
           {
