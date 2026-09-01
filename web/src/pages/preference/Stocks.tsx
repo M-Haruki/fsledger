@@ -1,6 +1,7 @@
 import {
   getGetStockQueryKey,
   getListStocksQueryKey,
+  useCreateStock,
   useDeleteStock,
   useGetStock,
   useListStocks,
@@ -13,8 +14,10 @@ import { AddBtn } from "@/components/Preference";
 import type { Stock } from "@/types/stock";
 import { useEffect, useState } from "react";
 import type { Tag } from "@/types/tag";
-import { CircleX, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { Switch } from "@/components/switch";
+import { TagsEditor } from "@/components/Tag";
 
 export default function PreferenceStocks() {
   const [stockId, setStockId] = useState("");
@@ -27,6 +30,13 @@ export default function PreferenceStocks() {
           stockId={stockId}
           onClose={() => {
             setIsShowEditer(false);
+          }}
+        />
+      )}
+      {isShowAdder && (
+        <StockAdder
+          onClose={() => {
+            setIsShowAdder(false);
           }}
         />
       )}
@@ -48,6 +58,7 @@ export default function PreferenceStocks() {
     </>
   );
 }
+
 function StocksList({
   onStockSelect,
 }: {
@@ -200,6 +211,76 @@ function StockEditor({
   );
 }
 
+function StockAdder({ onClose }: { onClose: () => void }) {
+  const {
+    data: allTagsData,
+    isPending: allTagsIsPending,
+    isError: allTagsIsError,
+  } = useListStockTags();
+  const createStockMutation = useCreateStock();
+  const queryClient = useQueryClient();
+  const [stock, setStock] = useState<Stock>({
+    name: "",
+    hasAmount: true,
+    currency: "",
+    currencyExponent: 0,
+    description: "",
+    tags: [],
+  });
+
+  if (allTagsIsPending) {
+    return <OverlayLoading />;
+  }
+  if (allTagsIsError || allTagsData.status != 200) {
+    alert("Failed to fetch tags data.");
+    return;
+  }
+
+  function createStock() {
+    createStockMutation.mutate(
+      {
+        data: stock,
+      },
+      {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries({
+            queryKey: getListStocksQueryKey(),
+          });
+          onClose();
+        },
+        onError: () => {
+          alert("Failed to create the stock.");
+        },
+      },
+    );
+  }
+  return (
+    <Overlay click={onClose}>
+      <form
+        className="m-auto rounded-xl bg-primary-lighter p-4 flex flex-col w-md"
+        onSubmit={(e) => {
+          e.preventDefault();
+          createStock();
+        }}
+      >
+        <StockFormParts
+          stock={stock}
+          setStock={(stock) => setStock(stock)}
+          allTags={allTagsData.data}
+        />
+        <div className="mt-3 flex">
+          <button
+            type="submit"
+            className="cursor-pointer rounded-md p-1 border-2 border-primary-light hover:bg-primary-light flex-1 mr-3 font-bold"
+          >
+            Add
+          </button>
+        </div>
+      </form>
+    </Overlay>
+  );
+}
+
 function StockFormParts({
   stock,
   setStock,
@@ -221,16 +302,11 @@ function StockFormParts({
       />
       <div className="flex mb-3 w-full place-content-between">
         <div className="w-1/4">
-          <label htmlFor="hasAmount">Countable</label>
-          <input
-            id="hasAmount"
-            type="checkbox"
-            checked={stock.hasAmount}
-            onChange={(e) =>
-              setStock({ ...stock, hasAmount: e.target.checked })
-            }
-            required
-            className="block m-auto size-8"
+          <label>Countable</label>
+          <Switch
+            value={stock.hasAmount}
+            onChange={() => setStock({ ...stock, hasAmount: !stock.hasAmount })}
+            className="m-auto"
           />
         </div>
         <div className="w-1/3">
@@ -241,7 +317,6 @@ function StockFormParts({
             placeholder="Currency"
             value={stock.currency}
             onChange={(e) => setStock({ ...stock, currency: e.target.value })}
-            required
             className="bg-primary-lightest p-2 rounded-md w-full text-center block"
           />
         </div>
@@ -264,7 +339,6 @@ function StockFormParts({
         placeholder="Description"
         value={stock.description}
         onChange={(e) => setStock({ ...stock, description: e.target.value })}
-        required
         className="bg-primary-lightest p-2 rounded-md mb-3"
       />
       <TagsEditor
@@ -273,44 +347,5 @@ function StockFormParts({
         setTags={(tags) => setStock({ ...stock, tags: tags })}
       />
     </>
-  );
-}
-function TagsEditor({
-  allTags,
-  tags,
-  setTags,
-}: {
-  allTags: Tag[];
-  tags: string[];
-  setTags: (tags: string[]) => void;
-}) {
-  return (
-    <div className="flex gap-2">
-      {tags.map((id) => (
-        <div key={id} className="bg-primary-lightest p-1 rounded-xl">
-          <CircleX
-            className="mr-0.5 inline align-sub"
-            size={18}
-            onClick={() => setTags(tags.filter((t) => t != id))}
-          />
-          {allTags.filter((t) => t.id === id)[0].name}
-        </div>
-      ))}
-      <select
-        onChange={(e) => {
-          setTags([...tags, e.target.value]);
-        }}
-        className="bg-primary-lightest p-1 rounded-xl"
-      >
-        <option value="default">Add Tag</option>
-        {allTags
-          .filter((t) => !tags.includes(t.id))
-          .map((u) => (
-            <option value={u.id} key={u.id}>
-              {u.name}
-            </option>
-          ))}
-      </select>
-    </div>
   );
 }
