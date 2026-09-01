@@ -14,7 +14,7 @@ export function TagsEditor({
     <div className="flex gap-2 h-8">
       {tags.map((id) => (
         <div key={id} className="bg-primary-lightest p-1 rounded-xl">
-          {allTags.filter((t) => t.id === id)[0].name}
+          {allTags.find((t) => t.id === id)?.name || "[unknown]"}
           <X
             className="ml-0.5 inline align-sub"
             size={18}

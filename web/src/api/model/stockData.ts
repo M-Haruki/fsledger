@@ -11,7 +11,6 @@ export interface StockData {
   name: string;
   hasAmount: boolean;
   currency: string;
-  /** @minimum 0 */
   currencyExponent: number;
   description: string;
   tags: string[];

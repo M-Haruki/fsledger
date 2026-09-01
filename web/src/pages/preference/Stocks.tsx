@@ -16,8 +16,9 @@ import { useEffect, useState } from "react";
 import type { Tag } from "@/types/tag";
 import { Trash2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Switch } from "@/components/switch";
+import { Switch } from "@/components/Switch";
 import { TagsEditor } from "@/components/Tag";
+import { INT32_MIN, INT32_MAX } from "@/constants/number";
 
 export default function PreferenceStocks() {
   const [stockId, setStockId] = useState("");
@@ -325,6 +326,8 @@ function StockFormParts({
           <input
             id="currencyExponent"
             type="number"
+            min={INT32_MIN}
+            max={INT32_MAX}
             placeholder="Currency Exponent"
             value={stock.currencyExponent}
             onChange={(e) =>

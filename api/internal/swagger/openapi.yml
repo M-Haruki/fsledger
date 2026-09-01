@@ -901,7 +901,6 @@ components:
           currencyExponent:
             type: integer
             format: int32
-            minimum: 0
         required:
           - id
           - name
@@ -937,7 +936,6 @@ components:
         currencyExponent:
           type: integer
           format: int32
-          minimum: 0
         description:
           type: string
         tags:
