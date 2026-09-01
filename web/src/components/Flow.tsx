@@ -2,6 +2,7 @@ import type { Flow } from "@/types/flow";
 import type { StockAbstract } from "@/types/stock";
 import type { Tag } from "@/types/tag";
 import { TagsEditor } from "./Tag";
+import { Frown } from "lucide-react";
 
 export function Flows({
   flows,
@@ -40,14 +41,23 @@ function Flow({
   allStocks: StockAbstract[];
   allFlowTags: Tag[];
 }) {
-  const fromStock = allStocks.find((stock) => flow.from === stock.id);
-  const toStock = allStocks.find((stock) => flow.to === stock.id);
   return (
     <div>
       <div>
-        <div>{fromStock?.name || "[unlnown]"}</div>
-        <div>{flow.amount}</div>
-        <div>{toStock?.name || "[unlnown]"}</div>
+        {/* <div>{fromStock?.name || "[unlnown]"}</div> */}
+        <div>{flow.fromAmount}</div>
+        <StockSelecter
+          stockId={flow.to}
+          allStocks={allStocks}
+          onChange={(id) => {}}
+        />
+        -＞
+        <div>{flow.toAmount}</div>
+        <StockSelecter
+          stockId={flow.from}
+          allStocks={allStocks}
+          onChange={(id) => {}}
+        />
       </div>
       <TagsEditor
         tags={flow.tags}
@@ -55,5 +65,30 @@ function Flow({
         setTags={(tags) => {}}
       />
     </div>
+  );
+}
+
+function StockSelecter({
+  stockId,
+  allStocks,
+  onChange,
+}: {
+  stockId: string;
+  allStocks: StockAbstract[];
+  onChange: (id: string) => void;
+}) {
+  return (
+    <select value={stockId} onChange={(e) => onChange(e.target.value)}>
+      {allStocks.map((stock) => (
+        <option key={stock.id} value={stock.id}>
+          {stock.name}
+        </option>
+      ))}
+      {!allStocks.some((stock) => stock.id === stockId) && (
+        <option key={stockId} value={stockId} disabled>
+          [Unknown]
+        </option>
+      )}
+    </select>
   );
 }
