@@ -1,9 +1,11 @@
+import { NullUUID, type UUID } from "./uuid";
+
 export type TagType = "stock" | "transaction" | "flow";
 export interface Tag {
-  id: string;
+  id: UUID;
   name: string;
 }
 export const NullTag: Tag = {
-  id: "",
+  id: NullUUID,
   name: "",
 };

@@ -2,7 +2,7 @@ import type { Flow } from "@/types/flow";
 import type { StockAbstract } from "@/types/stock";
 import type { Tag } from "@/types/tag";
 import { TagsEditor } from "./Tag";
-import { Frown } from "lucide-react";
+import type { UUID } from "@/types/uuid";
 
 export function Flows({
   flows,
@@ -73,9 +73,9 @@ function StockSelecter({
   allStocks,
   onChange,
 }: {
-  stockId: string;
+  stockId: UUID;
   allStocks: StockAbstract[];
-  onChange: (id: string) => void;
+  onChange: (id: UUID) => void;
 }) {
   return (
     <select value={stockId} onChange={(e) => onChange(e.target.value)}>

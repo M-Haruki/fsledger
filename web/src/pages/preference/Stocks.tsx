@@ -19,6 +19,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Switch } from "@/components/Switch";
 import { TagsEditor } from "@/components/Tag";
 import { INT32_MIN, INT32_MAX } from "@/constants/number";
+import { type UUID } from "@/types/uuid";
 
 export default function PreferenceStocks() {
   const [stockId, setStockId] = useState("");
@@ -60,11 +61,7 @@ export default function PreferenceStocks() {
   );
 }
 
-function StocksList({
-  onStockSelect,
-}: {
-  onStockSelect: (id: string) => void;
-}) {
+function StocksList({ onStockSelect }: { onStockSelect: (id: UUID) => void }) {
   const { data, isPending, isError } = useListStocks();
   if (isPending) {
     return <OverlayLoading />;
@@ -92,7 +89,7 @@ function StockEditor({
   stockId,
   onClose,
 }: {
-  stockId: string;
+  stockId: UUID;
   onClose: () => void;
 }) {
   const { data, isPending, isError } = useGetStock(stockId);

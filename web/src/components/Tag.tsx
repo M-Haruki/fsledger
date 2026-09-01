@@ -1,4 +1,5 @@
 import type { Tag } from "@/types/tag";
+import type { UUID } from "@/types/uuid";
 import { X } from "lucide-react";
 
 export function TagsEditor({
@@ -7,8 +8,8 @@ export function TagsEditor({
   setTags,
 }: {
   allTags: Tag[];
-  tags: string[];
-  setTags: (tags: string[]) => void;
+  tags: UUID[];
+  setTags: (tags: UUID[]) => void;
 }) {
   return (
     <div className="flex gap-2 h-8">

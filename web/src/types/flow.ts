@@ -1,7 +1,9 @@
+import type { UUID } from "./uuid";
+
 export interface Flow {
-  from: string;
-  to: string;
+  from: UUID;
+  to: UUID;
   fromAmount: bigint;
   toAmount: bigint;
-  tags: string[];
+  tags: UUID[];
 }
