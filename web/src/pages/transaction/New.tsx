@@ -1,8 +1,12 @@
-import { useListFlowTags, useListStocks, useListStockTags } from "@/api/api";
-import { Flows } from "@/components/Flow";
+import {
+  useCreateTransaction,
+  useListFlowTags,
+  useListStocks,
+  useListStockTags,
+} from "@/api/api";
 import { OverlayLoading } from "@/components/Overlay";
 import PageTitle from "@/components/PageTitle";
-import { TagsEditor } from "@/components/Tag";
+import { TransactionFormParts } from "@/components/Transaction";
 import type { Transaction } from "@/types/transaction";
 import { nowDate } from "@/utils/date";
 import { useState } from "react";
@@ -23,6 +27,8 @@ export default function TransactionNew() {
     isPending: allStockTagsIsPending,
     isError: allStockTagsIsError,
   } = useListStockTags();
+
+  const createTransactionMutation = useCreateTransaction();
 
   const [transaction, setTransaction] = useState<Transaction>({
     description: "",
@@ -46,41 +52,58 @@ export default function TransactionNew() {
     return;
   }
 
+  function createTransaction() {
+    // createTransactionMutation.mutate(
+    //   {
+    //     data: {
+    //       description: transaction.description,
+    //       occurred_at: transaction.occurredAt,
+    //       tags: transaction.tags,
+    //       flows: transaction.flows.map((flow) => {
+    //         return {
+    //           from: flow.from,
+    //           to: flow.to,
+    //           from_amount: flow.fromAmount,
+    //           to_amount: flow.toAmount,
+    //           tags: flow.tags,
+    //         };
+    //       }),
+    //     },
+    //   },
+    //   {
+    //     onSuccess: async () => {},
+    //     onError: (e) => {
+    //       console.log(e);
+    //       alert("Failed to create new transaction.");
+    //     },
+    //   },
+    // );
+  }
+
   return (
     <>
       <PageTitle title="New Transaction" />
-      <div>
-        <textarea
-          value={transaction.description}
-          onChange={(e) =>
-            setTransaction({ ...transaction, description: e.target.value })
-          }
-        />
-      </div>
-      <div>
-        <input
-          type="date"
-          value={transaction.occurredAt}
-          onChange={(e) =>
-            e.target.value != "" &&
-            setTransaction({ ...transaction, occurredAt: e.target.value })
-          }
-          required
-        />
-      </div>
-      <TagsEditor
-        allTags={allStockTagsData.data}
-        tags={transaction.tags}
-        setTags={(tags) => setTransaction({ ...transaction, tags: tags })}
-      />
-      <Flows
-        flows={transaction.flows}
-        setFlows={(flows) => {
-          setTransaction({ ...transaction, flows: flows });
+      <form
+        className="flex flex-col gap-y-3 w-md"
+        onSubmit={(e) => {
+          e.preventDefault();
+          createTransaction();
         }}
-        allStocks={allStocksData.data}
-        allFlowTags={allFlowTagsData.data}
-      />
+      >
+        <TransactionFormParts
+          transaction={transaction}
+          setTransaction={(transaction) => setTransaction(transaction)}
+          allStocks={allStocksData.data}
+          allStockTags={allStockTagsData.data}
+          allFlowTags={allFlowTagsData.data}
+        />
+        <button
+          type="submit"
+          className="cursor-pointer rounded-xl p-1 border-3 border-primary-light hover:bg-primary-light flex-1 font-bold"
+        >
+          Create
+        </button>
+      </form>
     </>
   );
 }

@@ -6,7 +6,6 @@ import type { UUID } from "@/types/uuid";
 import { ArrowBigRight, Plus, X } from "lucide-react";
 import { bigint2string, string2bigint } from "@/utils/bigint";
 import { useEffect, useState } from "react";
-import { Switch } from "./Switch";
 
 export function Flows({
   flows,
@@ -20,7 +19,7 @@ export function Flows({
   allFlowTags: Tag[];
 }) {
   return (
-    <div>
+    <div className="flex flex-col gap-y-2">
       {flows.map((flow, index) => (
         <Flow
           key={index}
@@ -33,7 +32,8 @@ export function Flows({
           allFlowTags={allFlowTags}
         />
       ))}
-      <Plus
+      <div
+        className="flex justify-center border-3 rounded-2xl p-1 border-primary-lighter hover:bg-primary-lighter"
         onClick={() =>
           setFlows(
             flows.concat({
@@ -45,7 +45,9 @@ export function Flows({
             }),
           )
         }
-      />
+      >
+        <Plus />
+      </div>
     </div>
   );
 }
@@ -77,73 +79,92 @@ function Flow({
   }, [fromCurrencyExponent, toCurrencyExponent]);
 
   return (
-    <div>
-      <X onClick={deleteFlow} />
-      <div className="flex">
-        <StockSelecter
-          stockId={flow.from}
-          allStocks={allStocks}
-          onChange={(id) => {
-            setFlow({ ...flow, from: id });
+    <div className="border-3 rounded-2xl p-2 border-primary-lighter flex">
+      <X onClick={deleteFlow} className="mr-2 cursor-pointer" />
+      <div className="flex flex-col w-full gap-y-2">
+        <div className="flex w-full gap-x-3">
+          <StockSelecter
+            className="flex-1 text-lg bg-primary-lightest rounded-md p-1"
+            stockId={flow.from}
+            allStocks={allStocks}
+            onChange={(id) => {
+              setFlow({ ...flow, from: id });
+            }}
+          />
+          <ArrowBigRight size={36} />
+          <StockSelecter
+            className="flex-1 text-lg bg-primary-lightest rounded-md p-1"
+            stockId={flow.to}
+            allStocks={allStocks}
+            onChange={(id) => {
+              setFlow({ ...flow, to: id });
+            }}
+          />
+        </div>
+        <div className="flex gap-x-5 justify-center">
+          {isSameAmount ? (
+            <>
+              <div className="flex">
+                <AmountInput
+                  amount={flow.fromAmount}
+                  currencyExponent={fromCurrencyExponent}
+                  setAmount={(amount) =>
+                    setFlow({ ...flow, fromAmount: amount, toAmount: amount })
+                  }
+                  className="text-lg p-1 rounded-lg bg-primary-lightest w-30 text-right"
+                />
+                <p className="ml-1 content-center">
+                  {fromCurrency == toCurrency
+                    ? fromCurrency
+                    : `${fromCurrency}/${toCurrency}`}
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex">
+                <AmountInput
+                  amount={flow.fromAmount}
+                  currencyExponent={fromCurrencyExponent}
+                  setAmount={(amount) =>
+                    setFlow({ ...flow, fromAmount: amount })
+                  }
+                  className="text-lg p-1 rounded-lg bg-primary-lightest w-30 text-right"
+                />
+                <p className="ml-1 content-center">{fromCurrency}</p>
+              </div>
+              <div className="flex">
+                <AmountInput
+                  amount={flow.toAmount}
+                  currencyExponent={toCurrencyExponent}
+                  setAmount={(amount) => setFlow({ ...flow, toAmount: amount })}
+                  className="text-lg p-1 rounded-lg bg-primary-lightest w-30 text-right"
+                />
+                <p className="ml-1 content-center">{toCurrency}</p>
+              </div>
+            </>
+          )}
+        </div>
+        <div className="flex">
+          <input
+            required
+            id="isSameAmount"
+            type="checkbox"
+            checked={isSameAmount}
+            onChange={() => setIsSameAmount(!isSameAmount)}
+            disabled={fromCurrencyExponent != toCurrencyExponent}
+            className="mr-1"
+          />
+          <label htmlFor="isSameAmount">Use Same Amount</label>
+        </div>
+        <TagsEditor
+          tags={flow.tags}
+          allTags={allFlowTags}
+          setTags={(tags) => {
+            setFlow({ ...flow, tags: tags });
           }}
         />
-        <ArrowBigRight />
-        <StockSelecter
-          stockId={flow.to}
-          allStocks={allStocks}
-          onChange={(id) => {
-            setFlow({ ...flow, to: id });
-          }}
-        />
       </div>
-      <div className="flex">
-        {isSameAmount ? (
-          <>
-            {fromCurrency == toCurrency
-              ? fromCurrency
-              : `${fromCurrency}/${toCurrency}`}
-            <AmountInput
-              amount={flow.fromAmount}
-              currencyExponent={fromCurrencyExponent}
-              setAmount={(amount) =>
-                setFlow({ ...flow, fromAmount: amount, toAmount: amount })
-              }
-            />
-          </>
-        ) : (
-          <>
-            {fromCurrency}
-            <AmountInput
-              amount={flow.fromAmount}
-              currencyExponent={fromCurrencyExponent}
-              setAmount={(amount) => setFlow({ ...flow, fromAmount: amount })}
-            />
-            {toCurrency}
-            <AmountInput
-              amount={flow.toAmount}
-              currencyExponent={toCurrencyExponent}
-              setAmount={(amount) => setFlow({ ...flow, toAmount: amount })}
-            />
-          </>
-        )}
-      </div>
-      <div className="flex">
-        <label>Same</label>
-        <Switch
-          value={isSameAmount}
-          onChange={() =>
-            fromCurrencyExponent === toCurrencyExponent &&
-            setIsSameAmount(!isSameAmount)
-          }
-        />
-      </div>
-      <TagsEditor
-        tags={flow.tags}
-        allTags={allFlowTags}
-        setTags={(tags) => {
-          setFlow({ ...flow, tags: tags });
-        }}
-      />
     </div>
   );
 }
@@ -152,13 +173,19 @@ function StockSelecter({
   stockId,
   allStocks,
   onChange,
+  className = "",
 }: {
   stockId: UUID;
   allStocks: StockAbstract[];
   onChange: (id: UUID) => void;
+  className?: string;
 }) {
   return (
-    <select value={stockId} onChange={(e) => onChange(e.target.value)}>
+    <select
+      value={stockId}
+      onChange={(e) => onChange(e.target.value)}
+      className={className}
+    >
       {allStocks.map((stock) => (
         <option key={stock.id} value={stock.id}>
           {stock.name}
@@ -177,10 +204,12 @@ function AmountInput({
   amount,
   currencyExponent,
   setAmount,
+  className = "",
 }: {
   amount: bigint;
   currencyExponent: number;
   setAmount: (amount: bigint) => void;
+  className?: string;
 }) {
   const [tempAmount, setTempAmount] = useState<string>(
     bigint2string(amount, currencyExponent),
@@ -190,6 +219,8 @@ function AmountInput({
   }, [amount, currencyExponent]);
   return (
     <input
+      required
+      className={className}
       type="text"
       inputMode="decimal"
       value={tempAmount}
