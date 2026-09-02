@@ -1,7 +1,8 @@
-import { useListFlowTags, useListStocks } from "@/api/api";
+import { useListFlowTags, useListStocks, useListStockTags } from "@/api/api";
 import { Flows } from "@/components/Flow";
 import { OverlayLoading } from "@/components/Overlay";
 import PageTitle from "@/components/PageTitle";
+import { TagsEditor } from "@/components/Tag";
 import type { Transaction } from "@/types/transaction";
 import { nowDate } from "@/utils/date";
 import { useState } from "react";
@@ -17,6 +18,11 @@ export default function TransactionNew() {
     isPending: allFlowTagsIsPending,
     isError: allFlowTagsIsError,
   } = useListFlowTags();
+  const {
+    data: allStockTagsData,
+    isPending: allStockTagsIsPending,
+    isError: allStockTagsIsError,
+  } = useListStockTags();
 
   const [transaction, setTransaction] = useState<Transaction>({
     description: "",
@@ -25,14 +31,16 @@ export default function TransactionNew() {
     flows: [],
   });
 
-  if (allStocksIsPending || allFlowTagsIsPending) {
+  if (allStocksIsPending || allFlowTagsIsPending || allStockTagsIsPending) {
     return <OverlayLoading />;
   }
   if (
     allStocksIsError ||
     allStocksData.status != 200 ||
     allFlowTagsIsError ||
-    allFlowTagsData.status != 200
+    allFlowTagsData.status != 200 ||
+    allStockTagsIsError ||
+    allStockTagsData.status != 200
   ) {
     alert("Failed to fetch required data.");
     return;
@@ -41,26 +49,35 @@ export default function TransactionNew() {
   return (
     <>
       <PageTitle title="New Transaction" />
-      <div>{transaction.description}</div>
-      <div>{transaction.occurredAt}</div>
+      <div>
+        <textarea
+          value={transaction.description}
+          onChange={(e) =>
+            setTransaction({ ...transaction, description: e.target.value })
+          }
+        />
+      </div>
+      <div>
+        <input
+          type="date"
+          value={transaction.occurredAt}
+          onChange={(e) =>
+            e.target.value != "" &&
+            setTransaction({ ...transaction, occurredAt: e.target.value })
+          }
+          required
+        />
+      </div>
+      <TagsEditor
+        allTags={allStockTagsData.data}
+        tags={transaction.tags}
+        setTags={(tags) => setTransaction({ ...transaction, tags: tags })}
+      />
       <Flows
-        flows={[
-          {
-            from: "6bd471ea-37ad-4967-abe6-d84810c5c3bc",
-            to: "7debab7d-d3d4-41f0-932c-d7ea8965d7b2",
-            fromAmount: BigInt(5000),
-            toAmount: BigInt(5000),
-            tags: ["a8296388-39e1-4ce1-850c-dcee77d995e1"],
-          },
-          {
-            from: "7debab7d-d3d4-41f0-932c-d7ea8965d7b2",
-            to: "6bd471ea-37ad-4967-abe6-d84810c5c3bc",
-            fromAmount: BigInt(25),
-            toAmount: BigInt(25),
-            tags: ["a8296388-39e1-4ce1-850c-dcee77d995e1"],
-          },
-        ]}
-        setFlows={(flows) => {}}
+        flows={transaction.flows}
+        setFlows={(flows) => {
+          setTransaction({ ...transaction, flows: flows });
+        }}
         allStocks={allStocksData.data}
         allFlowTags={allFlowTagsData.data}
       />
