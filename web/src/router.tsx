@@ -6,6 +6,7 @@ import NotFound from "./pages/NotFound.tsx";
 import PreferenceStocks from "./pages/preference/Stocks.tsx";
 import PreferenceTags from "./pages/preference/Tags.tsx";
 import TransactionNew from "./pages/transaction/New.tsx";
+import TransactionEdit from "./pages/transaction/Edit.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -15,6 +16,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: Index, id: "index" },
       { path: "/transaction/new", Component: TransactionNew },
+      { path: "/transaction/edit/:id", Component: TransactionEdit },
       { path: "/preference/stocks", Component: PreferenceStocks },
       {
         path: "/preference/tags/stock",

@@ -30,12 +30,13 @@ export default function TransactionNew() {
 
   const createTransactionMutation = useCreateTransaction();
 
-  const [transaction, setTransaction] = useState<Transaction>({
+  const initTransaction = {
     description: "",
     occurredAt: nowDate(),
     tags: [],
     flows: [],
-  });
+  };
+  const [transaction, setTransaction] = useState<Transaction>(initTransaction);
 
   if (allStocksIsPending || allFlowTagsIsPending || allStockTagsIsPending) {
     return <OverlayLoading />;
@@ -71,9 +72,11 @@ export default function TransactionNew() {
         },
       },
       {
-        onSuccess: async () => {},
-        onError: (e) => {
-          console.log(e);
+        onSuccess: async () => {
+          alert("Created.");
+          setTransaction(initTransaction);
+        },
+        onError: () => {
           alert("Failed to create new transaction.");
         },
       },
