@@ -16,9 +16,6 @@ export default defineConfig({
       client: "react-query",
       httpClient: "axios",
       baseUrl: "/api",
-      override: {
-        useBigInt: true,
-      },
     },
   },
 });
