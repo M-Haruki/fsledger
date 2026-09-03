@@ -53,31 +53,31 @@ export default function TransactionNew() {
   }
 
   function createTransaction() {
-    // createTransactionMutation.mutate(
-    //   {
-    //     data: {
-    //       description: transaction.description,
-    //       occurred_at: transaction.occurredAt,
-    //       tags: transaction.tags,
-    //       flows: transaction.flows.map((flow) => {
-    //         return {
-    //           from: flow.from,
-    //           to: flow.to,
-    //           from_amount: flow.fromAmount,
-    //           to_amount: flow.toAmount,
-    //           tags: flow.tags,
-    //         };
-    //       }),
-    //     },
-    //   },
-    //   {
-    //     onSuccess: async () => {},
-    //     onError: (e) => {
-    //       console.log(e);
-    //       alert("Failed to create new transaction.");
-    //     },
-    //   },
-    // );
+    createTransactionMutation.mutate(
+      {
+        data: {
+          description: transaction.description,
+          occurred_at: transaction.occurredAt,
+          tags: transaction.tags,
+          flows: transaction.flows.map((flow) => {
+            return {
+              from: flow.from,
+              to: flow.to,
+              from_amount: String(flow.fromAmount),
+              to_amount: String(flow.toAmount),
+              tags: flow.tags,
+            };
+          }),
+        },
+      },
+      {
+        onSuccess: async () => {},
+        onError: (e) => {
+          console.log(e);
+          alert("Failed to create new transaction.");
+        },
+      },
+    );
   }
 
   return (

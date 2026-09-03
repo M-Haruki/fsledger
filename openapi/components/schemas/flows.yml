@@ -18,10 +18,10 @@ components:
           type: string
           format: uuid
         from_amount:
-          type: integer
+          type: string
           format: int64
         to_amount:
-          type: integer
+          type: string
           format: int64
         tags:
           type: array
@@ -38,7 +38,7 @@ components:
       example:
         from: 0afeb903-d823-44a7-b4ef-0017e72bad5d
         to: bde589b4-7550-45c4-a06d-dea931e24031
-        from_amount: 5000
-        to_amount: 5000
+        from_amount: "5000"
+        to_amount: "5000"
         tags:
           - 9462e790-5796-4791-af0d-399720973378

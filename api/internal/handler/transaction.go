@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/M-Haruki/fsledger/api/internal/model"
@@ -10,6 +11,18 @@ import (
 	"github.com/google/uuid"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
+
+func convertAmount(from string, to string) (int64, int64, error) {
+	fromAmount, err := strconv.ParseInt(from, 10, 64)
+	if err != nil {
+		return 0, 0, err
+	}
+	toAmount, err := strconv.ParseInt(to, 10, 64)
+	if err != nil {
+		return 0, 0, err
+	}
+	return fromAmount, toAmount, nil
+}
 
 func (h *Handler) CreateTransaction(ctx context.Context, request openapi.CreateTransactionRequestObject) (openapi.CreateTransactionResponseObject, error) {
 	transaction := model.Transaction{
@@ -22,11 +35,15 @@ func (h *Handler) CreateTransaction(ctx context.Context, request openapi.CreateT
 	}
 	transaction.Flows = make([]model.Flow, len(request.Body.Flows))
 	for i, flow := range request.Body.Flows {
+		fromAmount, toAmount, err := convertAmount(flow.FromAmount, flow.ToAmount)
+		if err != nil {
+			return openapi.CreateTransaction400JSONResponse{Message: "wrong amount format"}, nil
+		}
 		transaction.Flows[i] = model.Flow{
 			From:       uuid.UUID(flow.From),
 			To:         uuid.UUID(flow.To),
-			FromAmount: flow.FromAmount,
-			ToAmount:   flow.ToAmount,
+			FromAmount: fromAmount,
+			ToAmount:   toAmount,
 			Tags:       make([]uuid.UUID, len(flow.Tags)),
 		}
 		for j, tag := range flow.Tags {
@@ -68,8 +85,8 @@ func (h *Handler) GetTransaction(ctx context.Context, request openapi.GetTransac
 		res.Flows[i] = openapi.FlowData{
 			From:       flow.From,
 			To:         flow.To,
-			FromAmount: flow.FromAmount,
-			ToAmount:   flow.ToAmount,
+			FromAmount: strconv.FormatInt(flow.FromAmount, 10),
+			ToAmount:   strconv.FormatInt(flow.ToAmount, 10),
 			Tags:       make([]openapi_types.UUID, len(flow.Tags)),
 		}
 		for j, tag := range flow.Tags {
@@ -90,11 +107,15 @@ func (h *Handler) UpdateTransaction(ctx context.Context, request openapi.UpdateT
 	}
 	transaction.Flows = make([]model.Flow, len(request.Body.Flows))
 	for i, flow := range request.Body.Flows {
+		fromAmount, toAmount, err := convertAmount(flow.FromAmount, flow.ToAmount)
+		if err != nil {
+			return openapi.UpdateTransaction400JSONResponse{Message: "wrong amount format"}, nil
+		}
 		transaction.Flows[i] = model.Flow{
 			From:       uuid.UUID(flow.From),
 			To:         uuid.UUID(flow.To),
-			FromAmount: flow.FromAmount,
-			ToAmount:   flow.ToAmount,
+			FromAmount: fromAmount,
+			ToAmount:   toAmount,
 			Tags:       make([]uuid.UUID, len(flow.Tags)),
 		}
 		for j, tag := range flow.Tags {

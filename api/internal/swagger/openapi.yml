@@ -1018,10 +1018,10 @@ components:
           type: string
           format: uuid
         from_amount:
-          type: integer
+          type: string
           format: int64
         to_amount:
-          type: integer
+          type: string
           format: int64
         tags:
           type: array
@@ -1038,8 +1038,8 @@ components:
       example:
         from: 0afeb903-d823-44a7-b4ef-0017e72bad5d
         to: bde589b4-7550-45c4-a06d-dea931e24031
-        from_amount: 5000
-        to_amount: 5000
+        from_amount: '5000'
+        to_amount: '5000'
         tags:
           - 9462e790-5796-4791-af0d-399720973378
     TransactionData:
@@ -1074,14 +1074,14 @@ components:
         flows:
           - from: 0afeb903-d823-44a7-b4ef-0017e72bad5d
             to: bde589b4-7550-45c4-a06d-dea931e24031
-            from_amount: 5000
-            to_amount: 5000
+            from_amount: '5000'
+            to_amount: '5000'
             tags:
               - 76b7f51a-5d85-4bf0-b032-0e9853e79f9e
           - from: bde589b4-7550-45c4-a06d-dea931e24031
             to: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
-            from_amount: 25
-            to_amount: 25
+            from_amount: '25'
+            to_amount: '25'
             tags:
               - 9462e790-5796-4791-af0d-399720973378
     TransactionID:
