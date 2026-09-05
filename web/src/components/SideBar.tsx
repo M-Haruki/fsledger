@@ -1,4 +1,4 @@
-import { Layers, TableOfContents, Tag, Wrench } from "lucide-react";
+import { ArrowRightLeft, Layers, Logs, Plus, Tag, Wrench } from "lucide-react";
 import type React from "react";
 import { useState } from "react";
 import { Link, NavLink } from "react-router";
@@ -12,23 +12,48 @@ export default function SideBar({ className }: { className: string }) {
       </Link>
       <MenuLink
         url="/transaction/new"
-        className="font-semibold border-primary-light border-2"
+        className="font-semibold border-primary-light border-2 text-center"
       >
         New Transaction
       </MenuLink>
       <Menu
         label={
           <>
-            <TableOfContents className="inline align-sub" /> View
+            <Layers className="inline align-sub" size={22} /> Stock View
           </>
         }
       >
-        <></>
+        <MenuLink url="/view/stock/new">
+          <Plus className="inline align-sub" size={22} /> New
+        </MenuLink>
       </Menu>
       <Menu
         label={
           <>
-            <Wrench className="inline align-sub" /> Preference
+            <ArrowRightLeft className="inline align-sub" size={22} />
+            Transaction View
+          </>
+        }
+      >
+        <MenuLink url="/view/transaction/new">
+          <Plus className="inline align-sub" size={22} /> New
+        </MenuLink>
+      </Menu>
+      <Menu
+        label={
+          <>
+            <Logs className="inline align-sub" size={22} /> Flow View
+          </>
+        }
+      >
+        <MenuLink url="/view/flow/new">
+          <Plus className="inline align-sub" size={22} /> New
+        </MenuLink>
+      </Menu>
+      <Menu
+        label={
+          <>
+            <Wrench className="inline align-sub" size={22} /> Preference
           </>
         }
       >

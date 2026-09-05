@@ -16,7 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
-export default function TransactionNew() {
+export default function TransactionEdit() {
   const transactionId = useParams<{ id: string }>().id;
 
   const {

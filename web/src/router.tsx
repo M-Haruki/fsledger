@@ -7,6 +7,12 @@ import PreferenceStocks from "./pages/preference/Stocks.tsx";
 import PreferenceTags from "./pages/preference/Tags.tsx";
 import TransactionNew from "./pages/transaction/New.tsx";
 import TransactionEdit from "./pages/transaction/Edit.tsx";
+import { TransactionView } from "./pages/view/Transaction.tsx";
+import { FlowView } from "./pages/view/Flow.tsx";
+import { StockView } from "./pages/view/Stock.tsx";
+import { NewFlowView } from "./pages/view/NewFlow.tsx";
+import { NewTransactionView } from "./pages/view/NewTransaction.tsx";
+import { NewStockView } from "./pages/view/NewStock.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +23,12 @@ export const router = createBrowserRouter([
       { index: true, Component: Index, id: "index" },
       { path: "/transaction/new", Component: TransactionNew },
       { path: "/transaction/edit/:id", Component: TransactionEdit },
+      { path: "/view/stock/new", Component: NewStockView },
+      { path: "/view/stock/:id", Component: StockView },
+      { path: "/view/transaction/new", Component: NewTransactionView },
+      { path: "/view/transaction/:id", Component: TransactionView },
+      { path: "/view/flow/new", Component: NewFlowView },
+      { path: "/view/flow/:id", Component: FlowView },
       { path: "/preference/stocks", Component: PreferenceStocks },
       {
         path: "/preference/tags/stock",
