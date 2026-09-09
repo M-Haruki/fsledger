@@ -72,7 +72,7 @@ TagsID:
       - flow
     security: []
     parameters:
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
+      - $ref: "../components/parameters/tag.yml#/components/parameters/TagIDParam"
     responses:
       "200":
         description: OK
@@ -106,7 +106,7 @@ TagsID:
       - flow
     security: []
     parameters:
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
+      - $ref: "../components/parameters/tag.yml#/components/parameters/TagIDParam"
     requestBody:
       required: true
       content:
@@ -148,7 +148,7 @@ TagsID:
       - flow
     security: []
     parameters:
-      - $ref: "../components/parameters/tags.yml#/components/parameters/TagIDParam"
+      - $ref: "../components/parameters/tag.yml#/components/parameters/TagIDParam"
     responses:
       "204":
         description: No Content

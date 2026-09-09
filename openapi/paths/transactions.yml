@@ -11,14 +11,14 @@ Transactions:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionData"
+            $ref: "../components/schemas/transactions.yml#/components/schemas/TransactionData"
     responses:
       "201":
         description: Created
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionID"
+              $ref: "../components/schemas/transactions.yml#/components/schemas/TransactionID"
       "400":
         description: Bad Request
         content:
@@ -53,7 +53,7 @@ TransactionsID:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionData"
+              $ref: "../components/schemas/transactions.yml#/components/schemas/TransactionData"
       "400":
         description: Bad Request
         content:
@@ -86,7 +86,7 @@ TransactionsID:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas/transaction.yml#/components/schemas/TransactionData"
+            $ref: "../components/schemas/transactions.yml#/components/schemas/TransactionData"
     responses:
       "204":
         description: No Content

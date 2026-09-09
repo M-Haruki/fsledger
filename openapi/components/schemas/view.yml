@@ -1,0 +1,52 @@
+components:
+  schemas:
+    StocksView:
+      type: array
+      items:
+        type: object
+        allOf:
+          - type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              total:
+                type: integer
+                format: int64
+            required:
+              - id
+              - total
+            example:
+              id: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
+              total: 5678
+          - $ref: "./stocks.yml#/components/schemas/StockData"
+    TransactionsView:
+      type: array
+      items:
+        type: object
+        allOf:
+          - type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+            required:
+              - id
+            example:
+              id: 6d313569-d48f-45a4-9cfb-978c880ed460
+          - $ref: "./transactions.yml#/components/schemas/TransactionData"
+    FlowsView:
+      type: array
+      items:
+        type: object
+        allOf:
+          - type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+            required:
+              - id
+            example:
+              id: 0afeb903-d823-44a7-b4ef-0017e72bad5d
+          - $ref: "./flows.yml#/components/schemas/FlowData"

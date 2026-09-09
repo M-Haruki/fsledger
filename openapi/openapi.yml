@@ -43,3 +43,9 @@ paths:
     $ref: "paths/flow-tags.yml#/Tags_"
   /flows/tags/{id}:
     $ref: "paths/flow-tags.yml#/TagsID"
+  /view/stocks:
+    $ref: "paths/view.yml#/StocksView" # postで検索クエリ登録 # 検索時はクエリを送る? idを送る? クエリを送ったほうがプレビューとAPIは統一できそう
+  /view/transactions:
+    $ref: "paths/view.yml#/TransactionsView"
+  /view/flows:
+    $ref: "paths/view.yml#/FlowsView"

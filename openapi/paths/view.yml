@@ -1,0 +1,99 @@
+StocksView:
+  get:
+    operationId: stockView
+    summary: Search stocks
+    description: Search stocks and get finded data.
+    tags:
+      - view
+    security: []
+    # requestBody:
+    #   required: true
+    #   content:
+    #     application/json:
+    #       schema:
+    #         $ref: ""
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/view.yml#/components/schemas/StocksView"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+TransactionsView:
+  get:
+    operationId: transactionView
+    summary: Search stocks
+    description: Search stocks and get finded data.
+    tags:
+      - view
+    security: []
+    # requestBody:
+    #   required: true
+    #   content:
+    #     application/json:
+    #       schema:
+    #         $ref: ""
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/view.yml#/components/schemas/TransactionsView"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+FlowsView:
+  get:
+    operationId: flowView
+    summary: Search stocks
+    description: Search stocks and get finded data.
+    tags:
+      - view
+    security: []
+    # requestBody:
+    #   required: true
+    #   content:
+    #     application/json:
+    #       schema:
+    #         $ref: ""
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/view.yml#/components/schemas/FlowsView"
+      "400":
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
+      "500":
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas/common.yml#/components/schemas/Error"
