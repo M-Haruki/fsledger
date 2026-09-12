@@ -21,6 +21,7 @@ func newEcho(cfg Config, handler openapi.ServerInterface) (*echo.Echo, error) {
 			validateSwagger,
 			&echomiddleware.Options{
 				DoNotValidateServers: true, // disable host header validation based on OpenAPI servers
+				Prefix:               "/api",
 			},
 		),
 	)
