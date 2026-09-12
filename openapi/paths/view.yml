@@ -6,12 +6,12 @@ StocksView:
     tags:
       - view
     security: []
-    # requestBody:
-    #   required: true
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: ""
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/view.yml#/components/schemas/ViewDSLForStockView"
     responses:
       "200":
         description: OK
@@ -39,12 +39,12 @@ TransactionsView:
     tags:
       - view
     security: []
-    # requestBody:
-    #   required: true
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: ""
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/view.yml#/components/schemas/ViewDSLForTransactionView"
     responses:
       "200":
         description: OK
@@ -72,12 +72,12 @@ FlowsView:
     tags:
       - view
     security: []
-    # requestBody:
-    #   required: true
-    #   content:
-    #     application/json:
-    #       schema:
-    #         $ref: ""
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "../components/schemas/view.yml#/components/schemas/ViewDSLForFlowView"
     responses:
       "200":
         description: OK
