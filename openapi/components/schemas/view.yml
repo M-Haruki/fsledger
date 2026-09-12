@@ -60,6 +60,18 @@ components:
           type: string
         rule:
           $ref: "#/components/schemas/ViewDSLRuleForStockView"
+      example:
+        base-date: 2026-01-01
+        rule:
+          AND:
+            - target: stocks
+              tags:
+                - aaaa0000-0000-0000-0000-000000000001
+                - bbbb0000-0000-0000-0000-000000000002
+            - NOT:
+                target: stocks
+                id:
+                  - cccc0000-0000-0000-0000-000000000003
 
     ViewDSLRuleForStockView:
       oneOf:
@@ -104,6 +116,19 @@ components:
           type: string
         rule:
           $ref: "#/components/schemas/ViewDSLRuleForTransactionView"
+      example:
+        base-date: 2026-01-01
+        rule:
+          AND:
+            - target: transactions
+              tags:
+                - ffff0000-0000-0000-0000-000000000006
+                - aaaa1111-0000-0000-0000-000000000007
+            - target: transactions
+              mode: absolute
+              relation: after-or-equal
+              unit: year-month
+              date: 2026-01
 
     ViewDSLRuleForTransactionView:
       oneOf:
@@ -148,6 +173,22 @@ components:
           type: string
         rule:
           $ref: "#/components/schemas/ViewDSLRuleForFlowView"
+      example:
+        base-date: 2026-01-01
+        rule:
+          AND:
+            - target: stocks-from
+              tags:
+                - dddd0000-0000-0000-0000-000000000004
+            - target: stocks-to
+              tags:
+                - eeee0000-0000-0000-0000-000000000005
+            - target: transactions
+              tags:
+                - ffff0000-0000-0000-0000-000000000006
+            - target: flows
+              amount-min: 1000
+              amount-max: 5000
 
     ViewDSLRuleForFlowView:
       oneOf:

@@ -238,21 +238,6 @@ If both are set, they are treated as an AND operation.
 
 ### transaction view
 
-#### within the last 3 months
-
-```json
-{
-  "base-date": "2026-01-01",
-  "rule": {
-    "target": "transactions",
-    "mode": "relative",
-    "relation": "after-or-equal",
-    "unit": "month",
-    "num": -3
-  }
-}
-```
-
 #### Multiple tags OR + Date lower bound
 
 ```json
@@ -269,16 +254,31 @@ If both are set, they are treated as an AND operation.
         "mode": "absolute",
         "relation": "after-or-equal",
         "unit": "year-month",
-        "date": "2025-01"
+        "date": "2026-01"
       }
     ]
   }
 }
 ```
 
+#### within the last 3 months
+
+```json
+{
+  "base-date": "2026-01-01",
+  "rule": {
+    "target": "transactions",
+    "mode": "relative",
+    "relation": "after-or-equal",
+    "unit": "month",
+    "num": -3
+  }
+}
+```
+
 ### flow view
 
-#### specific from/to tags + amount range
+#### specific from/to tags + transaction tag + amount range
 
 ```json
 {
@@ -287,6 +287,7 @@ If both are set, they are treated as an AND operation.
     "AND": [
       { "target": "stocks-from", "tags": ["dddd0000-0000-0000-0000-000000000004"] },
       { "target": "stocks-to", "tags": ["eeee0000-0000-0000-0000-000000000005"] },
+      { "target": "transactions", "tags": ["ffff0000-0000-0000-0000-000000000006"] },
       { "target": "flows", "amount-min": 1000, "amount-max": 5000 }
     ]
   }
