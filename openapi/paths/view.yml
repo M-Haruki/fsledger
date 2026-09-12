@@ -1,5 +1,5 @@
 StocksView:
-  get:
+  post:
     operationId: stockView
     summary: Search stocks
     description: Search stocks and get finded data.
@@ -32,7 +32,7 @@ StocksView:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
 TransactionsView:
-  get:
+  post:
     operationId: transactionView
     summary: Search stocks
     description: Search stocks and get finded data.
@@ -65,7 +65,7 @@ TransactionsView:
             schema:
               $ref: "../components/schemas/common.yml#/components/schemas/Error"
 FlowsView:
-  get:
+  post:
     operationId: flowView
     summary: Search stocks
     description: Search stocks and get finded data.

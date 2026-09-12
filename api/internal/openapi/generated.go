@@ -35,6 +35,16 @@ type FlowData struct {
 	ToAmount   string               `json:"to_amount"`
 }
 
+// FlowsView defines model for FlowsView.
+type FlowsView = []struct {
+	From       openapi_types.UUID   `json:"from"`
+	FromAmount string               `json:"from_amount"`
+	Id         openapi_types.UUID   `json:"id"`
+	Tags       []openapi_types.UUID `json:"tags"`
+	To         openapi_types.UUID   `json:"to"`
+	ToAmount   string               `json:"to_amount"`
+}
+
 // StockData defines model for StockData.
 type StockData struct {
 	Currency         string               `json:"currency"`
@@ -57,6 +67,18 @@ type Stocks = []struct {
 	HasAmount        bool               `json:"hasAmount"`
 	Id               openapi_types.UUID `json:"id"`
 	Name             string             `json:"name"`
+}
+
+// StocksView defines model for StocksView.
+type StocksView = []struct {
+	Currency         string               `json:"currency"`
+	CurrencyExponent int32                `json:"currencyExponent"`
+	Description      string               `json:"description"`
+	HasAmount        bool                 `json:"hasAmount"`
+	Id               openapi_types.UUID   `json:"id"`
+	Name             string               `json:"name"`
+	Tags             []openapi_types.UUID `json:"tags"`
+	Total            int64                `json:"total"`
 }
 
 // TagData defines model for TagData.
@@ -86,6 +108,205 @@ type TransactionData struct {
 // TransactionID defines model for TransactionID.
 type TransactionID struct {
 	Id openapi_types.UUID `json:"id"`
+}
+
+// TransactionsView defines model for TransactionsView.
+type TransactionsView = []struct {
+	Description string               `json:"description"`
+	Flows       []FlowData           `json:"flows"`
+	Id          openapi_types.UUID   `json:"id"`
+	OccurredAt  openapi_types.Date   `json:"occurred_at"`
+	Tags        []openapi_types.UUID `json:"tags"`
+}
+
+// ViewDSLFlowCondition defines model for ViewDSLFlowCondition.
+type ViewDSLFlowCondition struct {
+	union json.RawMessage
+}
+
+// ViewDSLFlowCondition0 defines model for ViewDSLFlowCondition.0.
+type ViewDSLFlowCondition0 struct {
+	Tags   []openapi_types.UUID `json:"tags"`
+	Target interface{}          `json:"target"`
+}
+
+// ViewDSLFlowCondition1 defines model for ViewDSLFlowCondition.1.
+type ViewDSLFlowCondition1 struct {
+	AmountMax *int64      `json:"amount-max,omitempty"`
+	AmountMin *int64      `json:"amount-min,omitempty"`
+	Target    interface{} `json:"target"`
+	union     json.RawMessage
+}
+
+// ViewDSLFlowCondition10 defines model for ViewDSLFlowCondition.1.0.
+type ViewDSLFlowCondition10 = interface{}
+
+// ViewDSLFlowCondition11 defines model for ViewDSLFlowCondition.1.1.
+type ViewDSLFlowCondition11 = interface{}
+
+// ViewDSLForFlowView defines model for ViewDSLForFlowView.
+type ViewDSLForFlowView struct {
+	BaseDate *string                 `json:"base-date,omitempty"`
+	Rule     *ViewDSLRuleForFlowView `json:"rule,omitempty"`
+}
+
+// ViewDSLForStockView defines model for ViewDSLForStockView.
+type ViewDSLForStockView struct {
+	BaseDate *string                  `json:"base-date,omitempty"`
+	Rule     *ViewDSLRuleForStockView `json:"rule,omitempty"`
+}
+
+// ViewDSLForTransactionView defines model for ViewDSLForTransactionView.
+type ViewDSLForTransactionView struct {
+	BaseDate *string                        `json:"base-date,omitempty"`
+	Rule     *ViewDSLRuleForTransactionView `json:"rule,omitempty"`
+}
+
+// ViewDSLLogicForFlowView defines model for ViewDSLLogicForFlowView.
+type ViewDSLLogicForFlowView struct {
+	union json.RawMessage
+}
+
+// ViewDSLLogicForFlowView0 defines model for ViewDSLLogicForFlowView.0.
+type ViewDSLLogicForFlowView0 struct {
+	AND []ViewDSLRuleForFlowView `json:"AND"`
+}
+
+// ViewDSLLogicForFlowView1 defines model for ViewDSLLogicForFlowView.1.
+type ViewDSLLogicForFlowView1 struct {
+	OR []ViewDSLRuleForFlowView `json:"OR"`
+}
+
+// ViewDSLLogicForFlowView2 defines model for ViewDSLLogicForFlowView.2.
+type ViewDSLLogicForFlowView2 struct {
+	NOT ViewDSLRuleForFlowView `json:"NOT"`
+}
+
+// ViewDSLLogicForStockView defines model for ViewDSLLogicForStockView.
+type ViewDSLLogicForStockView struct {
+	union json.RawMessage
+}
+
+// ViewDSLLogicForStockView0 defines model for ViewDSLLogicForStockView.0.
+type ViewDSLLogicForStockView0 struct {
+	AND []ViewDSLRuleForStockView `json:"AND"`
+}
+
+// ViewDSLLogicForStockView1 defines model for ViewDSLLogicForStockView.1.
+type ViewDSLLogicForStockView1 struct {
+	OR []ViewDSLRuleForStockView `json:"OR"`
+}
+
+// ViewDSLLogicForStockView2 defines model for ViewDSLLogicForStockView.2.
+type ViewDSLLogicForStockView2 struct {
+	NOT ViewDSLRuleForStockView `json:"NOT"`
+}
+
+// ViewDSLLogicForTransactionView defines model for ViewDSLLogicForTransactionView.
+type ViewDSLLogicForTransactionView struct {
+	union json.RawMessage
+}
+
+// ViewDSLLogicForTransactionView0 defines model for ViewDSLLogicForTransactionView.0.
+type ViewDSLLogicForTransactionView0 struct {
+	AND []ViewDSLRuleForTransactionView `json:"AND"`
+}
+
+// ViewDSLLogicForTransactionView1 defines model for ViewDSLLogicForTransactionView.1.
+type ViewDSLLogicForTransactionView1 struct {
+	OR []ViewDSLRuleForTransactionView `json:"OR"`
+}
+
+// ViewDSLLogicForTransactionView2 defines model for ViewDSLLogicForTransactionView.2.
+type ViewDSLLogicForTransactionView2 struct {
+	NOT ViewDSLRuleForTransactionView `json:"NOT"`
+}
+
+// ViewDSLRuleForFlowView defines model for ViewDSLRuleForFlowView.
+type ViewDSLRuleForFlowView struct {
+	union json.RawMessage
+}
+
+// ViewDSLRuleForStockView defines model for ViewDSLRuleForStockView.
+type ViewDSLRuleForStockView struct {
+	union json.RawMessage
+}
+
+// ViewDSLRuleForTransactionView defines model for ViewDSLRuleForTransactionView.
+type ViewDSLRuleForTransactionView struct {
+	union json.RawMessage
+}
+
+// ViewDSLStockCondition defines model for ViewDSLStockCondition.
+type ViewDSLStockCondition struct {
+	union json.RawMessage
+}
+
+// ViewDSLStockCondition0 defines model for ViewDSLStockCondition.0.
+type ViewDSLStockCondition0 struct {
+	Id     []openapi_types.UUID `json:"id"`
+	Target interface{}          `json:"target"`
+}
+
+// ViewDSLStockCondition1 defines model for ViewDSLStockCondition.1.
+type ViewDSLStockCondition1 struct {
+	Tags   []openapi_types.UUID `json:"tags"`
+	Target interface{}          `json:"target"`
+}
+
+// ViewDSLStockConditionForFlowView defines model for ViewDSLStockConditionForFlowView.
+type ViewDSLStockConditionForFlowView struct {
+	union json.RawMessage
+}
+
+// ViewDSLStockConditionForFlowView0 defines model for ViewDSLStockConditionForFlowView.0.
+type ViewDSLStockConditionForFlowView0 struct {
+	Id     []openapi_types.UUID `json:"id"`
+	Target interface{}          `json:"target"`
+}
+
+// ViewDSLStockConditionForFlowView1 defines model for ViewDSLStockConditionForFlowView.1.
+type ViewDSLStockConditionForFlowView1 struct {
+	Tags   []openapi_types.UUID `json:"tags"`
+	Target interface{}          `json:"target"`
+}
+
+// ViewDSLTransactionCondition defines model for ViewDSLTransactionCondition.
+type ViewDSLTransactionCondition struct {
+	union json.RawMessage
+}
+
+// ViewDSLTransactionCondition0 defines model for ViewDSLTransactionCondition.0.
+type ViewDSLTransactionCondition0 struct {
+	Tags   []openapi_types.UUID `json:"tags"`
+	Target interface{}          `json:"target"`
+}
+
+// ViewDSLTransactionCondition1 defines model for ViewDSLTransactionCondition.1.
+type ViewDSLTransactionCondition1 struct {
+	Mode     interface{} `json:"mode"`
+	Num      int32       `json:"num"`
+	Relation interface{} `json:"relation"`
+	Target   interface{} `json:"target"`
+	Unit     interface{} `json:"unit"`
+}
+
+// ViewDSLTransactionCondition2 defines model for ViewDSLTransactionCondition.2.
+type ViewDSLTransactionCondition2 struct {
+	Date     string      `json:"date"`
+	Mode     interface{} `json:"mode"`
+	Relation interface{} `json:"relation"`
+	Target   interface{} `json:"target"`
+	Unit     interface{} `json:"unit"`
+}
+
+// ViewDSLTransactionCondition3 defines model for ViewDSLTransactionCondition.3.
+type ViewDSLTransactionCondition3 struct {
+	Mode     interface{} `json:"mode"`
+	Num      int32       `json:"num"`
+	Relation interface{} `json:"relation"`
+	Target   interface{} `json:"target"`
+	Unit     interface{} `json:"unit"`
 }
 
 // StockIDParam defines model for StockIDParam.
@@ -126,6 +347,940 @@ type UpdateTransactionTagJSONRequestBody = TagData
 
 // UpdateTransactionJSONRequestBody defines body for UpdateTransaction for application/json ContentType.
 type UpdateTransactionJSONRequestBody = TransactionData
+
+// FlowViewJSONRequestBody defines body for FlowView for application/json ContentType.
+type FlowViewJSONRequestBody = ViewDSLForFlowView
+
+// StockViewJSONRequestBody defines body for StockView for application/json ContentType.
+type StockViewJSONRequestBody = ViewDSLForStockView
+
+// TransactionViewJSONRequestBody defines body for TransactionView for application/json ContentType.
+type TransactionViewJSONRequestBody = ViewDSLForTransactionView
+
+// AsViewDSLFlowCondition0 returns the union data inside the ViewDSLFlowCondition as a ViewDSLFlowCondition0
+func (t ViewDSLFlowCondition) AsViewDSLFlowCondition0() (ViewDSLFlowCondition0, error) {
+	var body ViewDSLFlowCondition0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLFlowCondition0 overwrites any union data inside the ViewDSLFlowCondition as the provided ViewDSLFlowCondition0
+func (t *ViewDSLFlowCondition) FromViewDSLFlowCondition0(v ViewDSLFlowCondition0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLFlowCondition0 performs a merge with any union data inside the ViewDSLFlowCondition, using the provided ViewDSLFlowCondition0
+func (t *ViewDSLFlowCondition) MergeViewDSLFlowCondition0(v ViewDSLFlowCondition0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLFlowCondition1 returns the union data inside the ViewDSLFlowCondition as a ViewDSLFlowCondition1
+func (t ViewDSLFlowCondition) AsViewDSLFlowCondition1() (ViewDSLFlowCondition1, error) {
+	var body ViewDSLFlowCondition1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLFlowCondition1 overwrites any union data inside the ViewDSLFlowCondition as the provided ViewDSLFlowCondition1
+func (t *ViewDSLFlowCondition) FromViewDSLFlowCondition1(v ViewDSLFlowCondition1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLFlowCondition1 performs a merge with any union data inside the ViewDSLFlowCondition, using the provided ViewDSLFlowCondition1
+func (t *ViewDSLFlowCondition) MergeViewDSLFlowCondition1(v ViewDSLFlowCondition1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLFlowCondition) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLFlowCondition) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsViewDSLFlowCondition10 returns the union data inside the ViewDSLFlowCondition1 as a ViewDSLFlowCondition10
+func (t ViewDSLFlowCondition1) AsViewDSLFlowCondition10() (ViewDSLFlowCondition10, error) {
+	var body ViewDSLFlowCondition10
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLFlowCondition10 overwrites any union data inside the ViewDSLFlowCondition1 as the provided ViewDSLFlowCondition10
+func (t *ViewDSLFlowCondition1) FromViewDSLFlowCondition10(v ViewDSLFlowCondition10) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLFlowCondition10 performs a merge with any union data inside the ViewDSLFlowCondition1, using the provided ViewDSLFlowCondition10
+func (t *ViewDSLFlowCondition1) MergeViewDSLFlowCondition10(v ViewDSLFlowCondition10) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLFlowCondition11 returns the union data inside the ViewDSLFlowCondition1 as a ViewDSLFlowCondition11
+func (t ViewDSLFlowCondition1) AsViewDSLFlowCondition11() (ViewDSLFlowCondition11, error) {
+	var body ViewDSLFlowCondition11
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLFlowCondition11 overwrites any union data inside the ViewDSLFlowCondition1 as the provided ViewDSLFlowCondition11
+func (t *ViewDSLFlowCondition1) FromViewDSLFlowCondition11(v ViewDSLFlowCondition11) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLFlowCondition11 performs a merge with any union data inside the ViewDSLFlowCondition1, using the provided ViewDSLFlowCondition11
+func (t *ViewDSLFlowCondition1) MergeViewDSLFlowCondition11(v ViewDSLFlowCondition11) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLFlowCondition1) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	object := make(map[string]json.RawMessage)
+	if t.union != nil {
+		err = json.Unmarshal(b, &object)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if t.AmountMax != nil {
+		object["amount-max"], err = json.Marshal(t.AmountMax)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'amount-max': %w", err)
+		}
+	}
+
+	if t.AmountMin != nil {
+		object["amount-min"], err = json.Marshal(t.AmountMin)
+		if err != nil {
+			return nil, fmt.Errorf("error marshaling 'amount-min': %w", err)
+		}
+	}
+
+	object["target"], err = json.Marshal(t.Target)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling 'target': %w", err)
+	}
+
+	b, err = json.Marshal(object)
+	return b, err
+}
+
+func (t *ViewDSLFlowCondition1) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	if err != nil {
+		return err
+	}
+	object := make(map[string]json.RawMessage)
+	err = json.Unmarshal(b, &object)
+	if err != nil {
+		return err
+	}
+
+	if raw, found := object["amount-max"]; found {
+		err = json.Unmarshal(raw, &t.AmountMax)
+		if err != nil {
+			return fmt.Errorf("error reading 'amount-max': %w", err)
+		}
+	}
+
+	if raw, found := object["amount-min"]; found {
+		err = json.Unmarshal(raw, &t.AmountMin)
+		if err != nil {
+			return fmt.Errorf("error reading 'amount-min': %w", err)
+		}
+	}
+
+	if raw, found := object["target"]; found {
+		err = json.Unmarshal(raw, &t.Target)
+		if err != nil {
+			return fmt.Errorf("error reading 'target': %w", err)
+		}
+	}
+
+	return err
+}
+
+// AsViewDSLLogicForFlowView0 returns the union data inside the ViewDSLLogicForFlowView as a ViewDSLLogicForFlowView0
+func (t ViewDSLLogicForFlowView) AsViewDSLLogicForFlowView0() (ViewDSLLogicForFlowView0, error) {
+	var body ViewDSLLogicForFlowView0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForFlowView0 overwrites any union data inside the ViewDSLLogicForFlowView as the provided ViewDSLLogicForFlowView0
+func (t *ViewDSLLogicForFlowView) FromViewDSLLogicForFlowView0(v ViewDSLLogicForFlowView0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForFlowView0 performs a merge with any union data inside the ViewDSLLogicForFlowView, using the provided ViewDSLLogicForFlowView0
+func (t *ViewDSLLogicForFlowView) MergeViewDSLLogicForFlowView0(v ViewDSLLogicForFlowView0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLLogicForFlowView1 returns the union data inside the ViewDSLLogicForFlowView as a ViewDSLLogicForFlowView1
+func (t ViewDSLLogicForFlowView) AsViewDSLLogicForFlowView1() (ViewDSLLogicForFlowView1, error) {
+	var body ViewDSLLogicForFlowView1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForFlowView1 overwrites any union data inside the ViewDSLLogicForFlowView as the provided ViewDSLLogicForFlowView1
+func (t *ViewDSLLogicForFlowView) FromViewDSLLogicForFlowView1(v ViewDSLLogicForFlowView1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForFlowView1 performs a merge with any union data inside the ViewDSLLogicForFlowView, using the provided ViewDSLLogicForFlowView1
+func (t *ViewDSLLogicForFlowView) MergeViewDSLLogicForFlowView1(v ViewDSLLogicForFlowView1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLLogicForFlowView2 returns the union data inside the ViewDSLLogicForFlowView as a ViewDSLLogicForFlowView2
+func (t ViewDSLLogicForFlowView) AsViewDSLLogicForFlowView2() (ViewDSLLogicForFlowView2, error) {
+	var body ViewDSLLogicForFlowView2
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForFlowView2 overwrites any union data inside the ViewDSLLogicForFlowView as the provided ViewDSLLogicForFlowView2
+func (t *ViewDSLLogicForFlowView) FromViewDSLLogicForFlowView2(v ViewDSLLogicForFlowView2) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForFlowView2 performs a merge with any union data inside the ViewDSLLogicForFlowView, using the provided ViewDSLLogicForFlowView2
+func (t *ViewDSLLogicForFlowView) MergeViewDSLLogicForFlowView2(v ViewDSLLogicForFlowView2) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLLogicForFlowView) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLLogicForFlowView) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsViewDSLLogicForStockView0 returns the union data inside the ViewDSLLogicForStockView as a ViewDSLLogicForStockView0
+func (t ViewDSLLogicForStockView) AsViewDSLLogicForStockView0() (ViewDSLLogicForStockView0, error) {
+	var body ViewDSLLogicForStockView0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForStockView0 overwrites any union data inside the ViewDSLLogicForStockView as the provided ViewDSLLogicForStockView0
+func (t *ViewDSLLogicForStockView) FromViewDSLLogicForStockView0(v ViewDSLLogicForStockView0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForStockView0 performs a merge with any union data inside the ViewDSLLogicForStockView, using the provided ViewDSLLogicForStockView0
+func (t *ViewDSLLogicForStockView) MergeViewDSLLogicForStockView0(v ViewDSLLogicForStockView0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLLogicForStockView1 returns the union data inside the ViewDSLLogicForStockView as a ViewDSLLogicForStockView1
+func (t ViewDSLLogicForStockView) AsViewDSLLogicForStockView1() (ViewDSLLogicForStockView1, error) {
+	var body ViewDSLLogicForStockView1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForStockView1 overwrites any union data inside the ViewDSLLogicForStockView as the provided ViewDSLLogicForStockView1
+func (t *ViewDSLLogicForStockView) FromViewDSLLogicForStockView1(v ViewDSLLogicForStockView1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForStockView1 performs a merge with any union data inside the ViewDSLLogicForStockView, using the provided ViewDSLLogicForStockView1
+func (t *ViewDSLLogicForStockView) MergeViewDSLLogicForStockView1(v ViewDSLLogicForStockView1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLLogicForStockView2 returns the union data inside the ViewDSLLogicForStockView as a ViewDSLLogicForStockView2
+func (t ViewDSLLogicForStockView) AsViewDSLLogicForStockView2() (ViewDSLLogicForStockView2, error) {
+	var body ViewDSLLogicForStockView2
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForStockView2 overwrites any union data inside the ViewDSLLogicForStockView as the provided ViewDSLLogicForStockView2
+func (t *ViewDSLLogicForStockView) FromViewDSLLogicForStockView2(v ViewDSLLogicForStockView2) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForStockView2 performs a merge with any union data inside the ViewDSLLogicForStockView, using the provided ViewDSLLogicForStockView2
+func (t *ViewDSLLogicForStockView) MergeViewDSLLogicForStockView2(v ViewDSLLogicForStockView2) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLLogicForStockView) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLLogicForStockView) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsViewDSLLogicForTransactionView0 returns the union data inside the ViewDSLLogicForTransactionView as a ViewDSLLogicForTransactionView0
+func (t ViewDSLLogicForTransactionView) AsViewDSLLogicForTransactionView0() (ViewDSLLogicForTransactionView0, error) {
+	var body ViewDSLLogicForTransactionView0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForTransactionView0 overwrites any union data inside the ViewDSLLogicForTransactionView as the provided ViewDSLLogicForTransactionView0
+func (t *ViewDSLLogicForTransactionView) FromViewDSLLogicForTransactionView0(v ViewDSLLogicForTransactionView0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForTransactionView0 performs a merge with any union data inside the ViewDSLLogicForTransactionView, using the provided ViewDSLLogicForTransactionView0
+func (t *ViewDSLLogicForTransactionView) MergeViewDSLLogicForTransactionView0(v ViewDSLLogicForTransactionView0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLLogicForTransactionView1 returns the union data inside the ViewDSLLogicForTransactionView as a ViewDSLLogicForTransactionView1
+func (t ViewDSLLogicForTransactionView) AsViewDSLLogicForTransactionView1() (ViewDSLLogicForTransactionView1, error) {
+	var body ViewDSLLogicForTransactionView1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForTransactionView1 overwrites any union data inside the ViewDSLLogicForTransactionView as the provided ViewDSLLogicForTransactionView1
+func (t *ViewDSLLogicForTransactionView) FromViewDSLLogicForTransactionView1(v ViewDSLLogicForTransactionView1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForTransactionView1 performs a merge with any union data inside the ViewDSLLogicForTransactionView, using the provided ViewDSLLogicForTransactionView1
+func (t *ViewDSLLogicForTransactionView) MergeViewDSLLogicForTransactionView1(v ViewDSLLogicForTransactionView1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLLogicForTransactionView2 returns the union data inside the ViewDSLLogicForTransactionView as a ViewDSLLogicForTransactionView2
+func (t ViewDSLLogicForTransactionView) AsViewDSLLogicForTransactionView2() (ViewDSLLogicForTransactionView2, error) {
+	var body ViewDSLLogicForTransactionView2
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForTransactionView2 overwrites any union data inside the ViewDSLLogicForTransactionView as the provided ViewDSLLogicForTransactionView2
+func (t *ViewDSLLogicForTransactionView) FromViewDSLLogicForTransactionView2(v ViewDSLLogicForTransactionView2) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForTransactionView2 performs a merge with any union data inside the ViewDSLLogicForTransactionView, using the provided ViewDSLLogicForTransactionView2
+func (t *ViewDSLLogicForTransactionView) MergeViewDSLLogicForTransactionView2(v ViewDSLLogicForTransactionView2) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLLogicForTransactionView) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLLogicForTransactionView) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsViewDSLLogicForFlowView returns the union data inside the ViewDSLRuleForFlowView as a ViewDSLLogicForFlowView
+func (t ViewDSLRuleForFlowView) AsViewDSLLogicForFlowView() (ViewDSLLogicForFlowView, error) {
+	var body ViewDSLLogicForFlowView
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForFlowView overwrites any union data inside the ViewDSLRuleForFlowView as the provided ViewDSLLogicForFlowView
+func (t *ViewDSLRuleForFlowView) FromViewDSLLogicForFlowView(v ViewDSLLogicForFlowView) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForFlowView performs a merge with any union data inside the ViewDSLRuleForFlowView, using the provided ViewDSLLogicForFlowView
+func (t *ViewDSLRuleForFlowView) MergeViewDSLLogicForFlowView(v ViewDSLLogicForFlowView) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLStockConditionForFlowView returns the union data inside the ViewDSLRuleForFlowView as a ViewDSLStockConditionForFlowView
+func (t ViewDSLRuleForFlowView) AsViewDSLStockConditionForFlowView() (ViewDSLStockConditionForFlowView, error) {
+	var body ViewDSLStockConditionForFlowView
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLStockConditionForFlowView overwrites any union data inside the ViewDSLRuleForFlowView as the provided ViewDSLStockConditionForFlowView
+func (t *ViewDSLRuleForFlowView) FromViewDSLStockConditionForFlowView(v ViewDSLStockConditionForFlowView) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLStockConditionForFlowView performs a merge with any union data inside the ViewDSLRuleForFlowView, using the provided ViewDSLStockConditionForFlowView
+func (t *ViewDSLRuleForFlowView) MergeViewDSLStockConditionForFlowView(v ViewDSLStockConditionForFlowView) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLTransactionCondition returns the union data inside the ViewDSLRuleForFlowView as a ViewDSLTransactionCondition
+func (t ViewDSLRuleForFlowView) AsViewDSLTransactionCondition() (ViewDSLTransactionCondition, error) {
+	var body ViewDSLTransactionCondition
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLTransactionCondition overwrites any union data inside the ViewDSLRuleForFlowView as the provided ViewDSLTransactionCondition
+func (t *ViewDSLRuleForFlowView) FromViewDSLTransactionCondition(v ViewDSLTransactionCondition) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLTransactionCondition performs a merge with any union data inside the ViewDSLRuleForFlowView, using the provided ViewDSLTransactionCondition
+func (t *ViewDSLRuleForFlowView) MergeViewDSLTransactionCondition(v ViewDSLTransactionCondition) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLFlowCondition returns the union data inside the ViewDSLRuleForFlowView as a ViewDSLFlowCondition
+func (t ViewDSLRuleForFlowView) AsViewDSLFlowCondition() (ViewDSLFlowCondition, error) {
+	var body ViewDSLFlowCondition
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLFlowCondition overwrites any union data inside the ViewDSLRuleForFlowView as the provided ViewDSLFlowCondition
+func (t *ViewDSLRuleForFlowView) FromViewDSLFlowCondition(v ViewDSLFlowCondition) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLFlowCondition performs a merge with any union data inside the ViewDSLRuleForFlowView, using the provided ViewDSLFlowCondition
+func (t *ViewDSLRuleForFlowView) MergeViewDSLFlowCondition(v ViewDSLFlowCondition) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLRuleForFlowView) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLRuleForFlowView) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsViewDSLLogicForStockView returns the union data inside the ViewDSLRuleForStockView as a ViewDSLLogicForStockView
+func (t ViewDSLRuleForStockView) AsViewDSLLogicForStockView() (ViewDSLLogicForStockView, error) {
+	var body ViewDSLLogicForStockView
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForStockView overwrites any union data inside the ViewDSLRuleForStockView as the provided ViewDSLLogicForStockView
+func (t *ViewDSLRuleForStockView) FromViewDSLLogicForStockView(v ViewDSLLogicForStockView) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForStockView performs a merge with any union data inside the ViewDSLRuleForStockView, using the provided ViewDSLLogicForStockView
+func (t *ViewDSLRuleForStockView) MergeViewDSLLogicForStockView(v ViewDSLLogicForStockView) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLStockCondition returns the union data inside the ViewDSLRuleForStockView as a ViewDSLStockCondition
+func (t ViewDSLRuleForStockView) AsViewDSLStockCondition() (ViewDSLStockCondition, error) {
+	var body ViewDSLStockCondition
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLStockCondition overwrites any union data inside the ViewDSLRuleForStockView as the provided ViewDSLStockCondition
+func (t *ViewDSLRuleForStockView) FromViewDSLStockCondition(v ViewDSLStockCondition) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLStockCondition performs a merge with any union data inside the ViewDSLRuleForStockView, using the provided ViewDSLStockCondition
+func (t *ViewDSLRuleForStockView) MergeViewDSLStockCondition(v ViewDSLStockCondition) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLRuleForStockView) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLRuleForStockView) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsViewDSLLogicForTransactionView returns the union data inside the ViewDSLRuleForTransactionView as a ViewDSLLogicForTransactionView
+func (t ViewDSLRuleForTransactionView) AsViewDSLLogicForTransactionView() (ViewDSLLogicForTransactionView, error) {
+	var body ViewDSLLogicForTransactionView
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLLogicForTransactionView overwrites any union data inside the ViewDSLRuleForTransactionView as the provided ViewDSLLogicForTransactionView
+func (t *ViewDSLRuleForTransactionView) FromViewDSLLogicForTransactionView(v ViewDSLLogicForTransactionView) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLLogicForTransactionView performs a merge with any union data inside the ViewDSLRuleForTransactionView, using the provided ViewDSLLogicForTransactionView
+func (t *ViewDSLRuleForTransactionView) MergeViewDSLLogicForTransactionView(v ViewDSLLogicForTransactionView) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLTransactionCondition returns the union data inside the ViewDSLRuleForTransactionView as a ViewDSLTransactionCondition
+func (t ViewDSLRuleForTransactionView) AsViewDSLTransactionCondition() (ViewDSLTransactionCondition, error) {
+	var body ViewDSLTransactionCondition
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLTransactionCondition overwrites any union data inside the ViewDSLRuleForTransactionView as the provided ViewDSLTransactionCondition
+func (t *ViewDSLRuleForTransactionView) FromViewDSLTransactionCondition(v ViewDSLTransactionCondition) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLTransactionCondition performs a merge with any union data inside the ViewDSLRuleForTransactionView, using the provided ViewDSLTransactionCondition
+func (t *ViewDSLRuleForTransactionView) MergeViewDSLTransactionCondition(v ViewDSLTransactionCondition) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLRuleForTransactionView) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLRuleForTransactionView) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsViewDSLStockCondition0 returns the union data inside the ViewDSLStockCondition as a ViewDSLStockCondition0
+func (t ViewDSLStockCondition) AsViewDSLStockCondition0() (ViewDSLStockCondition0, error) {
+	var body ViewDSLStockCondition0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLStockCondition0 overwrites any union data inside the ViewDSLStockCondition as the provided ViewDSLStockCondition0
+func (t *ViewDSLStockCondition) FromViewDSLStockCondition0(v ViewDSLStockCondition0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLStockCondition0 performs a merge with any union data inside the ViewDSLStockCondition, using the provided ViewDSLStockCondition0
+func (t *ViewDSLStockCondition) MergeViewDSLStockCondition0(v ViewDSLStockCondition0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLStockCondition1 returns the union data inside the ViewDSLStockCondition as a ViewDSLStockCondition1
+func (t ViewDSLStockCondition) AsViewDSLStockCondition1() (ViewDSLStockCondition1, error) {
+	var body ViewDSLStockCondition1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLStockCondition1 overwrites any union data inside the ViewDSLStockCondition as the provided ViewDSLStockCondition1
+func (t *ViewDSLStockCondition) FromViewDSLStockCondition1(v ViewDSLStockCondition1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLStockCondition1 performs a merge with any union data inside the ViewDSLStockCondition, using the provided ViewDSLStockCondition1
+func (t *ViewDSLStockCondition) MergeViewDSLStockCondition1(v ViewDSLStockCondition1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLStockCondition) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLStockCondition) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsViewDSLStockConditionForFlowView0 returns the union data inside the ViewDSLStockConditionForFlowView as a ViewDSLStockConditionForFlowView0
+func (t ViewDSLStockConditionForFlowView) AsViewDSLStockConditionForFlowView0() (ViewDSLStockConditionForFlowView0, error) {
+	var body ViewDSLStockConditionForFlowView0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLStockConditionForFlowView0 overwrites any union data inside the ViewDSLStockConditionForFlowView as the provided ViewDSLStockConditionForFlowView0
+func (t *ViewDSLStockConditionForFlowView) FromViewDSLStockConditionForFlowView0(v ViewDSLStockConditionForFlowView0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLStockConditionForFlowView0 performs a merge with any union data inside the ViewDSLStockConditionForFlowView, using the provided ViewDSLStockConditionForFlowView0
+func (t *ViewDSLStockConditionForFlowView) MergeViewDSLStockConditionForFlowView0(v ViewDSLStockConditionForFlowView0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLStockConditionForFlowView1 returns the union data inside the ViewDSLStockConditionForFlowView as a ViewDSLStockConditionForFlowView1
+func (t ViewDSLStockConditionForFlowView) AsViewDSLStockConditionForFlowView1() (ViewDSLStockConditionForFlowView1, error) {
+	var body ViewDSLStockConditionForFlowView1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLStockConditionForFlowView1 overwrites any union data inside the ViewDSLStockConditionForFlowView as the provided ViewDSLStockConditionForFlowView1
+func (t *ViewDSLStockConditionForFlowView) FromViewDSLStockConditionForFlowView1(v ViewDSLStockConditionForFlowView1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLStockConditionForFlowView1 performs a merge with any union data inside the ViewDSLStockConditionForFlowView, using the provided ViewDSLStockConditionForFlowView1
+func (t *ViewDSLStockConditionForFlowView) MergeViewDSLStockConditionForFlowView1(v ViewDSLStockConditionForFlowView1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLStockConditionForFlowView) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLStockConditionForFlowView) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
+
+// AsViewDSLTransactionCondition0 returns the union data inside the ViewDSLTransactionCondition as a ViewDSLTransactionCondition0
+func (t ViewDSLTransactionCondition) AsViewDSLTransactionCondition0() (ViewDSLTransactionCondition0, error) {
+	var body ViewDSLTransactionCondition0
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLTransactionCondition0 overwrites any union data inside the ViewDSLTransactionCondition as the provided ViewDSLTransactionCondition0
+func (t *ViewDSLTransactionCondition) FromViewDSLTransactionCondition0(v ViewDSLTransactionCondition0) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLTransactionCondition0 performs a merge with any union data inside the ViewDSLTransactionCondition, using the provided ViewDSLTransactionCondition0
+func (t *ViewDSLTransactionCondition) MergeViewDSLTransactionCondition0(v ViewDSLTransactionCondition0) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLTransactionCondition1 returns the union data inside the ViewDSLTransactionCondition as a ViewDSLTransactionCondition1
+func (t ViewDSLTransactionCondition) AsViewDSLTransactionCondition1() (ViewDSLTransactionCondition1, error) {
+	var body ViewDSLTransactionCondition1
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLTransactionCondition1 overwrites any union data inside the ViewDSLTransactionCondition as the provided ViewDSLTransactionCondition1
+func (t *ViewDSLTransactionCondition) FromViewDSLTransactionCondition1(v ViewDSLTransactionCondition1) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLTransactionCondition1 performs a merge with any union data inside the ViewDSLTransactionCondition, using the provided ViewDSLTransactionCondition1
+func (t *ViewDSLTransactionCondition) MergeViewDSLTransactionCondition1(v ViewDSLTransactionCondition1) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLTransactionCondition2 returns the union data inside the ViewDSLTransactionCondition as a ViewDSLTransactionCondition2
+func (t ViewDSLTransactionCondition) AsViewDSLTransactionCondition2() (ViewDSLTransactionCondition2, error) {
+	var body ViewDSLTransactionCondition2
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLTransactionCondition2 overwrites any union data inside the ViewDSLTransactionCondition as the provided ViewDSLTransactionCondition2
+func (t *ViewDSLTransactionCondition) FromViewDSLTransactionCondition2(v ViewDSLTransactionCondition2) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLTransactionCondition2 performs a merge with any union data inside the ViewDSLTransactionCondition, using the provided ViewDSLTransactionCondition2
+func (t *ViewDSLTransactionCondition) MergeViewDSLTransactionCondition2(v ViewDSLTransactionCondition2) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+// AsViewDSLTransactionCondition3 returns the union data inside the ViewDSLTransactionCondition as a ViewDSLTransactionCondition3
+func (t ViewDSLTransactionCondition) AsViewDSLTransactionCondition3() (ViewDSLTransactionCondition3, error) {
+	var body ViewDSLTransactionCondition3
+	err := json.Unmarshal(t.union, &body)
+	return body, err
+}
+
+// FromViewDSLTransactionCondition3 overwrites any union data inside the ViewDSLTransactionCondition as the provided ViewDSLTransactionCondition3
+func (t *ViewDSLTransactionCondition) FromViewDSLTransactionCondition3(v ViewDSLTransactionCondition3) error {
+	b, err := json.Marshal(v)
+	t.union = b
+	return err
+}
+
+// MergeViewDSLTransactionCondition3 performs a merge with any union data inside the ViewDSLTransactionCondition, using the provided ViewDSLTransactionCondition3
+func (t *ViewDSLTransactionCondition) MergeViewDSLTransactionCondition3(v ViewDSLTransactionCondition3) error {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return err
+	}
+
+	merged, err := runtime.JSONMerge(t.union, b)
+	t.union = merged
+	return err
+}
+
+func (t ViewDSLTransactionCondition) MarshalJSON() ([]byte, error) {
+	b, err := t.union.MarshalJSON()
+	return b, err
+}
+
+func (t *ViewDSLTransactionCondition) UnmarshalJSON(b []byte) error {
+	err := t.union.UnmarshalJSON(b)
+	return err
+}
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -204,6 +1359,15 @@ type ServerInterface interface {
 	// UpdateTransaction Update
 	// (PUT /transactions/{id})
 	UpdateTransaction(ctx *echo.Context, id TransactionIDParam) error
+	// FlowView Search stocks
+	// (POST /view/flows)
+	FlowView(ctx *echo.Context) error
+	// StockView Search stocks
+	// (POST /view/stocks)
+	StockView(ctx *echo.Context) error
+	// TransactionView Search stocks
+	// (POST /view/transactions)
+	TransactionView(ctx *echo.Context) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -541,6 +1705,33 @@ func (w *ServerInterfaceWrapper) UpdateTransaction(ctx *echo.Context) error {
 	return err
 }
 
+// FlowView converts echo context to params.
+func (w *ServerInterfaceWrapper) FlowView(ctx *echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.FlowView(ctx)
+	return err
+}
+
+// StockView converts echo context to params.
+func (w *ServerInterfaceWrapper) StockView(ctx *echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.StockView(ctx)
+	return err
+}
+
+// TransactionView converts echo context to params.
+func (w *ServerInterfaceWrapper) TransactionView(ctx *echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.TransactionView(ctx)
+	return err
+}
+
 // This is a simple interface which specifies echo.Route addition functions which
 // are present on both echo.Echo and echo.Group, since we want to allow using
 // either of them for path registration
@@ -613,6 +1804,9 @@ func RegisterHandlersWithOptions(router EchoRouter, si ServerInterface, options 
 	router.DELETE(options.BaseURL+"/flows/tags/:id", wrapper.DeleteFlowTag, options.OperationMiddlewares["deleteFlowTag"]...)
 	router.GET(options.BaseURL+"/flows/tags/:id", wrapper.GetFlowTag, options.OperationMiddlewares["getFlowTag"]...)
 	router.PUT(options.BaseURL+"/flows/tags/:id", wrapper.UpdateFlowTag, options.OperationMiddlewares["updateFlowTag"]...)
+	router.POST(options.BaseURL+"/view/stocks", wrapper.StockView, options.OperationMiddlewares["stockView"]...)
+	router.POST(options.BaseURL+"/view/transactions", wrapper.TransactionView, options.OperationMiddlewares["transactionView"]...)
+	router.POST(options.BaseURL+"/view/flows", wrapper.FlowView, options.OperationMiddlewares["flowView"]...)
 
 }
 
@@ -2136,6 +3330,156 @@ func (response UpdateTransaction500JSONResponse) VisitUpdateTransactionResponse(
 	return err
 }
 
+type FlowViewRequestObject struct {
+	Body *FlowViewJSONRequestBody
+}
+
+type FlowViewResponseObject interface {
+	VisitFlowViewResponse(w http.ResponseWriter) error
+}
+
+type FlowView200JSONResponse FlowsView
+
+func (response FlowView200JSONResponse) VisitFlowViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type FlowView400JSONResponse Error
+
+func (response FlowView400JSONResponse) VisitFlowViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type FlowView500JSONResponse Error
+
+func (response FlowView500JSONResponse) VisitFlowViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StockViewRequestObject struct {
+	Body *StockViewJSONRequestBody
+}
+
+type StockViewResponseObject interface {
+	VisitStockViewResponse(w http.ResponseWriter) error
+}
+
+type StockView200JSONResponse StocksView
+
+func (response StockView200JSONResponse) VisitStockViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StockView400JSONResponse Error
+
+func (response StockView400JSONResponse) VisitStockViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type StockView500JSONResponse Error
+
+func (response StockView500JSONResponse) VisitStockViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TransactionViewRequestObject struct {
+	Body *TransactionViewJSONRequestBody
+}
+
+type TransactionViewResponseObject interface {
+	VisitTransactionViewResponse(w http.ResponseWriter) error
+}
+
+type TransactionView200JSONResponse TransactionsView
+
+func (response TransactionView200JSONResponse) VisitTransactionViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TransactionView400JSONResponse Error
+
+func (response TransactionView400JSONResponse) VisitTransactionViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(400)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
+type TransactionView500JSONResponse Error
+
+func (response TransactionView500JSONResponse) VisitTransactionViewResponse(w http.ResponseWriter) error {
+
+	var buf bytes.Buffer
+	if err := json.NewEncoder(&buf).Encode(response); err != nil {
+		return err
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(500)
+	_, err := buf.WriteTo(w)
+	return err
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// ListFlowTags List
@@ -2213,6 +3557,15 @@ type StrictServerInterface interface {
 	// UpdateTransaction Update
 	// (PUT /transactions/{id})
 	UpdateTransaction(ctx context.Context, request UpdateTransactionRequestObject) (UpdateTransactionResponseObject, error)
+	// FlowView Search stocks
+	// (POST /view/flows)
+	FlowView(ctx context.Context, request FlowViewRequestObject) (FlowViewResponseObject, error)
+	// StockView Search stocks
+	// (POST /view/stocks)
+	StockView(ctx context.Context, request StockViewRequestObject) (StockViewResponseObject, error)
+	// TransactionView Search stocks
+	// (POST /view/transactions)
+	TransactionView(ctx context.Context, request TransactionViewRequestObject) (TransactionViewResponseObject, error)
 }
 
 type StrictHandlerFunc func(ctx *echo.Context, request any) (any, error)
@@ -2992,49 +4345,178 @@ func (sh *strictHandler) UpdateTransaction(ctx *echo.Context, id TransactionIDPa
 	return nil
 }
 
+// FlowView operation middleware
+func (sh *strictHandler) FlowView(ctx *echo.Context) error {
+	var request FlowViewRequestObject
+
+	var body FlowViewJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.FlowView(ctx.Request().Context(), request.(FlowViewRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "FlowView")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(FlowViewResponseObject); ok {
+		return validResponse.VisitFlowViewResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// StockView operation middleware
+func (sh *strictHandler) StockView(ctx *echo.Context) error {
+	var request StockViewRequestObject
+
+	var body StockViewJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.StockView(ctx.Request().Context(), request.(StockViewRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "StockView")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(StockViewResponseObject); ok {
+		return validResponse.VisitStockViewResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
+// TransactionView operation middleware
+func (sh *strictHandler) TransactionView(ctx *echo.Context) error {
+	var request TransactionViewRequestObject
+
+	var body TransactionViewJSONRequestBody
+	var err error
+	if _, ok := ctx.Echo().Binder.(*echo.DefaultBinder); ok {
+		// Bind only the request body, so that path and query parameters
+		// are not also bound into the body struct.
+		err = echo.BindBody(ctx, &body)
+	} else {
+		// A custom binder is installed on the Echo instance; defer to it
+		// entirely, since echo.Binder does not expose body-only binding.
+		err = ctx.Bind(&body)
+	}
+	if err != nil {
+		return err
+	}
+	request.Body = &body
+
+	handler := func(ctx *echo.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.TransactionView(ctx.Request().Context(), request.(TransactionViewRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "TransactionView")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		return err
+	} else if validResponse, ok := response.(TransactionViewResponseObject); ok {
+		return validResponse.VisitTransactionViewResponse(ctx.Response())
+	} else if response != nil {
+		return fmt.Errorf("unexpected response type: %T", response)
+	}
+	return nil
+}
+
 // Base64 encoded, compressed with deflate, json marshaled OpenAPI spec.
 // Stored as a slice of fixed-width chunks rather than one concatenated
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"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",
-	"5v4S/Xumjax+tS9U/3JnI1a/Xn1Z/T8AAP//",
+	"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",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,

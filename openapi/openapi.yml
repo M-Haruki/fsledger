@@ -18,6 +18,8 @@ tags:
     description: transaction
   - name: flow
     description: flow
+  - name: view
+    description: view
   - name: common
     description: common
 paths:

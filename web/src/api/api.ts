@@ -33,14 +33,20 @@ import type {
 
 import type {
   Error,
+  FlowsView,
   StockData,
   StockID,
   Stocks,
+  StocksView,
   TagData,
   TagID,
   Tags,
   TransactionData,
-  TransactionID
+  TransactionID,
+  TransactionsView,
+  ViewDSLForFlowView,
+  ViewDSLForStockView,
+  ViewDSLForTransactionView
 } from './model';
 
 const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
@@ -1936,4 +1942,196 @@ export const useDeleteFlowTag = <TError = AxiosError<Error>,
         TContext
       > => {
       return useMutation(getDeleteFlowTagMutationOptions(options), queryClient);
+    }
+
+/**
+ * Search stocks and get finded data.
+ * @summary Search stocks
+ */
+export const stockView = (
+    viewDSLForStockView: ViewDSLForStockView, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<StocksView>> => {
+
+
+    return axios.default.post(
+      `/api/view/stocks`,
+      viewDSLForStockView,options
+    );
+  }
+
+
+
+
+export const getStockViewMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof stockView>>, TError,StockViewMutationVariables, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof stockView>>, TError,StockViewMutationVariables, TContext> => {
+
+const mutationKey = ['stockView'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof stockView>>, StockViewMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  stockView(data,axiosOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type StockViewMutationResult = NonNullable<Awaited<ReturnType<typeof stockView>>>
+    export type StockViewMutationBody = ViewDSLForStockView
+    export type StockViewMutationError = AxiosError<Error>
+    export type StockViewMutationVariables = {data: ViewDSLForStockView}
+
+    /**
+ * @summary Search stocks
+ */
+export const useStockView = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof stockView>>, TError,StockViewMutationVariables, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof stockView>>,
+        TError,
+        StockViewMutationVariables,
+        TContext
+      > => {
+      return useMutation(getStockViewMutationOptions(options), queryClient);
+    }
+
+/**
+ * Search stocks and get finded data.
+ * @summary Search stocks
+ */
+export const transactionView = (
+    viewDSLForTransactionView: ViewDSLForTransactionView, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<TransactionsView>> => {
+
+
+    return axios.default.post(
+      `/api/view/transactions`,
+      viewDSLForTransactionView,options
+    );
+  }
+
+
+
+
+export const getTransactionViewMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof transactionView>>, TError,TransactionViewMutationVariables, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof transactionView>>, TError,TransactionViewMutationVariables, TContext> => {
+
+const mutationKey = ['transactionView'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof transactionView>>, TransactionViewMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  transactionView(data,axiosOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type TransactionViewMutationResult = NonNullable<Awaited<ReturnType<typeof transactionView>>>
+    export type TransactionViewMutationBody = ViewDSLForTransactionView
+    export type TransactionViewMutationError = AxiosError<Error>
+    export type TransactionViewMutationVariables = {data: ViewDSLForTransactionView}
+
+    /**
+ * @summary Search stocks
+ */
+export const useTransactionView = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof transactionView>>, TError,TransactionViewMutationVariables, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof transactionView>>,
+        TError,
+        TransactionViewMutationVariables,
+        TContext
+      > => {
+      return useMutation(getTransactionViewMutationOptions(options), queryClient);
+    }
+
+/**
+ * Search stocks and get finded data.
+ * @summary Search stocks
+ */
+export const flowView = (
+    viewDSLForFlowView: ViewDSLForFlowView, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<FlowsView>> => {
+
+
+    return axios.default.post(
+      `/api/view/flows`,
+      viewDSLForFlowView,options
+    );
+  }
+
+
+
+
+export const getFlowViewMutationOptions = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof flowView>>, TError,FlowViewMutationVariables, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof flowView>>, TError,FlowViewMutationVariables, TContext> => {
+
+const mutationKey = ['flowView'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof flowView>>, FlowViewMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  flowView(data,axiosOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type FlowViewMutationResult = NonNullable<Awaited<ReturnType<typeof flowView>>>
+    export type FlowViewMutationBody = ViewDSLForFlowView
+    export type FlowViewMutationError = AxiosError<Error>
+    export type FlowViewMutationVariables = {data: ViewDSLForFlowView}
+
+    /**
+ * @summary Search stocks
+ */
+export const useFlowView = <TError = AxiosError<Error>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof flowView>>, TError,FlowViewMutationVariables, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof flowView>>,
+        TError,
+        FlowViewMutationVariables,
+        TContext
+      > => {
+      return useMutation(getFlowViewMutationOptions(options), queryClient);
     }

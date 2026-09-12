@@ -18,6 +18,8 @@ tags:
     description: transaction
   - name: flow
     description: flow
+  - name: view
+    description: view
   - name: common
     description: common
 paths:
@@ -872,6 +874,105 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /view/stocks:
+    post:
+      operationId: stockView
+      summary: Search stocks
+      description: Search stocks and get finded data.
+      tags:
+        - view
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewDSLForStockView'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StocksView'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /view/transactions:
+    post:
+      operationId: transactionView
+      summary: Search stocks
+      description: Search stocks and get finded data.
+      tags:
+        - view
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewDSLForTransactionView'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionsView'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /view/flows:
+    post:
+      operationId: flowView
+      summary: Search stocks
+      description: Search stocks and get finded data.
+      tags:
+        - view
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ViewDSLForFlowView'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowsView'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   schemas:
     Error:
@@ -1094,6 +1195,368 @@ components:
         - id
       example:
         id: 6d313569-d48f-45a4-9cfb-978c880ed460
+    ViewDSLRuleForStockView:
+      oneOf:
+        - $ref: '#/components/schemas/ViewDSLLogicForStockView'
+        - $ref: '#/components/schemas/ViewDSLStockCondition'
+    ViewDSLLogicForStockView:
+      oneOf:
+        - type: object
+          properties:
+            AND:
+              type: array
+              items:
+                $ref: '#/components/schemas/ViewDSLRuleForStockView'
+          minItems: 1
+          required:
+            - AND
+          additionalProperties: false
+        - type: object
+          properties:
+            OR:
+              type: array
+              items:
+                $ref: '#/components/schemas/ViewDSLRuleForStockView'
+          minItems: 1
+          required:
+            - OR
+          additionalProperties: false
+        - type: object
+          properties:
+            NOT:
+              $ref: '#/components/schemas/ViewDSLRuleForStockView'
+          required:
+            - NOT
+          additionalProperties: false
+    ViewDSLStockCondition:
+      oneOf:
+        - type: object
+          properties:
+            target:
+              const: stocks
+            id:
+              type: array
+              items:
+                type: string
+                format: uuid
+          required:
+            - target
+            - id
+          additionalProperties: false
+        - type: object
+          properties:
+            target:
+              const: stocks
+            tags:
+              type: array
+              items:
+                type: string
+                format: uuid
+          required:
+            - target
+            - tags
+          additionalProperties: false
+    ViewDSLForStockView:
+      type: object
+      properties:
+        base-date:
+          type: string
+        rule:
+          $ref: '#/components/schemas/ViewDSLRuleForStockView'
+    StocksView:
+      type: array
+      items:
+        type: object
+        allOf:
+          - type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              total:
+                type: integer
+                format: int64
+            required:
+              - id
+              - total
+            example:
+              id: cc57d6d9-fd04-4f91-9e5b-4e341780e4b7
+              total: 5678
+          - $ref: '#/components/schemas/StockData'
+    ViewDSLRuleForTransactionView:
+      oneOf:
+        - $ref: '#/components/schemas/ViewDSLLogicForTransactionView'
+        - $ref: '#/components/schemas/ViewDSLTransactionCondition'
+    ViewDSLLogicForTransactionView:
+      oneOf:
+        - type: object
+          properties:
+            AND:
+              type: array
+              items:
+                $ref: '#/components/schemas/ViewDSLRuleForTransactionView'
+          minItems: 1
+          required:
+            - AND
+          additionalProperties: false
+        - type: object
+          properties:
+            OR:
+              type: array
+              items:
+                $ref: '#/components/schemas/ViewDSLRuleForTransactionView'
+          minItems: 1
+          required:
+            - OR
+          additionalProperties: false
+        - type: object
+          properties:
+            NOT:
+              $ref: '#/components/schemas/ViewDSLRuleForTransactionView'
+          required:
+            - NOT
+          additionalProperties: false
+    ViewDSLTransactionCondition:
+      oneOf:
+        - type: object
+          properties:
+            target:
+              const: transactions
+            tags:
+              type: array
+              items:
+                type: string
+                format: uuid
+          required:
+            - target
+            - tags
+          additionalProperties: false
+        - type: object
+          properties:
+            target:
+              const: transactions
+            mode:
+              const: absolute
+            relation:
+              enum:
+                - before
+                - before-or-equal
+                - point
+                - after-or-equal
+                - after
+            unit:
+              enum:
+                - day
+                - month
+                - year
+            num:
+              type: integer
+              format: int32
+          required:
+            - target
+            - mode
+            - relation
+            - unit
+            - num
+          additionalProperties: false
+        - type: object
+          properties:
+            target:
+              const: transactions
+            mode:
+              const: absolute
+            relation:
+              enum:
+                - before
+                - before-or-equal
+                - point
+                - after-or-equal
+                - after
+            unit:
+              enum:
+                - year-month
+                - year-month-day
+            date:
+              type: string
+          required:
+            - target
+            - mode
+            - relation
+            - unit
+            - date
+          additionalProperties: false
+        - type: object
+          properties:
+            target:
+              const: transactions
+            mode:
+              const: relative
+            relation:
+              enum:
+                - before
+                - before-or-equal
+                - point
+                - after-or-equal
+                - after
+            unit:
+              enum:
+                - day
+                - month
+                - year
+            num:
+              type: integer
+              format: int32
+          required:
+            - target
+            - mode
+            - relation
+            - unit
+            - num
+          additionalProperties: false
+    ViewDSLForTransactionView:
+      type: object
+      properties:
+        base-date:
+          type: string
+        rule:
+          $ref: '#/components/schemas/ViewDSLRuleForTransactionView'
+    TransactionsView:
+      type: array
+      items:
+        type: object
+        allOf:
+          - type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+            required:
+              - id
+            example:
+              id: 6d313569-d48f-45a4-9cfb-978c880ed460
+          - $ref: '#/components/schemas/TransactionData'
+    ViewDSLRuleForFlowView:
+      oneOf:
+        - $ref: '#/components/schemas/ViewDSLLogicForFlowView'
+        - $ref: '#/components/schemas/ViewDSLStockConditionForFlowView'
+        - $ref: '#/components/schemas/ViewDSLTransactionCondition'
+        - $ref: '#/components/schemas/ViewDSLFlowCondition'
+    ViewDSLLogicForFlowView:
+      oneOf:
+        - type: object
+          properties:
+            AND:
+              type: array
+              items:
+                $ref: '#/components/schemas/ViewDSLRuleForFlowView'
+          minItems: 1
+          required:
+            - AND
+          additionalProperties: false
+        - type: object
+          properties:
+            OR:
+              type: array
+              items:
+                $ref: '#/components/schemas/ViewDSLRuleForFlowView'
+          minItems: 1
+          required:
+            - OR
+          additionalProperties: false
+        - type: object
+          properties:
+            NOT:
+              $ref: '#/components/schemas/ViewDSLRuleForFlowView'
+          required:
+            - NOT
+          additionalProperties: false
+    ViewDSLStockConditionForFlowView:
+      oneOf:
+        - type: object
+          properties:
+            target:
+              enum:
+                - stocks-from
+                - stocks-to
+            id:
+              type: array
+              items:
+                type: string
+                format: uuid
+          required:
+            - target
+            - id
+          additionalProperties: false
+        - type: object
+          properties:
+            target:
+              enum:
+                - stocks-from
+                - stocks-to
+            tags:
+              type: array
+              items:
+                type: string
+                format: uuid
+          required:
+            - target
+            - tags
+          additionalProperties: false
+    ViewDSLFlowCondition:
+      oneOf:
+        - type: object
+          properties:
+            target:
+              const: flows
+            tags:
+              type: array
+              items:
+                type: string
+                format: uuid
+          required:
+            - target
+            - tags
+          additionalProperties: false
+        - type: object
+          properties:
+            target:
+              const: flows
+            amount-min:
+              type: integer
+              format: int64
+            amount-max:
+              type: integer
+              format: int64
+          required:
+            - target
+          anyOf:
+            - required:
+                - amount-max
+            - required:
+                - amount-min
+          additionalProperties: false
+    ViewDSLForFlowView:
+      type: object
+      properties:
+        base-date:
+          type: string
+        rule:
+          $ref: '#/components/schemas/ViewDSLRuleForFlowView'
+    FlowsView:
+      type: array
+      items:
+        type: object
+        allOf:
+          - type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+            required:
+              - id
+            example:
+              id: 0afeb903-d823-44a7-b4ef-0017e72bad5d
+          - $ref: '#/components/schemas/FlowData'
   parameters:
     StockIDParam:
       name: id
