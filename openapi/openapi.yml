@@ -9,8 +9,7 @@ info:
     name: GNU Affero General Public License v3.0
     url: https://github.com/M-Haruki/fsledger/blob/main/LICENSE
 servers:
-  - url: http://localhost:1323/api
-    description: develop environment
+  - url: /api
 tags:
   - name: stock
     description: stock

@@ -16,15 +16,7 @@ func newEcho(cfg Config, handler openapi.ServerInterface) (*echo.Echo, error) {
 	if err != nil {
 		return nil, err
 	}
-	api.Use(
-		echomiddleware.OapiRequestValidatorWithOptions(
-			validateSwagger,
-			&echomiddleware.Options{
-				DoNotValidateServers: true, // disable host header validation based on OpenAPI servers
-				Prefix:               "/api",
-			},
-		),
-	)
+	api.Use(echomiddleware.OapiRequestValidator(validateSwagger))
 	openapi.RegisterHandlers(api, handler)
 
 	// swagger ui
